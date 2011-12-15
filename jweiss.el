@@ -11,6 +11,13 @@
 (desktop-save-mode 1)
 
 
+;;org-mode
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+(add-hook 'org-mode-hook 'turn-on-font-lock) ; not needed when global-font-lock-mode is on
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+
 ;; More syntax coloring
 (defun tweak-clojure-syntax (mode)
   (mapcar (lambda (x) (font-lock-add-keywords mode x))
@@ -28,7 +35,7 @@
             (("(\\(->\\>\\)" 0 (progn (compose-region (match-beginning 1)
                                                       (match-end 1) "→") nil)))
             (("(\\(->>\\>\\)" 0 (progn (compose-region (match-beginning 1)
-                                                      (match-end 1) "↠") nil)))
+                                                       (match-end 1) "↠") nil)))
             (("(\\(complement\\>\\)" 0 (progn (compose-region
                                                (match-beginning 1)
                                                (match-end 1) "¬") nil)))
