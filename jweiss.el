@@ -169,6 +169,15 @@ you'll change the colors used for nicks."
       '(("freenode.net" "#emacs" "#clojure" "#katello" "#pulp")
         ("devel.redhat.com" "#cloud-qe" "#systemengine" "#systemengine-qe" "#candlepin")))
 
+(add-hook 'erc-after-connect
+	  '(lambda (SERVER NICK)
+	     (cond
+	      ((string-match "freenode\\.net" SERVER)
+	       (erc-message "PRIVMSG" "NickServ identify 111111jm"))
+	      
+	      ((string-match "irc\\.devel\\.redhat" SERVER)
+	       (erc-message "PRIVMSG" "userserv login jweiss 111111jm")))))
+
 (defun irc-jweiss ()
   (interactive)
   (erc :server "irc.freenode.net" :port 6667 :nick "jweiss")
@@ -177,6 +186,12 @@ you'll change the colors used for nicks."
 ;;channel tracking
  (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                  "324" "329" "332" "333" "353" "477"))
+
+(defun reset-erc-track-mode ()
+  (interactive)
+  (setq erc-modified-channels-alist nil)
+  (erc-modified-channels-update))
+(global-set-key (kbd "C-c r") 'reset-erc-track-mode)
 
 (defadvice erc-track-find-face (around erc-track-find-face-promote-query activate)
   (if (erc-query-buffer-p) 
