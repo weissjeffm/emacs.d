@@ -167,7 +167,7 @@ you'll change the colors used for nicks."
 ;;autojoin
 (setq erc-autojoin-channels-alist
       '(("freenode.net" "#emacs" "#clojure" "#katello" "#pulp")
-        ("devel.redhat.com" "#cloud-qe" "#systemengine" "#katello-qa" "#candlepin")))
+        ("devel.redhat.com" "#cloud-qe" "#systemengine" "#systemengine-qe" "#candlepin")))
 
 (defun irc-jweiss ()
   (interactive)
