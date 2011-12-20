@@ -10,6 +10,15 @@
 
 (desktop-save-mode 1)
 
+;;auto-complete, ac-slime
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/jweiss/ac-dict")
+(add-to-list 'ac-modes 'slime-repl-mode)
+(ac-config-default)
+(eval-after-load 'ac-slime (progn
+                             (add-hook 'slime-mode-hook 'set-up-slime-ac)
+                             (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)))
+
 
 ;;org-mode
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
@@ -89,14 +98,13 @@
 (eval-after-load "slime-repl"                 
   (set-clojure-colors 'slime-repl-mode))
 
-
 (add-hook 'eshell-mode-hook 
           (lambda()(paredit-mode 1)))
 
-(add-hook 'clojure-mode-hook 'durendal-enable-auto-compile)
+;(add-hook 'clojure-mode-hook 'durendal-enable-auto-compile)
 (add-hook 'slime-repl-mode-hook 'durendal-slime-repl-paredit)
 (add-hook 'sldb-mode-hook 'durendal-dim-sldb-font-lock)
-(add-hook 'slime-compilation-finished-hook 'durendal-hide-successful-compile)
+;(add-hook 'slime-compilation-finished-hook 'durendal-hide-successful-compile)
 
 (defun goto-last-edit-point ()
   "Go to the last point where editing occurred."
