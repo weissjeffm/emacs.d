@@ -1,0 +1,4 @@
+#name: require
+#binding : "C-c r" 
+# --
+[${1:namespace} :as ${2:alias}]$0

@@ -92,19 +92,28 @@
   (set-face-foreground 'clojure-special "#bbbbff")
   (set-face-attribute 'clojure-special nil :underline nil :bold t :italic t))
 
-(eval-after-load "clojure-mode"                 
-  (set-clojure-colors 'clojure-mode))
-
-(eval-after-load "slime-repl"                 
-  (set-clojure-colors 'slime-repl-mode))
+(eval-after-load "clojure-mode" (set-clojure-colors 'clojure-mode))
+(eval-after-load "slime-repl" (set-clojure-colors 'slime-repl-mode))
 
 (add-hook 'eshell-mode-hook 
           (lambda()(paredit-mode 1)))
 
 ;(add-hook 'clojure-mode-hook 'durendal-enable-auto-compile)
 (add-hook 'slime-repl-mode-hook 'durendal-slime-repl-paredit)
+
 (add-hook 'sldb-mode-hook 'durendal-dim-sldb-font-lock)
 ;(add-hook 'slime-compilation-finished-hook 'durendal-hide-successful-compile)
+
+(require 'yasnippet)
+(setq yas/root-directory '("~/.emacs.d/snippets"
+                           "~/.emacs.d/elpa/yasnippet-0.6.1/snippets"))
+(mapc 'yas/load-directory yas/root-directory)
+
+
+(add-hook 'clojure-mode-hook 'yas/minor-mode-on)
+(add-hook 'clojure-mode-hook  
+          (lambda () 
+            (define-key slime-mode-map " " 'slime-space)))
 
 (defun goto-last-edit-point ()
   "Go to the last point where editing occurred."
@@ -142,8 +151,8 @@
                                 "#ffeeaa" "#aaddff" "#bbeebb"))
 
 (defun build-nick-face-list ()
-  "build-nick-face-list builds a list of new faces using the                                                                     
-foreground colors specified in erc-colors-list.  The nick faces                                                                  
+  "build-nick-face-list builds a list of new faces using the
+foreground colors specified in erc-colors-list. The nick faces
 created here will be used to format IRC nicks."
   (setq i -1)
   (setq nick-face-list
@@ -157,13 +166,14 @@ created here will be used to format IRC nicks."
          erc-colors-list)))
 
 (defun my-insert-modify-hook ()
-  "This insert-modify hook looks for nicks in new messages and                                                                   
-computes md5(nick) and uses substring(md5_value, 0, 4) mod (length                                                               
-nick-face-list) to index the face list and produce the same face for a                                                           
-given nick each time it is seen.  We get a lot of collisions this way,                                                           
-unfortunately, but it's better than some other methods I tried.                                                                  
-Additionally, if you change the order or size of the erc-colors-list,                                                            
-you'll change the colors used for nicks."
+  "This insert-modify hook looks for nicks in new messages and
+computes md5(nick) and uses substring(md5_value, 0, 4)
+mod (length nick-face-list) to index the face list and produce
+the same face for a given nick each time it is seen. We get a lot
+of collisions this way, unfortunately, but it's better than some
+other methods I tried. Additionally, if you change the order or
+size of the erc-colors-list, you'll change the colors used for
+nicks."
   (if (null nick-face-list) (build-nick-face-list))
   (save-excursion
     (goto-char (point-min))
@@ -212,6 +222,10 @@ you'll change the colors used for nicks."
   (if (erc-query-buffer-p) 
       (setq ad-return-value (intern "erc-current-nick-face"))
     ad-do-it))
+
+;;turn off auto-fill-mode which apparently breaks long lines into
+;;multiple messages
+(add-hook 'erc-mode-hook (lambda () (auto-fill-mode 0)))
 
 ;;notify
 ;;; Notify me when a keyword is matched (someone wants to reach me)

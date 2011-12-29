@@ -1,0 +1,4 @@
+#name: use
+#binding : "C-c u" 
+# --
+[${1:namespace} :only [$2]]$0
