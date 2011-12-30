@@ -1,6 +1,6 @@
 ;;disable suspending emacs on ctrl-z
 (global-set-key (kbd "C-z") 'undo)
-
+(global-set-key (kbd "C-c M-l") 'goto-line)
 
 ;;basic colors
 (custom-set-faces
@@ -11,13 +11,14 @@
 (desktop-save-mode 1)
 
 ;;auto-complete, ac-slime
-(require 'auto-complete-config)
+(autoload 'set-up-slime-ac "ac-slime")
+(autoload 'ac-config-default "auto-complete-config")
+(ac-config-default)
+(autoload 'slime-repl-mode "slime") 
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/jweiss/ac-dict")
 (add-to-list 'ac-modes 'slime-repl-mode)
-(ac-config-default)
-(eval-after-load 'ac-slime (progn
-                             (add-hook 'slime-mode-hook 'set-up-slime-ac)
-                             (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)))
+(add-hook 'slime-mode-hook 'set-up-slime-ac)
+(add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
 
 
 ;;org-mode
@@ -92,8 +93,9 @@
   (set-face-foreground 'clojure-special "#bbbbff")
   (set-face-attribute 'clojure-special nil :underline nil :bold t :italic t))
 
-(eval-after-load "clojure-mode" (set-clojure-colors 'clojure-mode))
-(eval-after-load "slime-repl" (set-clojure-colors 'slime-repl-mode))
+(autoload 'clojure-mode "clojure-mode")
+(set-clojure-colors 'clojure-mode)
+(set-clojure-colors 'slime-repl-mode)
 
 (add-hook 'eshell-mode-hook 
           (lambda()(paredit-mode 1)))
@@ -104,15 +106,16 @@
 (add-hook 'sldb-mode-hook 'durendal-dim-sldb-font-lock)
 ;(add-hook 'slime-compilation-finished-hook 'durendal-hide-successful-compile)
 
-(require 'yasnippet)
+(autoload 'yas/initialize "yasnippet" t)
+(yas/initialize)
 (setq yas/root-directory '("~/.emacs.d/snippets"
                            "~/.emacs.d/elpa/yasnippet-0.6.1/snippets"))
 (mapc 'yas/load-directory yas/root-directory)
 
-
 (add-hook 'clojure-mode-hook 'yas/minor-mode-on)
 (add-hook 'clojure-mode-hook  
-          (lambda () 
+          (lambda ()
+            (autoload 'slime-mode-map "slime")
             (define-key slime-mode-map " " 'slime-space)))
 
 (defun goto-last-edit-point ()
@@ -229,8 +232,7 @@ nicks."
 
 ;;notify
 ;;; Notify me when a keyword is matched (someone wants to reach me)
-(require 'notifications)
-
+(autoload 'notifications-notify "notifications")
 (setq erc-keywords '("jweiss"))
 (erc-match-mode 1)
 
