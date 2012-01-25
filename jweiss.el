@@ -1,5 +1,11 @@
+;;time loading of this file
+(require 'cl) ; a rare necessary use of REQUIRE
+(defvar *emacs-load-start* (current-time))
+
 ;;disable suspending emacs on ctrl-z
 (global-set-key (kbd "C-z") 'undo)
+(global-unset-key (kbd "C-x C-z"))
+;jump to line
 (global-set-key (kbd "C-c M-l") 'goto-line)
 
 ;;basic colors
@@ -19,7 +25,6 @@
 (add-to-list 'ac-modes 'slime-repl-mode)
 (add-hook 'slime-mode-hook 'set-up-slime-ac)
 (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
-
 
 ;;org-mode
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
@@ -106,17 +111,25 @@
 (add-hook 'sldb-mode-hook 'durendal-dim-sldb-font-lock)
 ;(add-hook 'slime-compilation-finished-hook 'durendal-hide-successful-compile)
 
-(autoload 'yas/initialize "yasnippet" t)
+(autoload 'yas/initialize "yasnippet")
 (yas/initialize)
 (setq yas/root-directory '("~/.emacs.d/snippets"
                            "~/.emacs.d/elpa/yasnippet-0.6.1/snippets"))
 (mapc 'yas/load-directory yas/root-directory)
 
+
 (add-hook 'clojure-mode-hook 'yas/minor-mode-on)
-(add-hook 'clojure-mode-hook  
-          (lambda ()
-            (autoload 'slime-mode-map "slime")
-            (define-key slime-mode-map " " 'slime-space)))
+(add-hook 'clojure-mode-hook 
+          (lambda () 
+            (define-key clojure-mode-map (kbd "M-[") 'paredit-wrap-square)))
+(eval-after-load 'clojure-mode (yas/reload-all))
+
+(autoload 'paredit-wrap-square "paredit")
+(add-hook 'slime-connected-hook
+          (lambda () 
+            (load "slamhound")
+            (define-key slime-mode-map " " 'slime-space)
+            (define-key slime-mode-map (kbd "M-[") 'paredit-wrap-square)))
 
 (defun goto-last-edit-point ()
   "Go to the last point where editing occurred."
@@ -307,3 +320,5 @@ matches a regexp in `erc-keywords'."
                         :body (replace-regexp-in-string " +" " " message)
                         :sound-file notification-sound-file))
 
+(message "My .emacs loaded in %ds" (destructuring-bind (hi lo ms) (current-time)
+                           (- (+ hi lo) (+ (first *emacs-load-start*) (second *emacs-load-start*)))))
