@@ -7,6 +7,11 @@
 (global-unset-key (kbd "C-x C-z"))
 ;jump to line
 (global-set-key (kbd "C-c M-l") 'goto-line)
+;buffer switch 
+(global-set-key (kbd "C-,") 'ido-switch-buffer)
+;;frame-switch
+(global-set-key (kbd "C-q") 'windmove-up)
+(global-set-key (kbd "C-z") 'windmove-down)
 
 ;;basic colors
 (custom-set-faces
