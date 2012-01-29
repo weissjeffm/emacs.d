@@ -282,8 +282,8 @@ that can occur between two notifications.  The default is
       t)))
 
 (defun my-erc-notify (nick channel message)
-  (start-process "notif" nil "mplayer"
-                 "-really-quiet" notification-sound-file)
+  (start-process "notif" nil "play"
+                 "-q" notification-sound-file)
   (notifications-notify :title (format "%s in %s" nick channel)
                         ;; Remove duplicate spaces
                         :body (replace-regexp-in-string " +" " " message)
