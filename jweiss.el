@@ -13,6 +13,9 @@
 (global-set-key (kbd "C-q") 'windmove-up)
 (global-set-key (kbd "C-z") 'windmove-down)
 
+;;use w tiling window mgr
+(setq pop-up-frames t)
+
 ;;basic colors
 (custom-set-faces
  '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "DejaVu Sans Mono")))))
