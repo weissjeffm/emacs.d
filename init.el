@@ -35,7 +35,25 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(erc-join-buffer (quote bury))
- '(org-agenda-files (quote ("~/tasks/7212467cf49c6e11eaff/jweiss.org"))))
+ '(erc-log-channels-directory "~/.erc/logs/")
+ '(erc-log-write-after-insert t)
+ '(erc-log-write-after-send t)
+ '(erc-save-buffer-on-part nil)
+ '(erc-save-queries-on-quit nil)
+ '(org-agenda-files (quote ("~/tasks/7212467cf49c6e11eaff/jweiss.org")))
+ '(erc-generate-log-file-name-function
+   (lambda (buffer target nick server port)
+     (let ((file (concat
+                  (if target (concat target "@"))
+                  server ":" (cond ((stringp port) port)
+                                   ((numberp port)
+                                    (number-to-string port))) ".txt")))
+       ;; we need a make-safe-file-name function.
+       (convert-standard-filename file))))
+ '(erc-autojoin-channels-alist
+   '(("freenode.net" "#emacs" "#clojure" "#katello" "#pulp")
+     ("devel.redhat.com" "#cloud-qe" "#systemengine" "#systemengine-qe" "#candlepin")))
+ )
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

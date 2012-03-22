@@ -157,13 +157,6 @@
 (setq nick-face-list '())
 (setq erc-nick-uniquifier "_")
 
-;;logging
-(setq erc-log-channels-directory "~/.erc/logs/")
-(setq erc-save-buffer-on-part nil
-      erc-save-queries-on-quit nil
-      erc-log-write-after-send t
-      erc-log-write-after-insert t)
-
 ;; Define the list of colors to use when coloring IRC nicks.                                                                     
 (setq-default erc-colors-list '("pink" "light green" "yellow"
                                 "gray" "thistle" "tan" "violet"
@@ -211,11 +204,6 @@ nicks."
 ;; This adds the ERC message insert hook.                                                                                        
 (add-hook 'erc-insert-modify-hook 'my-insert-modify-hook)
 
-;;autojoin
-(setq erc-autojoin-channels-alist
-      '(("freenode.net" "#emacs" "#clojure" "#katello" "#pulp")
-        ("devel.redhat.com" "#cloud-qe" "#systemengine" "#systemengine-qe" "#candlepin")))
-
 (add-hook 'erc-after-connect
 	  '(lambda (SERVER NICK)
 	     (cond
@@ -234,10 +222,12 @@ nicks."
  (setq erc-track-exclude-types '("JOIN" "NICK" "PART" "QUIT" "MODE"
                                  "324" "329" "332" "333" "353" "477"))
 
+
 (defun reset-erc-track-mode ()
   (interactive)
   (setq erc-modified-channels-alist nil)
   (erc-modified-channels-update))
+
 (global-set-key (kbd "C-c r") 'reset-erc-track-mode)
 
 (defadvice erc-track-find-face (around erc-track-find-face-promote-query activate)
