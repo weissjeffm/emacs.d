@@ -14,7 +14,7 @@
 (global-set-key (kbd "C-z") 'windmove-down)
 
 ;;use w tiling window mgr
-(setq pop-up-frames t)
+(setq pop-up-frames nil)
 
 ;;basic colors
 (custom-set-faces
@@ -129,15 +129,16 @@
 (add-hook 'clojure-mode-hook 'yas/minor-mode-on)
 (add-hook 'clojure-mode-hook 
           (lambda () 
-            (define-key clojure-mode-map (kbd "M-[") 'paredit-wrap-square)))
+            (define-key clojure-mode-map (kbd "M-[") 'paredit-wrap-square)
+            (define-key clojure-mode-map (kbd "M-{") 'paredit-wrap-curly)))
 (eval-after-load 'clojure-mode (yas/reload-all))
 
 (autoload 'paredit-wrap-square "paredit")
 (add-hook 'slime-connected-hook
           (lambda () 
-            (load "slamhound")
             (define-key slime-mode-map " " 'slime-space)
-            (define-key slime-mode-map (kbd "M-[") 'paredit-wrap-square)))
+            (define-key slime-mode-map (kbd "M-[") 'paredit-wrap-square)
+            (define-key slime-mode-map (kbd "M-{") 'paredit-wrap-curly)))
 
 (defun goto-last-edit-point ()
   "Go to the last point where editing occurred."
