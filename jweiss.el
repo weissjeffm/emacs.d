@@ -13,6 +13,9 @@
 (global-set-key (kbd "C-q") 'windmove-up)
 (global-set-key (kbd "C-z") 'windmove-down)
 
+;;use w tiling window mgr
+(setq pop-up-frames nil)
+
 ;;basic colors
 (custom-set-faces
  '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "DejaVu Sans Mono")))))
@@ -126,16 +129,18 @@
 (add-hook 'clojure-mode-hook 'yas/minor-mode-on)
 (add-hook 'clojure-mode-hook 
           (lambda () 
-            (define-key clojure-mode-map (kbd "M-[") 'paredit-wrap-square)))
+            (define-key clojure-mode-map (kbd "M-[") 'paredit-wrap-square)
+            (define-key clojure-mode-map (kbd "M-{") 'paredit-wrap-curly)))
 (eval-after-load 'clojure-mode (yas/reload-all))
 
 (autoload 'paredit-wrap-square "paredit")
 (add-hook 'slime-connected-hook
           (lambda () 
-            (load "slamhound")
             (define-key slime-mode-map " " 'slime-space)
             (define-key slime-mode-map (kbd "M-[") 'paredit-wrap-square)
+            (define-key slime-mode-map (kbd "M-{") 'paredit-wrap-curly)
             (define-key slime-repl-mode-map [C-S-up] 'slime-repl-previous-matching-input)))
+
 
 (defun goto-last-edit-point ()
   "Go to the last point where editing occurred."
@@ -275,10 +280,12 @@ that can occur between two notifications.  The default is
 (defun my-erc-notify (nick channel message)
   (start-process "notif" nil "play"
                  "-q" notification-sound-file)
-  (notifications-notify :title (format "%s in %s" nick channel)
-                        ;; Remove duplicate spaces
-                        :body (replace-regexp-in-string " +" " " message)
-                        :sound-file notification-sound-file))
+  (condition-case ()
+      (notifications-notify :title (format "%s in %s" nick channel)
+                            ;; Remove duplicate spaces
+                            :body (replace-regexp-in-string " +" " " message)
+                            :sound-file notification-sound-file)
+    (error nil)))
 
 (defun my-erc-page-me (match-type nick msg)
   "Notify the current user when someone sends a message that
