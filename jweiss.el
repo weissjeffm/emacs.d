@@ -287,10 +287,12 @@ that can occur between two notifications.  The default is
 (defun my-erc-notify (nick channel message)
   (start-process "notif" nil "play"
                  "-q" notification-sound-file)
-  (notifications-notify :title (format "%s in %s" nick channel)
-                        ;; Remove duplicate spaces
-                        :body (replace-regexp-in-string " +" " " message)
-                        :sound-file notification-sound-file))
+  (condition-case ()
+      (notifications-notify :title (format "%s in %s" nick channel)
+                            ;; Remove duplicate spaces
+                            :body (replace-regexp-in-string " +" " " message)
+                            :sound-file notification-sound-file)
+    (error nil)))
 
 (defun my-erc-page-me (match-type nick msg)
   "Notify the current user when someone sends a message that
