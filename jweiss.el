@@ -138,7 +138,9 @@
           (lambda () 
             (define-key slime-mode-map " " 'slime-space)
             (define-key slime-mode-map (kbd "M-[") 'paredit-wrap-square)
-            (define-key slime-mode-map (kbd "M-{") 'paredit-wrap-curly)))
+            (define-key slime-mode-map (kbd "M-{") 'paredit-wrap-curly)
+            (define-key slime-repl-mode-map [C-S-up] 'slime-repl-previous-matching-input)))
+
 
 (defun goto-last-edit-point ()
   "Go to the last point where editing occurred."
@@ -333,5 +335,24 @@ matches a regexp in `erc-keywords'."
                         :body (replace-regexp-in-string " +" " " message)
                         :sound-file notification-sound-file))
 
+
+;;syntax highlight RoR log files
+(require 'generic-x) 
+
+(define-generic-mode 
+    'ror-log-mode ;; name of the mode to create
+  '("!!")         ;; comments start with '!!'
+  '("ERROR" "WARN" 
+    "DEBUG" "INFO")                        ;; some keywords
+  '(("^\\[.*\\]" . font-lock-comment-face) 
+    ("[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} \\([0-9]\\{2\\}:\\)+[0-9]\\{2\\}" . 'font-lock-type-face)
+    ("/.*:in `.*'$" . 'font-lock-warning-face)
+    ("/.*:[0-9]+$" . 'font-lock-warning-face)) ;; ';' is a a built-in 
+  '("production.log")        ;; files for which to activate this mode 
+  nil                        ;; other functions to call
+  "A mode for RoR log files" ;; doc string for this mode
+  )
+
 (message "My .emacs loaded in %ds" (destructuring-bind (hi lo ms) (current-time)
                            (- (+ hi lo) (+ (first *emacs-load-start*) (second *emacs-load-start*)))))
+
