@@ -18,6 +18,9 @@
 ;;use w tiling window mgr
 (setq pop-up-frames nil)
 
+;;associate some file extensions with modes
+(add-to-list 'auto-mode-alist '("\\.*repo$" . conf-unix-mode))
+
 ;;basic colors
 (custom-set-faces
  '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "DejaVu Sans Mono")))))
