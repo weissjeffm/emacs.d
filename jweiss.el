@@ -12,6 +12,8 @@
 ;;frame-switch
 (global-set-key (kbd "C-q") 'windmove-up)
 (global-set-key (kbd "C-z") 'windmove-down)
+;;use ibuffer
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 
 ;;use w tiling window mgr
 (setq pop-up-frames nil)

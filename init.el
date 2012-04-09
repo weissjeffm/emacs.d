@@ -44,20 +44,9 @@
  '(erc-log-write-after-send t)
  '(erc-save-buffer-on-part nil)
  '(erc-save-queries-on-quit nil)
- '(org-agenda-files (quote ("~/tasks/7212467cf49c6e11eaff/jweiss.org")))
- '(erc-generate-log-file-name-function
-   (lambda (buffer target nick server port)
-     (let ((file (concat
-                  (if target (concat target "@"))
-                  server ":" (cond ((stringp port) port)
-                                   ((numberp port)
-                                    (number-to-string port))) ".txt")))
-       ;; we need a make-safe-file-name function.
-       (convert-standard-filename file))))
- '(erc-autojoin-channels-alist
-   '(("freenode.net" "#emacs" "#clojure" "#katello" "#pulp")
-     ("devel.redhat.com" "#cloud-qe" "#systemengine" "#systemengine-qe" "#candlepin")))
- )
+ '(ibuffer-saved-filter-groups (quote (("normal" ("Clojure" (mode . clojure-mode)) ("irc" (mode . erc-mode)) ("git" (mode . magit-mode)) ("org" (mode . org-mode)) ("emacs" (or (name . "^\\*scratch\\*$") (name . "^\\*Messages\\*$")))))))
+ '(ibuffer-saved-filters (quote (("gnus" ((or (mode . message-mode) (mode . mail-mode) (mode . gnus-group-mode) (mode . gnus-summary-mode) (mode . gnus-article-mode)))) ("programming" ((or (mode . emacs-lisp-mode) (mode . cperl-mode) (mode . c-mode) (mode . java-mode) (mode . idl-mode) (mode . lisp-mode)))))))
+ '(org-agenda-files (quote ("~/tasks/7212467cf49c6e11eaff/jweiss.org"))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
