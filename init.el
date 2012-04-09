@@ -34,8 +34,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(erc-autojoin-channels-alist (quote (("freenode.net" "#emacs" "#clojure" "#katello" "#pulp") ("devel.redhat.com" "#cloud-qe" "#systemengine" "#systemengine-qe" "#candlepin"))))
+ '(erc-enable-logging t)
+ '(erc-generate-log-file-name-function (lambda (buffer target nick server port) (let ((file (concat (if target (concat target "@")) server ":" (cond ((stringp port) port) ((numberp port) (number-to-string port))) ".txt"))) (convert-standard-filename file))))
  '(erc-join-buffer (quote bury))
  '(erc-log-channels-directory "~/.erc/logs/")
+ '(erc-log-mode t)
  '(erc-log-write-after-insert t)
  '(erc-log-write-after-send t)
  '(erc-save-buffer-on-part nil)
