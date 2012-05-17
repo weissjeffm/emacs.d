@@ -259,7 +259,7 @@ nicks."
   "Alist of nicks and the last time they tried to trigger a
 notification")
 
-(defvar my-erc-page-timeout 10
+(defvar my-erc-page-timeout 30
   "Number of seconds that must elapse between notifications from
 the same person.")
 
