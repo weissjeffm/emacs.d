@@ -29,7 +29,7 @@
 (autoload 'ac-config-default "auto-complete-config")
 (ac-config-default)
 (autoload 'slime-repl-mode "slime") 
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/jweiss/ac-dict")
+;(add-to-list 'ac-dictionary-directories "~/.emacs.d/jweiss/ac-dict")
 (add-to-list 'ac-modes 'slime-repl-mode)
 (add-hook 'slime-mode-hook 'set-up-slime-ac)
 (add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
