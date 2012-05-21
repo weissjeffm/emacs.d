@@ -124,19 +124,19 @@
 (add-hook 'sldb-mode-hook 'durendal-dim-sldb-font-lock)
 ;(add-hook 'slime-compilation-finished-hook 'durendal-hide-successful-compile)
 
-(autoload 'yas/initialize "yasnippet")
-(yas/initialize)
-(setq yas/root-directory '("~/.emacs.d/snippets"
-                           "~/.emacs.d/elpa/yasnippet-0.6.1/snippets"))
-(mapc 'yas/load-directory yas/root-directory)
+;; (autoload 'yas/initialize "yasnippet")
+;; (yas/initialize)
+;; (setq yas/root-directory '("~/.emacs.d/snippets"
+;;                            "~/.emacs.d/elpa/yasnippet-0.6.1/snippets"))
+;; (mapc 'yas/load-directory yas/root-directory)
+;;(add-hook 'clojure-mode-hook 'yas/minor-mode-on)
 
-
-(add-hook 'clojure-mode-hook 'yas/minor-mode-on)
 (add-hook 'clojure-mode-hook 
           (lambda () 
             (define-key clojure-mode-map (kbd "M-[") 'paredit-wrap-square)
             (define-key clojure-mode-map (kbd "M-{") 'paredit-wrap-curly)))
-(eval-after-load 'clojure-mode (yas/reload-all))
+
+;;(eval-after-load 'clojure-mode (yas/reload-all))
 
 (autoload 'paredit-wrap-square "paredit")
 (add-hook 'slime-connected-hook
