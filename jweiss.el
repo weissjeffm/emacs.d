@@ -1,6 +1,6 @@
 ;;time loading of this file
-(require 'cl) ; a rare necessary use of REQUIRE
-(defvar *emacs-load-start* (current-time))
+(require 'cl) ; a rare necessary use of REQUIRE (for mwe-log-commands?)
+
 
 ;;disable suspending emacs on ctrl-z
 (global-set-key (kbd "C-z") 'undo)
@@ -17,6 +17,21 @@
 
 ;;use w tiling window mgr
 (setq pop-up-frames nil)
+
+;;command logging
+(add-hook 'after-change-major-mode-hook 'mwe:log-keyboard-commands)
+(setq mwe:*log-command-exceptions* '(nil self-insert-command backward-char forward-char
+                                         delete-char delete-backward-char backward-delete-char
+                                         backward-delete-char-untabify
+                                         universal-argument universal-argument-other-key
+                                         universal-argument-minus universal-argument-more
+                                         recenter handle-switch-frame
+                                         newline previous-line next-line mouse-set-point
+                                         mouse-drag-region slime-space paredit-open-round
+                                         paredit-open-curly paredit-open-angled paredit-backward-delete
+                                         right-char left-char paredit-doublequote paredit-semicolon
+                                         paredit-open-square))
+
 
 ;;associate some file extensions with modes
 (add-to-list 'auto-mode-alist '("\\.*repo$" . conf-unix-mode))
@@ -348,6 +363,5 @@ matches a regexp in `erc-keywords'."
   "A mode for RoR log files" ;; doc string for this mode
   )
 
-(message "My .emacs loaded in %ds" (destructuring-bind (hi lo ms) (current-time)
-                           (- (+ hi lo) (+ (first *emacs-load-start*) (second *emacs-load-start*)))))
+
 
