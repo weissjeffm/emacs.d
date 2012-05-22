@@ -9,6 +9,7 @@
 (global-set-key (kbd "C-c M-l") 'goto-line)
 ;buffer switch 
 (global-set-key (kbd "C-,") 'ido-switch-buffer)
+(global-set-key [insert] 'ido-switch-buffer)
 ;;frame-switch
 (global-set-key (kbd "C-q") 'windmove-up)
 (global-set-key (kbd "C-z") 'windmove-down)
