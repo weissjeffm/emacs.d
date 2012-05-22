@@ -20,17 +20,18 @@
 
 ;;command logging
 (add-hook 'after-change-major-mode-hook 'mwe:log-keyboard-commands)
-(setq mwe:*log-command-exceptions* '(nil self-insert-command backward-char forward-char
-                                         delete-char delete-backward-char backward-delete-char
-                                         backward-delete-char-untabify
-                                         universal-argument universal-argument-other-key
-                                         universal-argument-minus universal-argument-more
-                                         recenter handle-switch-frame
-                                         newline previous-line next-line mouse-set-point
-                                         mouse-drag-region slime-space paredit-open-round
-                                         paredit-open-curly paredit-open-angled paredit-backward-delete
-                                         right-char left-char paredit-doublequote paredit-semicolon
-                                         paredit-open-square))
+(setq mwe:*log-command-exceptions*
+      '(nil self-insert-command backward-char forward-char
+            delete-char delete-backward-char backward-delete-char
+            backward-delete-char-untabify
+            universal-argument universal-argument-other-key
+            universal-argument-minus universal-argument-more
+            recenter handle-switch-frame
+            newline previous-line next-line mouse-set-point
+            mouse-drag-region slime-space paredit-open-round
+            paredit-open-curly paredit-open-angled paredit-backward-delete
+            right-char left-char paredit-doublequote paredit-semicolon
+            paredit-open-square))
 
 
 ;;associate some file extensions with modes
