@@ -47,6 +47,7 @@
  '(erc-save-queries-on-quit nil)
  '(ibuffer-saved-filter-groups (quote (("normal" ("Clojure" (mode . clojure-mode)) ("irc" (mode . erc-mode)) ("git" (mode . magit-mode)) ("org" (mode . org-mode)) ("emacs" (or (name . "^\\*scratch\\*$") (name . "^\\*Messages\\*$")))))))
  '(ibuffer-saved-filters (quote (("gnus" ((or (mode . message-mode) (mode . mail-mode) (mode . gnus-group-mode) (mode . gnus-summary-mode) (mode . gnus-article-mode)))) ("programming" ((or (mode . emacs-lisp-mode) (mode . cperl-mode) (mode . c-mode) (mode . java-mode) (mode . idl-mode) (mode . lisp-mode)))))))
+ '(menu-bar-mode nil)
  '(org-agenda-files (quote ("~/tasks/7212467cf49c6e11eaff/jweiss.org")))
  '(reb-re-syntax ((lambda nil (quote string)))))
 
