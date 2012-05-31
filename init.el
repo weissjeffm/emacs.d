@@ -7,7 +7,8 @@
   (package-refresh-contents))
 
 ;; Add in your own as you wish:
-(defvar my-packages '(starter-kit starter-kit-lisp starter-kit-bindings clojure-mode durendal ac-slime mwe-log-commands)
+(defvar my-packages '(starter-kit starter-kit-lisp starter-kit-bindings clojure-mode
+                                  durendal ac-slime mwe-log-commands ace-jump-mode idomenu)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -49,7 +50,8 @@
  '(ibuffer-saved-filters (quote (("gnus" ((or (mode . message-mode) (mode . mail-mode) (mode . gnus-group-mode) (mode . gnus-summary-mode) (mode . gnus-article-mode)))) ("programming" ((or (mode . emacs-lisp-mode) (mode . cperl-mode) (mode . c-mode) (mode . java-mode) (mode . idl-mode) (mode . lisp-mode)))))))
  '(menu-bar-mode nil)
  '(org-agenda-files (quote ("~/tasks/7212467cf49c6e11eaff/jweiss.org")))
- '(reb-re-syntax ((lambda nil (quote string)))))
+ '(reb-re-syntax ((lambda nil (quote string))))
+ '(show-paren-style (quote expression)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -58,6 +60,8 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
  '(erc-input-face ((t (:foreground "gray"))))
- '(magit-item-highlight ((t (:background "gray10")))))
+ '(magit-item-highlight ((t (:background "gray10"))))
+ '(show-paren-match ((t (:background "#1a1d2e")))))
 
 (put 'narrow-to-region 'disabled nil)
+

@@ -15,28 +15,23 @@
 (global-set-key (kbd "C-z") 'windmove-down)
 ;;use ibuffer
 (global-set-key (kbd "C-x C-b") 'ibuffer)
+;;use ace-jump-mode
+(global-set-key (kbd "C-'") 'ace-jump-mode)
+;;fix crazy paredit keybindings
+(eval-after-load 'paredit-mode
+  (progn (define-key paredit-mode-map [C-left] 'paredit-backward-slurp-sexp)
+         (define-key paredit-mode-map [C-M-left] 'paredit-backward-barf-sexp)
+         (define-key paredit-mode-map [C-M-right] 'paredit-forward-barf-sexp)))
+
+;;use idomenu to search for symbols
+(global-set-key (kbd "C-o" 'idomenu))
 
 ;;use w tiling window mgr
 (setq pop-up-frames nil)
 
-;;command logging
-(add-hook 'after-change-major-mode-hook 'mwe:log-keyboard-commands)
-(setq mwe:*log-command-exceptions*
-      '(nil self-insert-command backward-char forward-char
-            delete-char delete-backward-char backward-delete-char
-            backward-delete-char-untabify
-            universal-argument universal-argument-other-key
-            universal-argument-minus universal-argument-more
-            recenter handle-switch-frame
-            newline previous-line next-line mouse-set-point
-            mouse-drag-region slime-space paredit-open-round
-            paredit-open-curly paredit-open-angled paredit-backward-delete
-            right-char left-char paredit-doublequote paredit-semicolon
-            paredit-open-square))
-
-
 ;;associate some file extensions with modes
 (add-to-list 'auto-mode-alist '("\\.*repo$" . conf-unix-mode))
+
 
 ;;basic colors
 (custom-set-faces
@@ -364,6 +359,25 @@ matches a regexp in `erc-keywords'."
   nil                        ;; other functions to call
   "A mode for RoR log files" ;; doc string for this mode
   )
+
+
+;;command logging
+;(autoload 'mwe:log-keyboard-commands "mwe-log-commands")
+;(eval-after-load 'mwe-log-commands
+;  (add-hook 'after-change-major-mode-hook 'mwe:log-keyboard-commands))
+(setq-default mwe:*log-keyboard-commands* t)
+(setq mwe:*log-command-exceptions*
+      '(nil self-insert-command backward-char forward-char
+            delete-char delete-backward-char backward-delete-char
+            backward-delete-char-untabify
+            universal-argument universal-argument-other-key
+            universal-argument-minus universal-argument-more
+            recenter handle-switch-frame
+            newline previous-line next-line mouse-set-point
+            mouse-drag-region slime-space paredit-open-round
+            paredit-open-curly paredit-open-angled paredit-backward-delete
+            right-char left-char paredit-doublequote paredit-semicolon
+            paredit-open-square reindent-then-newline-and-indent))
 
 
 
