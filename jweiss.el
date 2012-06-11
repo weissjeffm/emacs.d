@@ -19,12 +19,12 @@
 (global-set-key (kbd "C-'") 'ace-jump-mode)
 ;;fix crazy paredit keybindings
 (eval-after-load 'paredit-mode
-  (progn (define-key paredit-mode-map [C-left] 'paredit-backward-slurp-sexp)
-         (define-key paredit-mode-map [C-M-left] 'paredit-backward-barf-sexp)
-         (define-key paredit-mode-map [C-M-right] 'paredit-forward-barf-sexp)))
+  '(progn (define-key paredit-mode-map [C-left] paredit-backward-slurp-sexp)
+          (define-key paredit-mode-map [C-M-left] paredit-backward-barf-sexp)
+          (define-key paredit-mode-map [C-M-right] paredit-forward-barf-sexp)))
 
 ;;use idomenu to search for symbols
-(global-set-key (kbd "C-o" 'idomenu))
+(global-set-key (kbd "C-o") 'idomenu)
 
 ;;use w tiling window mgr
 (setq pop-up-frames nil)
