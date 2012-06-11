@@ -17,6 +17,12 @@
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 ;;use ace-jump-mode
 (global-set-key (kbd "C-'") 'ace-jump-mode)
+;;mark-multiple
+(eval-after-load 'mark-more-like-this
+  '(progn (global-set-key (kbd "C-<") 'mark-previous-like-this)
+          (global-set-key (kbd "C->") 'mark-next-like-this)
+          ;;(global-set-key (kbd "C-M-m") 'mark-more-like-this) ; like the other two, but takes an argument (negative is previous)
+          (global-set-key (kbd "C-*") 'mark-all-like-this)))
 ;;fix crazy paredit keybindings
 (eval-after-load 'paredit-mode
   '(progn (define-key paredit-mode-map [C-left] paredit-backward-slurp-sexp)
@@ -347,7 +353,7 @@ matches a regexp in `erc-keywords'."
 (require 'generic-x) 
 
 (define-generic-mode 
-    'ror-log-mode ;; name of the mode to create
+    'error-log-mode ;; name of the mode to create
   '("!!")         ;; comments start with '!!'
   '("ERROR" "WARN" 
     "DEBUG" "INFO")                        ;; some keywords
@@ -379,5 +385,27 @@ matches a regexp in `erc-keywords'."
             right-char left-char paredit-doublequote paredit-semicolon
             paredit-open-square reindent-then-newline-and-indent))
 
+
+
+(defun mark-all-symbols-like-this ()
+  "Find and mark all the symbols of the buffer matching the currently active region"
+  (interactive)
+  (unless (or (region-active-p) mm/master) (error "Mark a region to match first."))
+  (if (not mm/master)
+      (mm/create-master (region-beginning) (region-end)))
+  (dolist (mirror mm/mirrors)
+    (delete-overlay mirror))
+  (setq mm/mirrors ())
+  (save-excursion
+    (goto-char 0)
+    (let ((case-fold-search nil)
+          (master-str (mm/master-substring)))
+      (while (search-forward master-str nil t)
+        (let ((start (- (point) (length master-str)))
+              (end (point)))
+          (if (and (/= (overlay-start mm/master) start)
+                   (= (scan-sexps start 1) end)
+                   (= (scan-sexps end -1) start))
+              (mm/add-mirror start end)))))))
 
 
