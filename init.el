@@ -17,6 +17,8 @@
   (when (not (package-installed-p p))
     (package-install p)))
 
+(require 'mark-more-like-this)
+
 ;;this works in some emacs setups but not others, don'tknow why
 ;; (add-hook 'slime-repl-mode-hook
 ;;           (defun clojure-mode-slime-font-lock ()
