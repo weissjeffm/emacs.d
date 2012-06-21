@@ -51,6 +51,7 @@
   '(progn (define-key paredit-mode-map (kbd "C-<left>") 'paredit-backward-slurp-sexp)
           (define-key paredit-mode-map (kbd "C-M-<left>") 'paredit-backward-barf-sexp)
           (define-key paredit-mode-map (kbd "C-M-<right>") 'paredit-forward-barf-sexp)
+          (define-key paredit-mode-map (kbd "M-(") 'paredit-wrap-round)
           (define-key paredit-mode-map (kbd "C-*") 'mark-all-symbols-like-this)))
 
 ;;use idomenu to search for symbols
