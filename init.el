@@ -8,9 +8,14 @@
 (when (not package-archive-contents)
   (package-refresh-contents))
 
+(when (not (package-installed-p 'melpa))
+  (package-install 'melpa))
+
+(setq package-archive-enable-alist '(("melpa"  mark-more-like-this mark-multiple)))
 ;; Add in your own as you wish:
 (defvar my-packages '(starter-kit starter-kit-lisp starter-kit-bindings clojure-mode
-                                  durendal ac-slime mwe-log-commands ace-jump-mode idomenu)
+                                  durendal ac-slime mwe-log-commands ace-jump-mode
+                                  idomenu mark-more-like-this mark-multiple)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -19,7 +24,7 @@
 
 (require 'mark-more-like-this)
 
-;;this works in some emacs setups but not others, don'tknow why
+;;this works in some emacs setups but not others, don't know why
 ;; (add-hook 'slime-repl-mode-hook
 ;;           (defun clojure-mode-slime-font-lock ()
 ;;             (let (font-lock-mode)
@@ -54,6 +59,7 @@
  '(ibuffer-saved-filters (quote (("gnus" ((or (mode . message-mode) (mode . mail-mode) (mode . gnus-group-mode) (mode . gnus-summary-mode) (mode . gnus-article-mode)))) ("programming" ((or (mode . emacs-lisp-mode) (mode . cperl-mode) (mode . c-mode) (mode . java-mode) (mode . idl-mode) (mode . lisp-mode)))))))
  '(menu-bar-mode nil)
  '(org-agenda-files (quote ("~/tasks/7212467cf49c6e11eaff/jweiss.org")))
+ '(package-archive-enable-alist (quote (("melpa" mark-more-like-this mark-multiple))))
  '(reb-re-syntax ((lambda nil (quote string))))
  '(show-paren-style (quote expression)))
 
