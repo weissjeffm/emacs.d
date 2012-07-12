@@ -38,13 +38,10 @@
 ;;associate some file extensions with modes
 (add-to-list 'auto-mode-alist '("\\.*repo$" . conf-unix-mode))
 
-
-;;basic colors
-(custom-set-faces
- '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "DejaVu Sans Mono")))))
-(global-hl-line-mode 1)
-(set-face-background 'hl-line "#151500")
-
+;;use variable width for some buffers
+(add-hook 'erc-mode-hook (lambda () (variable-pitch-mode t)))
+(add-hook 'Info-mode-hook (lambda () (variable-pitch-mode t)))
+(add-hook 'help-mode-hook (lambda () (variable-pitch-mode t)))
 (desktop-save-mode 1)
 
 ;;auto-complete, ac-slime
@@ -155,14 +152,15 @@
             (define-key clojure-mode-map (kbd "M-{") 'paredit-wrap-curly)))
 
 ;;(eval-after-load 'clojure-mode (yas/reload-all))
-
+(setq slime-connected-hook '())
 (autoload 'paredit-wrap-square "paredit")
 (add-hook 'slime-connected-hook
           (lambda () 
             (define-key slime-mode-map " " 'slime-space)
             (define-key slime-mode-map (kbd "M-[") 'paredit-wrap-square)
-            (define-key slime-mode-map (kbd "M-{") 'paredit-wrap-curly)
-            (define-key slime-repl-mode-map [C-S-up] 'slime-repl-previous-matching-input)))
+            (define-key slime-mode-map (kbd "M-{") 'paredit-wrap-curly)))
+(add-hook 'slime-repl-mode-hook
+          (lambda () (define-key slime-repl-mode-map [C-S-up] 'slime-repl-previous-matching-input)))
 
 
 (defun goto-last-edit-point ()

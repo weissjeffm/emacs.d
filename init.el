@@ -14,8 +14,11 @@
  '(erc-modules (quote (autojoin button completion fill irccontrols list log match menu move-to-prompt netsplit networks noncommands readonly ring stamp track)))
  '(erc-save-buffer-on-part nil)
  '(erc-save-queries-on-quit nil)
+ '(global-hl-line-mode t)
  '(ibuffer-saved-filter-groups (quote (("jeff1" ("slime" (name . "SLIME\\|slime\\|swank")) ("ERC" (mode . erc-mode)) ("katello.auto" (filename . "katello\\.auto"))) ("normal" ("Clojure" (mode . clojure-mode)) ("irc" (mode . erc-mode)) ("git" (mode . magit-mode)) ("org" (mode . org-mode)) ("emacs" (or (name . "^\\*scratch\\*$") (name . "^\\*Messages\\*$")))))))
  '(ibuffer-saved-filters (quote (("gnus" ((or (mode . message-mode) (mode . mail-mode) (mode . gnus-group-mode) (mode . gnus-summary-mode) (mode . gnus-article-mode)))) ("programming" ((or (mode . emacs-lisp-mode) (mode . cperl-mode) (mode . c-mode) (mode . java-mode) (mode . idl-mode) (mode . lisp-mode)))))))
+ '(ido-default-buffer-method (quote selected-window))
+ '(jabber-account-list (("jeffrey.m.weiss@gmail.com")))
  '(menu-bar-mode nil)
  '(org-agenda-files (quote ("~/tasks/7212467cf49c6e11eaff/jweiss.org")))
  '(reb-re-syntax ((lambda nil (quote string))))
@@ -26,10 +29,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "black" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "DejaVu Sans Mono"))))
+ '(default ((t (:background "black" :foreground "white" :slant normal :weight normal :height 92 :width normal :family "DejaVu Sans Mono"))))
  '(erc-input-face ((t (:foreground "gray"))))
+ '(fixed-pitch ((t (:inherit default))))
+ '(hl-line ((t (:inherit highlight :background "#151500"))))
  '(magit-item-highlight ((t (:background "gray10"))))
- '(show-paren-match ((t (:background "#1a1d2e")))))
+ '(show-paren-match ((t (:background "#1a1d2e"))))
+ '(variable-pitch ((t (:inherit default :family "DejaVu Sans")))))
 
 (require 'package)
 (add-to-list 'package-archives
