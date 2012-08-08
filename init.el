@@ -3,6 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ac-quick-help-delay 0.2)
  '(erc-autojoin-channels-alist (quote (("freenode.net" "#emacs" "#clojure" "#katello" "#pulp") ("devel.redhat.com" "#cloud-qe" "#systemengine" "#systemengine-qe" "#candlepin"))))
  '(erc-enable-logging t)
  '(erc-generate-log-file-name-function (lambda (buffer target nick server port) (let ((file (concat (if target (concat target "@")) server ":" (cond ((stringp port) port) ((numberp port) (number-to-string port))) ".txt"))) (convert-standard-filename file))))
@@ -31,6 +32,7 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:background "black" :foreground "white" :slant normal :weight normal :height 92 :width normal :family "DejaVu Sans Mono"))))
  '(ac-completion-face ((t (:inherit default :foreground "darkgray" :underline t))))
+ '(clojure-parens ((t (:foreground "gray38" :underline nil :weight bold))))
  '(erc-input-face ((t (:foreground "gray"))))
  '(fixed-pitch ((t (:inherit default))))
  '(hl-line ((t (:inherit highlight :background "#151500"))))
