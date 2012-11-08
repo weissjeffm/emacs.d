@@ -384,7 +384,8 @@ matches a regexp in `erc-keywords'."
             paredit-open-square reindent-then-newline-and-indent))
 
 
-
-
-
-
+(defun shell-at-host (target)
+  (interactive (list (ido-read-directory-name "Target Location: " "/")))
+  (message target)
+  (let ((default-directory target))
+    (shell (file-remote-p target 'host))))

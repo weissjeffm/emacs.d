@@ -3,7 +3,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ac-quick-help-delay 0.2)
  '(erc-autojoin-channels-alist (quote (("freenode.net" "#emacs" "#clojure" "#katello" "#pulp") ("devel.redhat.com" "#cloud-qe" "#systemengine" "#systemengine-qe" "#candlepin"))))
  '(erc-enable-logging t)
  '(erc-generate-log-file-name-function (lambda (buffer target nick server port) (let ((file (concat (if target (concat target "@")) server ":" (cond ((stringp port) port) ((numberp port) (number-to-string port))) ".txt"))) (convert-standard-filename file))))
@@ -19,6 +18,7 @@
  '(ibuffer-saved-filter-groups (quote (("jeff1" ("slime" (name . "SLIME\\|slime\\|swank")) ("ERC" (mode . erc-mode)) ("katello.auto" (filename . "katello\\.auto"))) ("normal" ("Clojure" (mode . clojure-mode)) ("irc" (mode . erc-mode)) ("git" (mode . magit-mode)) ("org" (mode . org-mode)) ("emacs" (or (name . "^\\*scratch\\*$") (name . "^\\*Messages\\*$")))))))
  '(ibuffer-saved-filters (quote (("gnus" ((or (mode . message-mode) (mode . mail-mode) (mode . gnus-group-mode) (mode . gnus-summary-mode) (mode . gnus-article-mode)))) ("programming" ((or (mode . emacs-lisp-mode) (mode . cperl-mode) (mode . c-mode) (mode . java-mode) (mode . idl-mode) (mode . lisp-mode)))))))
  '(ido-default-buffer-method (quote selected-window))
+ '(ido-ubiquitous-enable-compatibility nil)
  '(jabber-account-list (("jeffrey.m.weiss@gmail.com")))
  '(menu-bar-mode nil)
  '(org-agenda-files (quote ("~/tasks/7212467cf49c6e11eaff/jweiss.org")))
