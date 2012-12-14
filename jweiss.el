@@ -8,8 +8,10 @@
 ;jump to line
 (global-set-key (kbd "C-c M-l") 'goto-line)
 ;buffer switch 
-(global-set-key (kbd "C-,") 'ido-switch-buffer)
-(global-set-key [insert] 'ido-switch-buffer)
+;;(global-set-key (kbd "C-,") 'ido-switch-buffer)
+;;(global-set-key [insert] 'ido-switch-buffer)
+(global-set-key [insert] 'switch-to-buffer)
+
 ;;frame-switch
 (global-set-key (kbd "C-q") 'windmove-up)
 (global-set-key (kbd "C-z") 'windmove-down)
@@ -36,7 +38,7 @@
 (define-key paredit-mode-map (kbd "M-(") 'paredit-wrap-round)
 
 ;;use idomenu to search for symbols
-(global-set-key (kbd "C-o") 'idomenu)
+(global-set-key (kbd "C-o") 'imenu)
 
 ;;use w tiling window mgr
 (setq pop-up-frames nil)
