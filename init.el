@@ -3,8 +3,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(erc-autojoin-channels-alist (quote (("freenode.net" "#emacs" "#clojure" "#katello" "#pulp") ("devel.redhat.com" "#cloud-qe" "#systemengine" "#systemengine-qe" "#candlepin"))))
+ '(ac-auto-show-menu t)
+ '(ac-expand-on-auto-complete nil)
+ '(erc-autojoin-channels-alist (quote (("freenode.net" "#leiningen" "#emacs" "#clojure" "#katello" "#pulp") ("devel.redhat.com" "#cloud-qe" "#systemengine" "#systemengine-qe" "#candlepin"))))
  '(erc-enable-logging t)
+ '(erc-fill-column 100)
  '(erc-generate-log-file-name-function (lambda (buffer target nick server port) (let ((file (concat (if target (concat target "@")) server ":" (cond ((stringp port) port) ((numberp port) (number-to-string port))) ".txt"))) (convert-standard-filename file))))
  '(erc-join-buffer (quote bury))
  '(erc-log-channels-directory "~/.erc/logs/")
@@ -14,6 +17,9 @@
  '(erc-modules (quote (autojoin button completion fill irccontrols list log match menu move-to-prompt netsplit networks noncommands readonly ring stamp track)))
  '(erc-save-buffer-on-part nil)
  '(erc-save-queries-on-quit nil)
+ '(erc-server-reconnect-attempts t)
+ '(erc-server-reconnect-timeout 5)
+ '(erc-server-send-ping-timeout 30)
  '(global-hl-line-mode t)
  '(ibuffer-saved-filter-groups (quote (("jeff1" ("slime" (name . "SLIME\\|slime\\|swank")) ("ERC" (mode . erc-mode)) ("katello.auto" (filename . "katello\\.auto"))) ("normal" ("Clojure" (mode . clojure-mode)) ("irc" (mode . erc-mode)) ("git" (mode . magit-mode)) ("org" (mode . org-mode)) ("emacs" (or (name . "^\\*scratch\\*$") (name . "^\\*Messages\\*$")))))))
  '(ibuffer-saved-filters (quote (("gnus" ((or (mode . message-mode) (mode . mail-mode) (mode . gnus-group-mode) (mode . gnus-summary-mode) (mode . gnus-article-mode)))) ("programming" ((or (mode . emacs-lisp-mode) (mode . cperl-mode) (mode . c-mode) (mode . java-mode) (mode . idl-mode) (mode . lisp-mode)))))))
@@ -54,9 +60,10 @@
   (package-install 'melpa))
 
 ;; Add in your own as you wish:
-(defvar my-packages '(slime starter-kit starter-kit-lisp starter-kit-bindings clojure-mode
-                            auto-complete durendal ac-slime mwe-log-commands ace-jump-mode
-                            idomenu iedit haskell-mode markdown-mode)
+(defvar my-packages '(starter-kit starter-kit-lisp starter-kit-bindings clojure-mode
+                                  auto-complete ac-nrepl nrepl mwe-log-commands ace-jump-mode
+                                  idomenu iedit haskell-mode markdown-mode bbdb eudc
+                                  dired+ icicles iedit)
   "A list of packages to ensure are installed at launch.")
 
 (setq package-archive-exclude-alist '(("melpa" slime)))
@@ -65,22 +72,7 @@
   (when (not (package-installed-p p))
     (package-install p)))
 
-;;this works in some emacs setups but not others, don't know why
-;; (add-hook 'slime-repl-mode-hook
-;;           (defun clojure-mode-slime-font-lock ()
-;;             (let (font-lock-mode)
-;;               (clojure-mode-font-lock-setup))))
-;;this one is uglier but works
-(add-hook 'slime-repl-mode-hook 
-          (lambda ()
-            (font-lock-mode nil)
-            (clojure-mode-font-lock-setup)
-            (font-lock-mode t)))
-
 (setq package-archive-enable-alist nil)
-(add-hook 'slime-repl-mode-hook (lambda () (paredit-mode 1)))
-
-
 
 (put 'narrow-to-region 'disabled nil)
 

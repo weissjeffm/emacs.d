@@ -17,9 +17,15 @@
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 ;;use ace-jump-mode
 (global-set-key (kbd "C-'") 'ace-jump-mode)
+(setq ace-jump-mode-scope 'frame) ;;current frame only
+(setq ace-jump-mode-move-keys ;;lower case hotkeys only
+      (loop for i from ?a to ?z collect i))
 ;;others
 (global-set-key (kbd "<f5>") 'revert-buffer)
-(global-set-key (kbd "<f12>") 'clojure-jack-in)
+(global-set-key (kbd "<f12>") 'nrepl-jack-in)
+(autoload 'nrepl-mode-map "nrepl")
+
+
 (global-set-key (kbd "<f2>") 'magit-status)
 
 ;;fix crazy paredit keybindings
@@ -44,16 +50,15 @@
 (add-hook 'help-mode-hook (lambda () (variable-pitch-mode t)))
 (desktop-save-mode 1)
 
-;;auto-complete, ac-slime
-(autoload 'set-up-slime-ac "ac-slime")
+;;auto-complete,
 (autoload 'ac-config-default "auto-complete-config")
 (ac-config-default)
-(autoload 'slime-repl-mode "slime") 
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/jweiss/ac-dict")
-(add-to-list 'ac-modes 'slime-repl-mode)
-(add-hook 'slime-mode-hook 'set-up-slime-ac)
-(add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
+(define-key ac-completing-map "\C-s" 'ac-isearch) ; not sure
+                                        ; why this is necessary
 
+;(add-to-list 'ac-dictionary-directories "~/.emacs.d/jweiss/ac-dict")
+(autoload 'ac-nrepl-setup "ac-nrepl")
+(add-hook 'clojure-mode-hook 'ac-nrepl-setup)
 ;;org-mode
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 (add-hook 'org-mode-hook 'turn-on-font-lock) ; not needed when global-font-lock-mode is on
@@ -82,7 +87,7 @@
             (("(\\(complement\\>\\)" 0 (progn (compose-region
                                                (match-beginning 1)
                                                (match-end 1) "¬") nil)))
-            (("^[a-zA-Z0-9-.*+!_?]+?>" . 'slime-repl-prompt-face)))))
+            (("^[a-zA-Z0-9-.*+!_?]+?>" . 'nrepl-prompt-face)))))
 
 ;; Macro for face definition
 (defmacro defcljface (name color desc &optional others)
@@ -128,40 +133,30 @@
 
 (autoload 'clojure-mode "clojure-mode")
 (set-clojure-colors 'clojure-mode)
-(set-clojure-colors 'slime-repl-mode)
+(set-clojure-colors 'nrepl-mode)
 
 (add-hook 'eshell-mode-hook 
           (lambda()(paredit-mode 1)))
-
-;(add-hook 'clojure-mode-hook 'durendal-enable-auto-compile)
-(add-hook 'slime-repl-mode-hook 'durendal-slime-repl-paredit)
-
-(add-hook 'sldb-mode-hook 'durendal-dim-sldb-font-lock)
-;(add-hook 'slime-compilation-finished-hook 'durendal-hide-successful-compile)
-
-;; (autoload 'yas/initialize "yasnippet")
-;; (yas/initialize)
-;; (setq yas/root-directory '("~/.emacs.d/snippets"
-;;                            "~/.emacs.d/elpa/yasnippet-0.6.1/snippets"))
-;; (mapc 'yas/load-directory yas/root-directory)
-;;(add-hook 'clojure-mode-hook 'yas/minor-mode-on)
 
 (add-hook 'clojure-mode-hook 
           (lambda () 
             (define-key clojure-mode-map (kbd "M-[") 'paredit-wrap-square)
             (define-key clojure-mode-map (kbd "M-{") 'paredit-wrap-curly)))
 
-;;(eval-after-load 'clojure-mode (yas/reload-all))
-(setq slime-connected-hook '())
-(autoload 'paredit-wrap-square "paredit")
-(add-hook 'slime-connected-hook
-          (lambda () 
-            (define-key slime-mode-map " " 'slime-space)
-            (define-key slime-mode-map (kbd "M-[") 'paredit-wrap-square)
-            (define-key slime-mode-map (kbd "M-{") 'paredit-wrap-curly)))
-(add-hook 'slime-repl-mode-hook
-          (lambda () (define-key slime-repl-mode-map [C-S-up] 'slime-repl-previous-matching-input)))
+(add-hook 'nrepl-mode-hook 
+          (lambda ()
+            (paredit-mode)
+            (define-key nrepl-mode-map [C-S-up] 'nrepl-previous-matching-input)
+            (define-key nrepl-mode-map (kbd "M-<f12>") 'nrepl-quit)
+            (define-key nrepl-mode-map (kbd "M-j") 'nrepl-newline-and-indent)
+            (auto-complete-mode)
+            (ac-nrepl-setup)
+            (font-lock-mode nil)
+            (clojure-mode-font-lock-setup)
+            (font-lock-mode t)))
 
+(add-hook 'nrepl-interaction-mode-hook
+          'nrepl-turn-on-eldoc-mode)
 
 (defun goto-last-edit-point ()
   "Go to the last point where editing occurred."
@@ -347,6 +342,19 @@ matches a regexp in `erc-keywords'."
                         :sound-file notification-sound-file))
 
 
+;; erc fill columns dynamically and per buffer
+
+;; (make-variable-buffer-local 'erc-fill-column)
+;;  (add-hook 'window-configuration-change-hook 
+;; 	   '(lambda ()
+;; 	      (save-excursion
+;; 	        (walk-windows
+;; 		 (lambda (w)
+;; 		   (let ((buffer (window-buffer w)))
+;; 		     (set-buffer buffer)
+;; 		     (when (eq major-mode 'erc-mode)
+;; 		       (setq erc-fill-column (- (window-width w) 2)))))))))
+
 ;;syntax highlight RoR log files
 (require 'generic-x) 
 
@@ -378,7 +386,7 @@ matches a regexp in `erc-keywords'."
             universal-argument-minus universal-argument-more
             recenter handle-switch-frame
             newline previous-line next-line mouse-set-point
-            mouse-drag-region slime-space paredit-open-round
+            mouse-drag-region  paredit-open-round
             paredit-open-curly paredit-open-angled paredit-backward-delete
             right-char left-char paredit-doublequote paredit-semicolon
             paredit-open-square reindent-then-newline-and-indent))
@@ -389,3 +397,50 @@ matches a regexp in `erc-keywords'."
   (message target)
   (let ((default-directory target))
     (shell (file-remote-p target 'host))))
+
+(defun directory-files-recursive (directory)
+  "List the files in DIRECTORY and in its sub-directories."
+  (interactive "DDirectory name: ")
+  (let (el-files-list
+        (current-directory-list
+         (directory-files-and-attributes directory t)))
+    (while current-directory-list
+      ;; check whether filename is that of a directory
+      (if (eq t (car (cdr (car current-directory-list))))
+          ;; decide whether to skip or recurse
+          (if (equal "." (substring (car (car current-directory-list)) -1))
+              ()
+            
+            (setq el-files-list
+                  (append
+                   (directory-files-recursive 
+                    (car (car current-directory-list)))
+                   el-files-list)))
+        ;; check to see whether filename ends in `.el'
+        ;; and if so, append its name to a list.
+        (setq el-files-list
+              (cons (car (car current-directory-list)) el-files-list)))
+      ;; move to the next filename in the list; this also
+      ;; shortens the list so the while loop eventually comes to an end
+      (setq current-directory-list (cdr current-directory-list)))
+    ;; return the filenames
+    el-files-list))
+
+(defun search-project-for-sexp-at-point ()
+  ;;requires icicles and magit
+  (interactive)
+  (apply #'icicle-search nil nil (thing-at-point 'sexp) t
+         (directory-files-recursive
+          (concat (magit-get-top-dir (file-name-directory (buffer-file-name)))
+                  "/src"))
+         '()))
+
+;;(global-set-key (kbd "<f9>") 'search-project-for-sexp-at-point)
+
+(defun align-locators ()
+  (interactive)
+  (mark-sexp)
+  (align-regexp (region-beginning) (region-end) "\\(\\s-*\\)[\\\"|\\(]"))
+
+;;(define-key clojure-mode-map (kbd "<f8>") 'align-locators)
+
