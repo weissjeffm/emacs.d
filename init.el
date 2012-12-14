@@ -1,3 +1,29 @@
+(require 'package)
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(package-initialize)
+
+(when (not (package-installed-p 'melpa))
+  (package-refresh-contents)
+  (package-install 'melpa))
+
+;; Add in your own as you wish:
+(defvar my-packages '( clojure-mode paredit magit find-file-in-project
+                       auto-complete ac-nrepl nrepl mwe-log-commands ace-jump-mode
+                       iedit haskell-mode markdown-mode bbdb eudc
+                       dired+ icicles iedit)
+  "A list of packages to ensure are installed at launch.")
+
+(dolist (p my-packages)
+  (when (not (package-installed-p p))
+    (package-install p)))
+
+(setq package-archive-enable-alist nil)
+
+(require 'icicles)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -5,6 +31,7 @@
  ;; If there is more than one, they won't work right.
  '(ac-auto-show-menu t)
  '(ac-expand-on-auto-complete nil)
+ '(blink-cursor-mode nil)
  '(erc-autojoin-channels-alist (quote (("freenode.net" "#leiningen" "#emacs" "#clojure" "#katello" "#pulp") ("devel.redhat.com" "#cloud-qe" "#systemengine" "#systemengine-qe" "#candlepin"))))
  '(erc-enable-logging t)
  '(erc-fill-column 100)
@@ -26,7 +53,10 @@
  '(icicle-apropos-complete-keys (quote ([9] [tab] [(control 105)])))
  '(icicle-expand-input-to-common-match 2)
  '(icicle-incremental-completion (quote always))
+ '(icicle-mode t)
  '(icicle-prefix-complete-keys (quote ([S-tab] [S-iso-lefttab])))
+ '(imenu-auto-rescan t)
+ '(indent-tabs-mode nil)
  '(jabber-account-list (("jeffrey.m.weiss@gmail.com")))
  '(menu-bar-mode nil)
  '(notmuch-hello-thousands-separator ",")
@@ -34,10 +64,14 @@
  '(notmuch-search-oldest-first nil)
  '(org-agenda-files (quote ("~/tasks/7212467cf49c6e11eaff/jweiss.org")))
  '(reb-re-syntax ((lambda nil (quote string))))
+ '(scroll-bar-mode nil)
  '(send-mail-function (quote smtpmail-send-it))
+ '(show-paren-mode t)
  '(show-paren-style (quote expression))
- '(smtpmail-smtp-server "smtp.corp.redhat.com")
- '(smtpmail-smtp-service 25))
+ '(smtpmail-smtp-server "smtp.corp.redhat.com" t)
+ '(smtpmail-smtp-service 25 t)
+ '(tool-bar-mode nil)
+ '(visible-bell t))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -54,33 +88,6 @@
  '(show-paren-match ((t (:background "#1a1d2e"))))
  '(variable-pitch ((t (:inherit default :family "DejaVu Sans")))))
 
-(require 'package)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(package-initialize)
-
-(setq package-archive-exclude-alist '(("melpa" slime)))
-
-(when (not (package-installed-p 'melpa))
-  (package-refresh-contents)
-  (package-install 'melpa))
-
-;; Add in your own as you wish:
-(defvar my-packages '(starter-kit starter-kit-lisp starter-kit-bindings clojure-mode
-                                  auto-complete ac-nrepl nrepl mwe-log-commands ace-jump-mode
-                                  iedit haskell-mode markdown-mode bbdb eudc
-                                  dired+ icicles iedit)
-  "A list of packages to ensure are installed at launch.")
-
-(setq package-archive-exclude-alist '(("melpa" slime)))
-
-(dolist (p my-packages)
-  (when (not (package-installed-p p))
-    (package-install p)))
-
-(setq package-archive-enable-alist nil)
-
-(put 'narrow-to-region 'disabled nil)
-
+(load (concat user-emacs-directory "jweiss.el"))
+(load (concat user-emacs-directory "jweiss-erc.el"))
+(load (concat user-emacs-directory "jweiss-mail.el"))
