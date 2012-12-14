@@ -37,7 +37,7 @@
 (define-key paredit-mode-map (kbd "C-M-<right>") 'paredit-forward-barf-sexp)
 (define-key paredit-mode-map (kbd "M-(") 'paredit-wrap-round)
 
-;;use idomenu to search for symbols
+;;use imenu to search for symbols
 (global-set-key (kbd "C-o") 'imenu)
 
 ;;use w tiling window mgr
@@ -395,7 +395,7 @@ matches a regexp in `erc-keywords'."
 
 
 (defun shell-at-host (target)
-  (interactive (list (ido-read-directory-name "Target Location: " "/")))
+  (interactive (list (read-directory-name "Target Location: " "/")))
   (message target)
   (let ((default-directory target))
     (shell (file-remote-p target 'host))))

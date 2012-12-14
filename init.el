@@ -27,8 +27,6 @@
  '(icicle-expand-input-to-common-match 2)
  '(icicle-incremental-completion (quote always))
  '(icicle-prefix-complete-keys (quote ([S-tab] [S-iso-lefttab])))
- '(ido-default-buffer-method (quote selected-window))
- '(ido-ubiquitous-enable-compatibility nil)
  '(jabber-account-list (("jeffrey.m.weiss@gmail.com")))
  '(menu-bar-mode nil)
  '(notmuch-hello-thousands-separator ",")
@@ -72,7 +70,7 @@
 ;; Add in your own as you wish:
 (defvar my-packages '(starter-kit starter-kit-lisp starter-kit-bindings clojure-mode
                                   auto-complete ac-nrepl nrepl mwe-log-commands ace-jump-mode
-                                  idomenu iedit haskell-mode markdown-mode bbdb eudc
+                                  iedit haskell-mode markdown-mode bbdb eudc
                                   dired+ icicles iedit)
   "A list of packages to ensure are installed at launch.")
 
