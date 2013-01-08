@@ -15,8 +15,10 @@
 ;;frame-switch
 (global-set-key (kbd "C-q") 'windmove-up)
 (global-set-key (kbd "C-z") 'windmove-down)
-(global-set-key (kbd "C-Q") 'windmove-left)
-(global-set-key (kbd "C-Z") 'windmove-right)
+(global-set-key (kbd "S-<left>") 'windmove-left)
+(global-set-key (kbd "S-<right>") 'windmove-right)
+(global-set-key (kbd "S-<up>") 'windmove-up)
+(global-set-key (kbd "S-<down>") 'windmove-down)
 ;;use ibuffer
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 ;;use ace-jump-mode
@@ -46,7 +48,16 @@
 (define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
 (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
 
+;;Green/red diff colors
+(eval-after-load 'diff-mode
+  '(progn
+     (set-face-foreground 'diff-added "green4")
+     (set-face-foreground 'diff-removed "red3")))
 
+(eval-after-load 'magit
+  '(progn
+     (set-face-foreground 'magit-diff-add "green4")
+     (set-face-foreground 'magit-diff-del "red3")))
 
 ;;allow narrow to region 
 (put 'narrow-to-region 'disabled nil)
@@ -164,12 +175,14 @@
   (set-face-attribute 'clojure-special nil :underline nil :bold t :italic t))
 
 (autoload 'clojure-mode "clojure-mode")
+(autoload 'clojure-mode-map "clojure-mode" nil nil 'keymap)
 (set-clojure-colors 'clojure-mode)
 (set-clojure-colors 'nrepl-mode)
 
 
 (add-hook 'clojure-mode-hook
           (lambda ()
+            (define-key clojure-mode-map (kbd "<f8>") 'align-locators)
             (define-key clojure-mode-map (kbd "M-[") 'paredit-wrap-square)
             (define-key clojure-mode-map (kbd "M-{") 'paredit-wrap-curly)))
 
@@ -293,7 +306,7 @@
   (mark-sexp)
   (align-regexp (region-beginning) (region-end) "\\(\\s-*\\)[\\\"|\\(]"))
 
-;;(define-key clojure-mode-map (kbd "<f8>") 'align-locators)
+
 
 (autoload 'notmuch "notmuch" nil t)
 (autoload 'icy-mode "icicles" nil t)
@@ -312,3 +325,17 @@
   (indent-buffer)
   (untabify-buffer)
   (delete-trailing-whitespace))
+
+;; put completions buffer at bottom
+
+(add-to-list 'special-display-buffer-names '("*Completions*" my-display-completions))
+
+(defun my-display-completions (buf)
+  "put the *completions* buffer at the bottom"
+  (let ((window (car (last (delete (minibuffer-window) (window-list))))))
+    (select-window window)
+    (let ((comp-window (condition-case nil
+                           (split-window-vertically)
+                         (error window))))
+      (set-window-buffer comp-window buf)
+      comp-window)))

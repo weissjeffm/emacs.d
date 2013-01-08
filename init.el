@@ -13,7 +13,7 @@
 (defvar my-packages '( clojure-mode paredit magit find-file-in-project
                        auto-complete ac-nrepl nrepl mwe-log-commands ace-jump-mode
                        iedit haskell-mode markdown-mode bbdb eudc
-                       dired+ icicles iedit)
+                       dired+ icicles iedit elisp-slime-nav)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -48,13 +48,13 @@
  '(erc-server-reconnect-timeout 5)
  '(erc-server-send-ping-timeout 30)
  '(global-hl-line-mode t)
- '(ibuffer-saved-filter-groups (quote (("jeff1" ("slime" (name . "SLIME\\|slime\\|swank")) ("ERC" (mode . erc-mode)) ("katello.auto" (filename . "katello\\.auto"))) ("normal" ("Clojure" (mode . clojure-mode)) ("irc" (mode . erc-mode)) ("git" (mode . magit-mode)) ("org" (mode . org-mode)) ("emacs" (or (name . "^\\*scratch\\*$") (name . "^\\*Messages\\*$")))))))
- '(ibuffer-saved-filters (quote (("gnus" ((or (mode . message-mode) (mode . mail-mode) (mode . gnus-group-mode) (mode . gnus-summary-mode) (mode . gnus-article-mode)))) ("programming" ((or (mode . emacs-lisp-mode) (mode . cperl-mode) (mode . c-mode) (mode . java-mode) (mode . idl-mode) (mode . lisp-mode)))))))
- '(icicle-apropos-complete-keys (quote ([9] [tab] [(control 105)])))
- '(icicle-expand-input-to-common-match 2)
+ '(icicle-Completions-text-scale-decrease 0.0)
+ '(icicle-buffer-require-match-flag (quote partial-match-ok))
+ '(icicle-completions-format (quote vertical))
+ '(icicle-expand-input-to-common-match 1)
  '(icicle-incremental-completion (quote always))
+ '(icicle-max-candidates 100)
  '(icicle-mode t)
- '(icicle-prefix-complete-keys (quote ([S-tab] [S-iso-lefttab])))
  '(imenu-auto-rescan t)
  '(indent-tabs-mode nil)
  '(jabber-account-list (("jeffrey.m.weiss@gmail.com")))
@@ -71,7 +71,11 @@
  '(smtpmail-smtp-server "smtp.corp.redhat.com" t)
  '(smtpmail-smtp-service 25 t)
  '(tool-bar-mode nil)
- '(visible-bell t))
+ '(visible-bell t)
+ '(yagist-authenticate-function (quote yagist-oauth2-authentication))
+ '(yagist-github-token "32850b37f0394bf2e54326f66c60d73b7823f60d")
+ '(yagist-github-user "weissjeffm")
+ '(yagist-view-gist t))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -84,6 +88,7 @@
  '(erc-input-face ((t (:foreground "gray"))))
  '(fixed-pitch ((t (:inherit default))))
  '(hl-line ((t (:inherit highlight :background "#151500"))))
+ '(icicle-current-candidate-highlight ((t (:background "yellow" :foreground "black"))))
  '(magit-item-highlight ((t (:background "gray10"))))
  '(show-paren-match ((t (:background "#1a1d2e"))))
  '(variable-pitch ((t (:inherit default :family "DejaVu Sans")))))
@@ -91,3 +96,8 @@
 (load (concat user-emacs-directory "jweiss.el"))
 (load (concat user-emacs-directory "jweiss-erc.el"))
 (load (concat user-emacs-directory "jweiss-mail.el"))
+
+;;  '(icicle-apropos-complete-keys (quote ([9] [tab] [(control 105)])))
+;;  '(icicle-prefix-complete-keys (quote ([S-tab] [S-iso-lefttab])))
+;;  '(icicle-word-completion-keys (quote ([M-tab] [M-iso-lefttab] [32] " ")))
+;;  '(icicle-default-cycling-mode (quote apropos))
