@@ -98,7 +98,7 @@
      (defun notmuch-untag-all-new ()
        (interactive)
        (notmuch-search-tag-all '("-new"))
-       (notmuch-search-refresh-view))
+       (notmuch-search-quit))
      (define-key notmuch-search-mode-map (kbd "C-c C-k") 'notmuch-untag-all-new)
 
      ;; Autorefresh notmuch-hello using D-Bus

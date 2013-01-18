@@ -10,5 +10,6 @@ else
     #echo $DBUS_SESSION_BUS_ADDRESS >> ~/.offlineimap/log
     #echo "foo" >> ~/.offlineimap/log
     offlineimap -o -u quiet >> ~/.offlineimap/log 2>&1
+    notmuch new
     dbus-send --session --dest="org.gnu.Emacs" "/org/gnu/Emacs" "org.gnu.Emacs.NotmuchNewmail"
 fi
