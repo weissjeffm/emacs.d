@@ -45,7 +45,7 @@
  '(erc-save-buffer-on-part nil)
  '(erc-save-queries-on-quit nil)
  '(erc-server-reconnect-attempts t)
- '(erc-server-reconnect-timeout 5)
+ '(erc-server-reconnect-timeout 60)
  '(erc-server-send-ping-timeout 30)
  '(global-hl-line-mode t)
  '(icicle-Completions-text-scale-decrease 0.0)
@@ -58,9 +58,14 @@
  '(imenu-auto-rescan t)
  '(indent-tabs-mode nil)
  '(jabber-account-list (("jeffrey.m.weiss@gmail.com")))
+ '(mail-signature "Jeff Weiss
+Principal Quality Assurance Engineer
+jweiss@redhat.com
+(919)886-6533")
  '(menu-bar-mode nil)
+ '(mouse-yank-at-point t)
  '(notmuch-hello-thousands-separator ",")
- '(notmuch-saved-searches (quote (("newstuff" . "tag:new AND (folder:Redhat/INBOX OR folder:GMail/INBOX OR folder:Redhat/Lists/katello/devel)") ("announce-list" . "folder:RedHat/lists/announce-list AND tag:new"))))
+ '(notmuch-saved-searches (quote (("newstuff" . "tag:new AND (folder:Redhat/INBOX OR folder:GMail/INBOX OR folder:Redhat/Lists/katello/devel OR folder:Redhat/Lists/katello/internal)") ("announce-list" . "folder:RedHat/lists/announce-list AND tag:new"))))
  '(notmuch-search-oldest-first nil)
  '(org-agenda-files (quote ("~/tasks/7212467cf49c6e11eaff/jweiss.org")))
  '(reb-re-syntax ((lambda nil (quote string))))

@@ -23,6 +23,7 @@
       smtpmail-smtp-service 25)
 
 (require 'bbdb)
+(require 'bbdb-message)
 ;; We initialize BBDB for GNUS and message-mode (which is used by Gnus to compose mail)
 (bbdb-initialize 'gnus 'message)
 
@@ -39,11 +40,12 @@
 
 (require 'eudc)
 
+(require 'gnus-art) ;; http://notmuchmail.org/pipermail/notmuch/2012/012010.html
+
 (setq eudc-default-return-attributes nil
       eudc-strict-return-matches nil)
 
 (setq ldap-ldapsearch-args (quote ("-tt" "-LLL" "-x")))
-
 (eudc-protocol-set 'eudc-inline-expansion-format '("%s <%s>" cn email)
 		   'ldap)
 (eudc-protocol-set 'eudc-inline-query-format '((cn)
@@ -85,6 +87,34 @@
 
 (eval-after-load "message"
   '(define-key message-mode-map (kbd "TAB") 'enz-eudc-expand-inline))
+
+
+
+
+(eval-after-load 'notmuch
+  '(progn
+     (require 'dbus)
+     ;; to untag all new messages
+     (defun notmuch-untag-all-new ()
+       (interactive)
+       (notmuch-search-tag-all '("-new"))
+       (notmuch-search-refresh-view))
+     (define-key notmuch-search-mode-map (kbd "C-c C-k") 'notmuch-untag-all-new)
+
+     ;; Autorefresh notmuch-hello using D-Bus
+     (defun jweiss/notmuch-dbus-notify ()
+       (save-excursion
+	 (save-restriction
+	   (when (get-buffer "*notmuch-hello*")
+	     (notmuch-hello-update t)))))
+     (ignore-errors
+       (dbus-register-method :session dbus-service-emacs dbus-path-emacs
+			     dbus-service-emacs "NotmuchNewmail"
+			     'jweiss/notmuch-dbus-notify))))
+
+
+
+
 
 ;; auto check for new mail
 ;; (require 'gnus-demon)
