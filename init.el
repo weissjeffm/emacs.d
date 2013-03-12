@@ -106,3 +106,4 @@ jweiss@redhat.com
 ;;  '(icicle-prefix-complete-keys (quote ([S-tab] [S-iso-lefttab])))
 ;;  '(icicle-word-completion-keys (quote ([M-tab] [M-iso-lefttab] [32] " ")))
 ;;  '(icicle-default-cycling-mode (quote apropos))
+(put 'upcase-region 'disabled nil)

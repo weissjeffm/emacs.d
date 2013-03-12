@@ -121,15 +121,15 @@
             (("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1
               'clojure-java-call))
             (("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 'font-lock-warning-face t))
-            (("(\\(fn\\>\\)" 0 (progn (compose-region (match-beginning 1)
-                                                      (match-end 1) "ƒ") nil)))
-            (("(\\(->\\>\\)" 0 (progn (compose-region (match-beginning 1)
-                                                      (match-end 1) "→") nil)))
-            (("(\\(->>\\>\\)" 0 (progn (compose-region (match-beginning 1)
-                                                       (match-end 1) "↠") nil)))
-            (("(\\(complement\\>\\)" 0 (progn (compose-region
-                                               (match-beginning 1)
-                                               (match-end 1) "¬") nil)))
+            ;; (("(\\(fn\\>\\)" 0 (progn (compose-region (match-beginning 1)
+            ;;                                           (match-end 1) "ƒ") nil)))
+            ;; (("(\\(->\\>\\)" 0 (progn (compose-region (match-beginning 1)
+            ;;                                           (match-end 1) "→") nil)))
+            ;; (("(\\(->>\\>\\)" 0 (progn (compose-region (match-beginning 1)
+            ;;                                            (match-end 1) "↠") nil)))
+            ;; (("(\\(complement\\>\\)" 0 (progn (compose-region
+            ;;                                    (match-beginning 1)
+            ;;                                    (match-end 1) "¬") nil))) 
             (("^[a-zA-Z0-9-.*+!_?]+?>" . 'nrepl-prompt-face)))))
 
 ;; Macro for face definition
