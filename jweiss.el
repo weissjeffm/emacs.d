@@ -180,6 +180,12 @@
 (set-clojure-colors 'nrepl-mode)
 
 
+(defun show-nrepl ()
+  (interactive)
+  (switch-to-buffer "*nrepl*"))
+(global-set-key (kbd "<f9>") 'show-nrepl)
+
+
 (add-hook 'clojure-mode-hook
           (lambda ()
             (define-key clojure-mode-map (kbd "<f8>") 'align-locators)
