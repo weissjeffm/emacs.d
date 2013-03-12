@@ -32,7 +32,7 @@
  '(ac-auto-show-menu t)
  '(ac-expand-on-auto-complete nil)
  '(blink-cursor-mode nil)
- '(erc-autojoin-channels-alist (quote (("freenode.net" "#leiningen" "#emacs" "#clojure" "#katello" "#pulp") ("devel.redhat.com" "#cloud-qe" "#systemengine" "#systemengine-qe" "#candlepin"))))
+ '(erc-autojoin-channels-alist (quote (("freenode.net" "#leiningen" "#emacs" "#clojure" "#katello" "#pulp") ("devel.redhat.com" "#cloud-qe" "#systemengine" "#systemengine-qe" "#candlepin" "#rdu16ne" "#rdu"))))
  '(erc-enable-logging t)
  '(erc-fill-column 100)
  '(erc-generate-log-file-name-function (lambda (buffer target nick server port) (let ((file (concat (if target (concat target "@")) server ":" (cond ((stringp port) port) ((numberp port) (number-to-string port))) ".txt"))) (convert-standard-filename file))))
