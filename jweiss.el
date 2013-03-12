@@ -332,10 +332,9 @@
 
 (defun my-display-completions (buf)
   "put the *completions* buffer at the bottom"
-  (let ((window (car (last (delete (minibuffer-window) (window-list))))))
-    (select-window window)
+  (let ((window (car (last (delete (minibuffer-window) (window-list)))))) 
     (let ((comp-window (condition-case nil
-                           (split-window-vertically)
+                           (split-window-vertically window nil 'below)
                          (error window))))
       (set-window-buffer comp-window buf)
       comp-window)))
