@@ -44,9 +44,14 @@
 (global-set-key (kbd "<f2>") 'magit-status)
 
 ;;; Enhance Lisp Modes
-
 (define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
 (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
+
+;; Multiple cursors
+(autoload 'mc/mark-all-like-this "multiple-cursors")
+(global-set-key (kbd "C-c C-.") 'mc/mark-all-symbols-like-this)
+(global-set-key (kbd "C-c M-.") 'mc/mark-all-symbols-like-this-in-defun)
+(define-key mc/keymap (kbd "TAB") 'mc/cycle-forward)
 
 ;;Green/red diff colors
 (eval-after-load 'diff-mode
@@ -185,6 +190,14 @@
   (switch-to-buffer "*nrepl*"))
 (global-set-key (kbd "<f9>") 'show-nrepl)
 
+(defun nrepl-pst ()
+  (interactive)
+  (insert "(clojure.repl/pst 100)")
+  (nrepl-return))
+
+(defun switch-to-nrepl-ns ()
+  (nrepl-set-ns (plist-get
+                 (nrepl-send-string-sync "(symbol (str *ns*))") :value)))
 
 (add-hook 'clojure-mode-hook
           (lambda ()
@@ -196,16 +209,26 @@
           (lambda ()
             (paredit-mode)
             (define-key nrepl-mode-map [C-S-up] 'nrepl-previous-matching-input)
-            (define-key nrepl-mode-map (kbd "M-<f12>") 'nrepl-quit)
+            (define-key nrepl-mode-map (kbd "M-<f12>") 'nrepl-close)
             (define-key nrepl-mode-map (kbd "M-j") 'nrepl-newline-and-indent)
+            (define-key nrepl-mode-map (kbd "C-x C-e") 'nrepl-eval-last-expression)
+            (define-key nrepl-mode-map (kbd "<f7>") 'nrepl-pst)
             (auto-complete-mode)
             (ac-nrepl-setup)
             (font-lock-mode nil)
             (clojure-mode-font-lock-setup)
             (font-lock-mode t)))
 
+(add-hook 'nrepl-connected-hook 
+          (lambda ()
+            (nrepl-set-ns (plist-get
+                           (nrepl-send-string-sync "(symbol (str *ns*))") :value))))
+
 (add-hook 'nrepl-interaction-mode-hook
           'nrepl-turn-on-eldoc-mode)
+
+
+
 
 (defun goto-last-edit-point ()
   "Go to the last point where editing occurred."
@@ -305,7 +328,7 @@
                   "/src"))
          '()))
 
-;;(global-set-key (kbd "<f9>") 'search-project-for-sexp-at-point)
+(global-set-key (kbd "<f6>") 'search-project-for-sexp-at-point)
 
 (defun align-locators ()
   (interactive)
