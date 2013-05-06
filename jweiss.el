@@ -48,9 +48,10 @@
 (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
 
 ;; Multiple cursors
-(autoload 'mc/mark-all-like-this "multiple-cursors")
+(require 'multiple-cursors)
 (global-set-key (kbd "C-c C-.") 'mc/mark-all-symbols-like-this)
 (global-set-key (kbd "C-c M-.") 'mc/mark-all-symbols-like-this-in-defun)
+(global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this-dwim)
 (define-key mc/keymap (kbd "TAB") 'mc/cycle-forward)
 
 ;;Green/red diff colors
@@ -71,6 +72,13 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;;fix crazy paredit keybindings
+(defface esk-paren-face
+   '((((class color) (background dark))
+      (:foreground "grey50"))
+     (((class color) (background light))
+      (:foreground "grey55")))
+   "Face used to dim parentheses."
+   :group 'starter-kit-faces)
 (require 'paredit)
 (dolist (mode '(scheme emacs-lisp lisp clojure clojurescript eshell))
     (when (> (display-color-cells) 8)
@@ -93,9 +101,12 @@
 (add-to-list 'auto-mode-alist '("\\.*repo$" . conf-unix-mode))
 
 ;;use variable width for some buffers
-(add-hook 'erc-mode-hook (lambda () (variable-pitch-mode t)))
-(add-hook 'Info-mode-hook (lambda () (variable-pitch-mode t)))
-(add-hook 'help-mode-hook (lambda () (variable-pitch-mode t)))
+(defun my-set-variable-pitch ()
+  (variable-pitch-mode t))
+(add-hook 'erc-mode-hook 'my-set-variable-pitch)
+(add-hook 'rcirc-mode-hook 'my-set-variable-pitch)
+(add-hook 'Info-mode-hook 'my-set-variable-pitch)
+(add-hook 'help-mode-hook 'my-set-variable-pitch)
 (desktop-save-mode 1)
 
 ;;auto-complete,
@@ -226,9 +237,6 @@
 
 (add-hook 'nrepl-interaction-mode-hook
           'nrepl-turn-on-eldoc-mode)
-
-
-
 
 (defun goto-last-edit-point ()
   "Go to the last point where editing occurred."

@@ -119,7 +119,7 @@ that can occur between two notifications.  The default is
       (push (cons nick cur-time) my-erc-page-nick-alist)
       t)))
 
-(defun my-erc-notify (nick channel message)
+(defun my-notify (nick channel message)
   (start-process "notif" nil "play"
                  "-q" notification-sound-file)
   (condition-case ()
