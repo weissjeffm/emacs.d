@@ -68,7 +68,7 @@ jweiss@redhat.com
  '(notmuch-saved-searches (quote (("newstuff" . "tag:new AND (folder:Redhat/INBOX OR folder:GMail/INBOX OR folder:Redhat/Lists/katello/devel OR folder:Redhat/Lists/katello/internal)") ("announce-list" . "folder:RedHat/lists/announce-list AND tag:new"))))
  '(notmuch-search-oldest-first nil)
  '(org-agenda-files (quote ("~/tasks/7212467cf49c6e11eaff/jweiss.org")))
- '(rcirc-authinfo (quote (("irc.freenode.net" nickserv "jweiss" "111111jm"))))
+ '(rcirc-authinfo (quote (("irc.freenode.net" nickserv "jweiss" "111111jm") ("irc.devel.redhat.com" userserv "jweiss" "111111jm"))))
  '(rcirc-default-full-name "Jeff Weiss")
  '(rcirc-default-user-name "jweiss")
  '(rcirc-fill-column (quote frame-width))
