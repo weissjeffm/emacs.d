@@ -296,7 +296,3 @@ matches the current nick."
   (rcirc-update-activity-string))
 
 (define-key rcirc-mode-map (kbd "C-c C-M-c") 'rcirc-clear-all-activity)
-
-(defun remove-nick-highlight ()
-  (interactive)
-  )
