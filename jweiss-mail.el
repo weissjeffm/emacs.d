@@ -143,3 +143,6 @@
 ;;         (t . "%B %d '%y"))) ;;this one is used when no other does match
 
 
+;; turn off "original message" washing since zimbra doesn't produce messages
+;; that work well with this function
+(setq notmuch-wash-original-regexp "a^")

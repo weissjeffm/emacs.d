@@ -10,9 +10,9 @@
   (package-install 'melpa))
 
 ;; Add in your own as you wish:
-(defvar my-packages '( clojure-mode paredit magit find-file-in-project
+(defvar my-packages '(clojure-mode paredit magit find-file-in-project
                        auto-complete ac-nrepl nrepl mwe-log-commands ace-jump-mode
-                       iedit haskell-mode markdown-mode bbdb eudc
+                       haskell-mode markdown-mode bbdb eudc
                        dired+ icicles iedit elisp-slime-nav)
   "A list of packages to ensure are installed at launch.")
 
@@ -49,7 +49,9 @@
  '(erc-server-send-ping-timeout 30)
  '(global-hl-line-mode t)
  '(icicle-Completions-text-scale-decrease 0.0)
+ '(icicle-TAB-completion-methods (quote (vanilla basic)))
  '(icicle-buffer-require-match-flag (quote partial-match-ok))
+ '(icicle-buffer-sort nil)
  '(icicle-completions-format (quote vertical))
  '(icicle-expand-input-to-common-match 1)
  '(icicle-incremental-completion (quote always))
@@ -67,6 +69,7 @@ jweiss@redhat.com
  '(notmuch-hello-thousands-separator ",")
  '(notmuch-saved-searches (quote (("newstuff" . "tag:new AND (folder:Redhat/INBOX OR folder:GMail/INBOX OR folder:Redhat/Lists/katello/devel OR folder:Redhat/Lists/katello/internal)") ("announce-list" . "folder:RedHat/lists/announce-list AND tag:new"))))
  '(notmuch-search-oldest-first nil)
+ '(notmuch-show-all-multipart/alternative-parts nil)
  '(org-agenda-files (quote ("~/tasks/7212467cf49c6e11eaff/jweiss.org")))
  '(rcirc-authinfo (quote (("irc.freenode.net" nickserv "jweiss" "111111jm") ("irc.devel.redhat.com" userserv "jweiss" "111111jm"))))
  '(rcirc-default-full-name "Jeff Weiss")
@@ -77,16 +80,17 @@ jweiss@redhat.com
  '(rcirc-notify-message "%s: %s")
  '(rcirc-notify-message-private "(priv) %s: %s")
  '(rcirc-notify-timeout 30)
- '(rcirc-server-alist (quote (("irc.devel.redhat.com" :channels ("#satellite6-qe" "#candlepin" "#cloud-qe" "#satellite6" "#rdu16ne" "#rdu") nil nil) ("irc.freenode.net" :channels ("#rcirc" "#emacs" "#leiningen" "#clojure" "#bitcoin" "#katello" "#pulp")))))
+ '(rcirc-server-alist (quote (("irc.freenode.net" :channels ("#rcirc" "#emacs" "#leiningen" "#clojure" "#bitcoin" "#katello" "#pulp")) ("irc.devel.redhat.com" :channels ("#satellite6-qe" "#candlepin" "#cloud-qe" "#satellite6" "#rdu16ne" "#rdu") nil nil))))
  '(rcirc-track-minor-mode t)
  '(reb-re-syntax ((lambda nil (quote string))))
  '(scroll-bar-mode nil)
  '(send-mail-function (quote smtpmail-send-it))
  '(show-paren-mode t)
  '(show-paren-style (quote expression))
- '(smtpmail-smtp-server "smtp.corp.redhat.com" t)
- '(smtpmail-smtp-service 25 t)
+ '(smtpmail-smtp-server "smtp.corp.redhat.com")
+ '(smtpmail-smtp-service 25)
  '(tool-bar-mode nil)
+ '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify))
  '(visible-bell t)
  '(yagist-authenticate-function (quote yagist-oauth2-authentication))
  '(yagist-github-token "32850b37f0394bf2e54326f66c60d73b7823f60d")
@@ -105,6 +109,7 @@ jweiss@redhat.com
  '(fixed-pitch ((t (:inherit default))))
  '(hl-line ((t (:inherit highlight :background "#151500"))))
  '(icicle-current-candidate-highlight ((t (:background "yellow" :foreground "black"))))
+ '(icicle-mode-line-help ((t (:weight bold))))
  '(magit-item-highlight ((t (:background "gray10"))))
  '(rcirc-timestamp ((t (:inherit default :background "black" :foreground "gray25"))))
  '(show-paren-match ((t (:background "#1a1d2e"))))

@@ -289,5 +289,14 @@ matches the current nick."
                                             "irc.devel.redhat.com"))
                               (buffer-name))
                 (rcirc-reconnect-mode 1))))
-(remove-hook 'rcirc-mode-hook (first rcirc-mode-hook))
 
+(defun rcirc-clear-all-activity ()
+  (interactive)
+  (setq rcirc-activity '())
+  (rcirc-update-activity-string))
+
+(define-key rcirc-mode-map (kbd "C-c C-M-c") 'rcirc-clear-all-activity)
+
+(defun remove-nick-highlight ()
+  (interactive)
+  )

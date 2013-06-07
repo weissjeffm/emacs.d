@@ -1,7 +1,6 @@
 ;;time loading of this file
 (require 'cl) ; a rare necessary use of REQUIRE (for mwe-log-commands?)
 
-
 ;;disable suspending emacs on ctrl-z
 (global-set-key (kbd "C-z") 'undo)
 (global-unset-key (kbd "C-x C-z"))
@@ -47,11 +46,17 @@
 (define-key read-expression-map (kbd "TAB") 'lisp-complete-symbol)
 (define-key lisp-mode-shared-map (kbd "RET") 'reindent-then-newline-and-indent)
 
+;;Navigating elisp
+(dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
+  (add-hook hook 'elisp-slime-nav-mode))
+
 ;; Multiple cursors
 (require 'multiple-cursors)
 (global-set-key (kbd "C-c C-.") 'mc/mark-all-symbols-like-this)
 (global-set-key (kbd "C-c M-.") 'mc/mark-all-symbols-like-this-in-defun)
 (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this-dwim)
+(global-set-key (kbd "C-c C-/") 'mc/mark-more-like-this-extended)
+(global-set-key (kbd "C-M-s") 'mc/mark-next-symbol-like-this)
 (define-key mc/keymap (kbd "TAB") 'mc/cycle-forward)
 
 ;;Green/red diff colors
@@ -134,6 +139,8 @@
             ((":\\w+" . 'clojure-keyword))
             (("#?\"" 0 'clojure-double-quote prepend))
             (("nil\\|true\\|false\\|%[1-9]?" . 'clojure-special))
+            
+            
             (("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1
               'clojure-java-call))
             (("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 'font-lock-warning-face t))
@@ -300,41 +307,43 @@
     (shell (file-remote-p target 'host))))
 
 (defun directory-files-recursive (directory)
-  "List the files in DIRECTORY and in its sub-directories."
+  "List the files in DIRECTORY and in its sub-directories. Skip broken symlinks."
   (interactive "DDirectory name: ")
-  (let (el-files-list
-        (current-directory-list
-         (directory-files-and-attributes directory t)))
+  (let (files-list
+        (current-directory-list (directory-files-and-attributes directory t)))
     (while current-directory-list
       ;; check whether filename is that of a directory
-      (if (eq t (car (cdr (car current-directory-list))))
-          ;; decide whether to skip or recurse
-          (if (equal "." (substring (car (car current-directory-list)) -1))
-              ()
-
-            (setq el-files-list
-                  (append
-                   (directory-files-recursive
-                    (car (car current-directory-list)))
-                   el-files-list)))
-        ;; check to see whether filename ends in `.el'
-        ;; and if so, append its name to a list.
-        (setq el-files-list
-              (cons (car (car current-directory-list)) el-files-list)))
+      (let ((filename (caar current-directory-list)))
+        (if (eq t (cadar current-directory-list))
+            ;; decide whether to skip or recurse
+            (if (equal "." (substring filename -1))
+                ()
+              (setq files-list
+                    (append
+                     (directory-files-recursive filename)
+                     files-list)))
+          ;; append its name to a list. 
+          (let ((sym-target (file-symlink-p filename)))
+            (when (or (not sym-target) (file-exists-p sym-target))
+              (setq files-list (cons filename files-list))))))  
       ;; move to the next filename in the list; this also
       ;; shortens the list so the while loop eventually comes to an end
       (setq current-directory-list (cdr current-directory-list)))
     ;; return the filenames
-    el-files-list))
+    files-list))
 
-(defun search-project-for-sexp-at-point ()
-  ;;requires icicles and magit
-  (interactive)
-  (apply #'icicle-search nil nil (thing-at-point 'sexp) t
+(defun search-project (s)
+  (interactive "sSearch project for regex: ")
+  (apply #'icicle-search nil nil s t
          (directory-files-recursive
           (concat (magit-get-top-dir (file-name-directory (buffer-file-name)))
                   "/src"))
          '()))
+
+(defun search-project-for-sexp-at-point ()
+  ;;requires icicles and magit
+  (interactive)
+  (search-project (thing-at-point 'symbol)))
 
 (global-set-key (kbd "<f6>") 'search-project-for-sexp-at-point)
 
@@ -342,8 +351,6 @@
   (interactive)
   (mark-sexp)
   (align-regexp (region-beginning) (region-end) "\\(\\s-*\\)[\\\"|\\(]"))
-
-
 
 (autoload 'notmuch "notmuch" nil t)
 (autoload 'icy-mode "icicles" nil t)
