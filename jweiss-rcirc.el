@@ -242,7 +242,7 @@ matches the current nick."
 		 (buffer-live-p (process-buffer process)))
 	(with-rcirc-process-buffer process
 	  (unless seconds
-	    (setq seconds (exp (1+ rcirc-reconnect-attempts))))
+	    (setq seconds (min 120 (exp (1+ rcirc-reconnect-attempts))))) 
 	  (rcirc-print
 	   process "my-rcirc.el" "ERROR" rcirc-target
 	   (format "scheduling reconnection attempt in %s second(s)." seconds) t)
@@ -253,8 +253,7 @@ matches the current nick."
 	   process)))
     (error
      (rcirc-print process "RCIRC" "ERROR" nil
-		  (format "%S" err) t)))
-)
+		  (format "%S" err) t))))
 
 (defun rcirc-reconnect-perform-reconnect (process)
   (when (and (eq 'closed (process-status process))

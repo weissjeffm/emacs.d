@@ -382,3 +382,36 @@
                          (error window))))
       (set-window-buffer comp-window buf)
       comp-window)))
+
+;; eshell
+(defun eshell-shell-at-pwd ()
+  "Opens a shell at the pwd of eshell"
+  (interactive)
+  (shell (eshell/pwd)))
+
+(defun eshell-pushd ()
+  "Sets eshell's current directory to the pwd of current buffer."
+  (interactive)
+  (let ((buf-pwd default-directory))
+    (message buf-pwd)
+    (with-current-buffer "*eshell*"
+      (eshell/pushd buf-pwd)
+      (eshell-emit-prompt)
+      (switch-to-buffer "*eshell*"))))
+
+(add-hook 'eshell-mode-hook
+          (lambda () (define-key eshell-mode-map
+                       (kbd "C-c s") 'eshell-shell-at-pwd)))
+
+(global-set-key (kbd "<f10>") (lambda () (interactive) (switch-to-buffer "*eshell*")))
+(global-set-key (kbd "M-<f10>") 'eshell-pushd)
+
+;; eval-expression
+
+(eval-after-load 'icicles
+  '(progn (add-hook 'minibuffer-setup-hook 'conditionally-enable-paredit-mode)
+          (defun conditionally-enable-paredit-mode ()
+            "enable paredit-mode during eval-expression"
+            (if (eq this-command 'icicle-pp-eval-expression)
+                (paredit-mode 1)))
+          (define-key icicle-read-expression-map [(tab)] 'hippie-expand)))

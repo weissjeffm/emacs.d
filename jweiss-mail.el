@@ -110,7 +110,18 @@
      (ignore-errors
        (dbus-register-method :session dbus-service-emacs dbus-path-emacs
 			     dbus-service-emacs "NotmuchNewmail"
-			     'jweiss/notmuch-dbus-notify))))
+			     'jweiss/notmuch-dbus-notify))
+     ;; turn off "original message" washing since zimbra doesn't
+     ;; produce messages that work well with this function
+     (setq notmuch-wash-original-regexp "a^")
+     
+     ;;mark thread read
+     (defun notmuch-mark-thread-read ()
+       (interactive)
+       (notmuch-search-tag "-unread")
+       (notmuch-search-refresh-view))
+     
+     (define-key 'notmuch-search-mode-map (kbd "M-r") 'notmuch-mark-thread-read)))
 
 
 
@@ -143,6 +154,4 @@
 ;;         (t . "%B %d '%y"))) ;;this one is used when no other does match
 
 
-;; turn off "original message" washing since zimbra doesn't produce messages
-;; that work well with this function
-(setq notmuch-wash-original-regexp "a^")
+

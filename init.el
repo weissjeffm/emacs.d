@@ -13,7 +13,7 @@
 (defvar my-packages '(clojure-mode paredit magit find-file-in-project
                        auto-complete ac-nrepl nrepl mwe-log-commands ace-jump-mode
                        haskell-mode markdown-mode bbdb eudc
-                       dired+ icicles iedit elisp-slime-nav)
+                       dired+ icicles elisp-slime-nav)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
