@@ -50,6 +50,10 @@
 (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
   (add-hook hook 'elisp-slime-nav-mode))
 
+;;undo tree
+(autoload 'global-undo-tree-mode "undo-tree")
+(global-undo-tree-mode)
+
 ;; Multiple cursors
 (require 'multiple-cursors)
 (global-set-key (kbd "C-c C-.") 'mc/mark-all-symbols-like-this)
@@ -389,6 +393,11 @@
   (interactive)
   (shell (eshell/pwd)))
 
+(defun show-eshell ()
+  (interactive)
+  (switch-to-buffer "*eshell*")
+  (end-of-buffer))
+
 (defun eshell-pushd ()
   "Sets eshell's current directory to the pwd of current buffer."
   (interactive)
@@ -397,13 +406,13 @@
     (with-current-buffer "*eshell*"
       (eshell/pushd buf-pwd)
       (eshell-emit-prompt)
-      (switch-to-buffer "*eshell*"))))
+      (show-eshell))))
 
 (add-hook 'eshell-mode-hook
           (lambda () (define-key eshell-mode-map
                        (kbd "C-c s") 'eshell-shell-at-pwd)))
 
-(global-set-key (kbd "<f10>") (lambda () (interactive) (switch-to-buffer "*eshell*")))
+(global-set-key (kbd "<f10>") 'show-eshell)
 (global-set-key (kbd "M-<f10>") 'eshell-pushd)
 
 ;; eval-expression
@@ -415,3 +424,31 @@
             (if (eq this-command 'icicle-pp-eval-expression)
                 (paredit-mode 1)))
           (define-key icicle-read-expression-map [(tab)] 'hippie-expand)))
+
+;; processing many files
+;; depends on dired+
+
+(defun on-dired-marked-files (f)
+  (interactive "aFunction to call on each file: ")
+  (dolist (file (diredp-get-files nil nil t t))
+    (when (not (file-directory-p file))
+        (find-file file)
+        (funcall f))))
+
+(add-hook 'dired-mode-hook
+          (lambda () (define-key dired-mode-map
+                       (kbd "C-c f") 'on-dired-marked-files)))
+
+;; example edit function (depends on mark-multiple) 
+(defun edit-with-client ()
+  (interactive)
+  (when (search-forward "with-client\ " nil t)
+
+    (backward-word 2)
+    (set-mark (point))
+    (forward-word 2)
+    (mc/mark-all-like-this)
+    (backward-word)
+    (insert-string "queued-")
+    (paredit-forward)
+    (kill-sexp)))
