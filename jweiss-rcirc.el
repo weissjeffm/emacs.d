@@ -243,8 +243,8 @@ matches the current nick."
 	(with-rcirc-process-buffer process
 	  (unless seconds
 	    (setq seconds (if (< rcirc-reconnect-attempts 5)
-                              120
-                              (exp (1+ rcirc-reconnect-attempts))))) 
+                              (exp (1+ rcirc-reconnect-attempts))
+                              120))) 
 	  (rcirc-print
 	   process "my-rcirc.el" "ERROR" rcirc-target
 	   (format "scheduling reconnection attempt in %s second(s)." seconds) t)
