@@ -138,59 +138,26 @@ Passwords are stored in `rcirc-authinfo' (which see)."
                             :sound-file notification-sound-file)
     (error nil)))
 
-(defun rcirc-notify-allowed (nick &optional delay)
-  "Return non-nil if a notification should be made for NICK.
-If DELAY is specified, it will be the minimum time in seconds
-that can occur between two notifications.  The default is
-`rcirc-notify-timeout'."
-  ;; Check current frame buffers
-  (let ((rcirc-in-a-frame-p 
-         (some (lambda (f)
-                 (and (equal "rcirc" (cdr f))
-                      (car f)))
-               (mapcar (lambda (f) 
-                         (let ((buffer (car (frame-parameter f 'buffer-list))))
-                           (with-current-buffer buffer
-                             (cons buffer mode-name))))
-                       (visible-frame-list)))))
-    (if (or (not rcirc-notify-check-frame)
-            (and rcirc-notify-check-frame (not rcirc-in-a-frame-p)))
-        (progn
-          (unless delay (setq delay rcirc-notify-timeout))
-          (let ((cur-time (float-time (current-time)))
-                (cur-assoc (assoc nick rcirc-notify--nick-alist))
-                (last-time))
-            (if cur-assoc
-                (progn
-                  (setq last-time (cdr cur-assoc))
-                  (setcdr cur-assoc cur-time)
-                  (> (abs (- cur-time last-time)) delay))
-              (push (cons nick cur-time) rcirc-notify--nick-alist)
-              t))))))
-
-(defun rcirc-notify-me (proc sender response target text)
+(defun my-rcirc-notify-me (proc sender response target text)
   "Notify the current user when someone sends a message that
-matches the current nick."
+matches the current nick or keywords."
   (interactive)
-  ;;(message "proc %S, sender %S, response %S, target %s, text %S, allowed %S" proc sender response target text (rcirc-notify-allowed sender) )
   (when (and (not (string= (rcirc-nick proc) sender))
-	     (not (string= (rcirc-server-name proc) sender))
-	     (rcirc-notify-allowed sender))
-    (cond ((string-match (rcirc-nick proc) text)
-	   ;; (rcirc-notify sender text)
-           (my-notify sender target text))
-	  (rcirc-notify-keywords
-	   (let ((keyword (catch 'match
-			    (dolist (key rcirc-keywords)
-			      (when (string-match (concat "\\<" key "\\>")
-						  text)
-				(throw 'match key))))))
-	     (when keyword
-               (my-notify sender target text)
-             ;;  (rcirc-notify-keyword sender keyword text)
-               ))))))
-
-(rcirc-notify-add-hooks)
+	     (not (string= (rcirc-server-name proc) sender)))
+    (cond ((and (string-match (concat "\\b" (rcirc-nick proc) "\\b") text)
+                (my-rcirc-notify-allowed sender))
+	  ;; (my-rcirc-notify sender text)
+          (my-notify sender target text) )
+	  (my-rcirc-notify-keywords
+	   (let (keywords)
+             (dolist (key rcirc-keywords keywords)
+               (when (string-match (concat "\\<" key "\\>")
+                                   text)
+                 (push key keywords)))
+	     (when keywords
+               (if (my-rcirc-notify-allowed sender)
+                   ;;(my-rcirc-notify-keyword sender keywords text)
+                    (my-notify sender target text))))))))
 
 (defun-rcirc-command reconnect (arg)
   "Reconnect the server process."
@@ -295,5 +262,48 @@ matches the current nick."
   (interactive)
   (setq rcirc-activity '())
   (rcirc-update-activity-string))
+
+(defun rcirc-handler-NICK (process sender args text)
+  (let* ((old-nick sender)
+         (new-nick (car args))
+         (channels (rcirc-nick-channels process old-nick)))
+    ;; update list of ignored nicks
+    (rcirc-ignore-update-automatic old-nick)
+    (when (member old-nick rcirc-ignore-list)
+      (add-to-list 'rcirc-ignore-list new-nick)
+      (add-to-list 'rcirc-ignore-list-automatic new-nick))
+    ;; print message to my+nick's channels
+    (dolist (target channels)
+      (when (member target (rcirc-nick-channels process (rcirc-nick process)))
+        (rcirc-print process sender "NICK" target new-nick)))
+    ;; update private chat buffer, if it exists
+    (let ((chat-buffer (rcirc-get-buffer process old-nick)))
+      (when chat-buffer
+	(with-current-buffer chat-buffer
+	  (rcirc-print process sender "NICK" old-nick new-nick)
+	  (setq rcirc-target new-nick)
+	  (rename-buffer (rcirc-generate-new-buffer-name process new-nick)))))
+    ;; remove old nick and add new one
+    (with-rcirc-process-buffer process
+      (let ((v (gethash old-nick rcirc-nick-table)))
+        (remhash old-nick rcirc-nick-table)
+        (puthash new-nick v rcirc-nick-table))
+      ;; if this is our nick...
+      (when (string= old-nick rcirc-nick)
+        (setq rcirc-nick new-nick)
+	(rcirc-update-prompt t)
+        ;; reauthenticate
+        (when rcirc-auto-authenticate-flag (rcirc-authenticate))))))
+
+(defun rcirc-handler-QUIT (process sender args text)
+  (rcirc-ignore-update-automatic sender)
+  (mapc (lambda (channel)
+	  ;; broadcast quit message each channel
+	  (when (member channel (rcirc-nick-channels process (rcirc-nick process)))
+            (rcirc-print process sender "QUIT" channel (apply 'concat args)))
+	  ;; record nick in quit table if they recently spoke
+	  (rcirc-maybe-remember-nick-quit process sender channel))
+	(rcirc-nick-channels process sender))
+  (rcirc-nick-remove process sender))
 
 (define-key rcirc-mode-map (kbd "C-c C-M-c") 'rcirc-clear-all-activity)
