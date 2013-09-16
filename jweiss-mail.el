@@ -121,7 +121,10 @@
        (notmuch-search-tag "-unread")
        (notmuch-search-refresh-view))
      
-     (define-key 'notmuch-search-mode-map (kbd "M-r") 'notmuch-mark-thread-read)))
+     (define-key 'notmuch-search-mode-map (kbd "M-r") 'notmuch-mark-thread-read)
+
+     (add-hook 'notmuch-search-hook (lambda ()
+                                      (text-scale-set 2)))))
 
 
 
