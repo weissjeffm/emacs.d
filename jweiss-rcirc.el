@@ -157,7 +157,17 @@ matches the current nick or keywords."
 	     (when keywords
                (if (my-rcirc-notify-allowed sender)
                    ;;(my-rcirc-notify-keyword sender keywords text)
-                    (my-notify sender target text))))))))
+                   (my-notify sender target text))))))))
+
+(defun my-rcirc-notify-privmsg (proc sender response target text)
+  "Notify the current user when someone sends a private message
+to them."
+  (interactive)
+  (when (and (string= response "PRIVMSG")
+             (not (string= sender (rcirc-nick proc)))
+             (not (rcirc-channel-p target))
+             (my-rcirc-notify-allowed sender))
+    (my-notify sender target text)))
 
 (defun-rcirc-command reconnect (arg)
   "Reconnect the server process."

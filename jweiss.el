@@ -3,17 +3,16 @@
 
 ;;disable suspending emacs on ctrl-z
 (global-set-key (kbd "C-z") 'undo)
+(global-set-key (kbd "<f11>") 'make-frame)
 (global-unset-key (kbd "C-x C-z"))
                                         ;jump to line
 (global-set-key (kbd "C-c M-l") 'goto-line)
                                         ;buffer switch
 ;;(global-set-key (kbd "C-,") 'ido-switch-buffer)
 ;;(global-set-key [insert] 'ido-switch-buffer)
-(global-set-key [insert] 'switch-to-buffer)
+(global-set-key (kbd "C-q") 'switch-to-buffer)
 
 ;;frame-switch
-(global-set-key (kbd "C-q") 'windmove-up)
-(global-set-key (kbd "C-z") 'windmove-down)
 (global-set-key (kbd "S-<left>") 'windmove-left)
 (global-set-key (kbd "S-<right>") 'windmove-right)
 (global-set-key (kbd "S-<up>") 'windmove-up)
@@ -68,14 +67,6 @@
   '(progn
      (set-face-foreground 'diff-added "green4")
      (set-face-foreground 'diff-removed "red3")))
-
-(eval-after-load 'magit
-  '(progn
-     (set-face-foreground 'magit-diff-add "green4")
-     (set-face-foreground 'magit-diff-del "red3")))
-
-;;allow narrow to region 
-(put 'narrow-to-region 'disabled nil)
 
 ;; y instead of yes
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -233,8 +224,12 @@
             (define-key nrepl-mode-map [C-S-up] 'nrepl-previous-matching-input)
             (define-key nrepl-mode-map (kbd "M-<f12>") 'nrepl-close)
             (define-key nrepl-mode-map (kbd "M-j") 'nrepl-newline-and-indent)
-            (define-key nrepl-mode-map (kbd "C-x C-e") 'nrepl-eval-last-expression)
+            ;(define-key nrepl-mode-map (kbd "C-x C-e") 'nrepl-eval-last-expression)
             (define-key nrepl-mode-map (kbd "<f7>") 'nrepl-pst)
+            ;(define-key nrepl-mode-map (kbd "M-.") 'nrepl-jump)
+            (define-key nrepl-interaction-mode-map (kbd "C-c C-z") 'nrepl-switch-to-repl-buffer)
+
+            
             (auto-complete-mode)
             (ac-nrepl-setup)
             (font-lock-mode nil)
@@ -340,8 +335,11 @@
   (interactive "sSearch project for regex: ")
   (apply #'icicle-search nil nil s t
          (directory-files-recursive
-          (concat (magit-get-top-dir (file-name-directory (buffer-file-name)))
-                  "/src"))
+          (let* ((magit-proj-dir (magit-get-top-dir (file-name-directory (buffer-file-name))))
+                 (src-subdir (concat magit-proj-dir "/src")))
+            (if (file-exists-p src-subdir)
+                src-subdir
+              magit-proj-dir)))
          '()))
 
 (defun search-project-for-sexp-at-point ()
@@ -452,3 +450,7 @@
     (insert-string "queued-")
     (paredit-forward)
     (kill-sexp)))
+
+;; SLIME
+(load (expand-file-name "~/quicklisp/slime-helper.el") t) ;; don't throw error if not found
+

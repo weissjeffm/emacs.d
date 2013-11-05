@@ -59,7 +59,9 @@
  '(icicle-mode t)
  '(imenu-auto-rescan t)
  '(indent-tabs-mode nil)
+ '(inferior-lisp-program "sbcl")
  '(jabber-account-list (("jeffrey.m.weiss@gmail.com")))
+ '(jedi:server-args (quote ("--virtual-env" "/home/jweiss/workspace/cfme_pages/cfme")))
  '(mail-signature "Jeff Weiss
 Principal Quality Assurance Engineer
 jweiss@redhat.com
@@ -80,7 +82,7 @@ jweiss@redhat.com
  '(rcirc-notify-message "%s: %s")
  '(rcirc-notify-message-private "(priv) %s: %s")
  '(rcirc-notify-timeout 30)
- '(rcirc-server-alist (quote (("irc.freenode.net" :channels ("#rcirc" "#emacs" "#leiningen" "#clojure" "#bitcoin" "#katello" "#pulp")) ("irc.devel.redhat.com" :channels ("#satellite6-qe" "#candlepin" "#cloud-qe" "#satellite6" "#rdu16ne" "#rdu") nil nil) ("irc.oftc.net" :channels ("#ovirt") nil nil))))
+ '(rcirc-server-alist (quote (("irc.freenode.net" :channels ("#rcirc" "#emacs" "#leiningen" "#clojure" "#bitcoin" "#katello" "#pulp")) ("irc.devel.redhat.com" :channels ("#satellite6-qe" "#candlepin" "#cloud-qe" "#satellite6" "#rdu16ne" "#rdu" "#cfme-qe") nil nil))))
  '(rcirc-track-minor-mode t)
  '(reb-re-syntax ((lambda nil (quote string))))
  '(scroll-bar-mode nil)
@@ -91,6 +93,7 @@ jweiss@redhat.com
  '(smtpmail-smtp-service 25 t)
  '(tool-bar-mode nil)
  '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify))
+ '(virtualenv-root "~/.virtualenvs/")
  '(visible-bell t)
  '(yagist-authenticate-function (quote yagist-oauth2-authentication))
  '(yagist-github-token "32850b37f0394bf2e54326f66c60d73b7823f60d")
