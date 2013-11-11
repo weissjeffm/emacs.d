@@ -13,7 +13,7 @@
 (defvar my-packages '(clojure-mode paredit magit find-file-in-project
                        auto-complete ac-nrepl nrepl mwe-log-commands ace-jump-mode
                        haskell-mode markdown-mode bbdb eudc
-                       dired+ icicles elisp-slime-nav)
+                       dired+ icicles elisp-slime-nav flymake-python-pyflakes)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -47,6 +47,8 @@
  '(erc-server-reconnect-attempts t)
  '(erc-server-reconnect-timeout 60)
  '(erc-server-send-ping-timeout 30)
+ '(flymake-python-pyflakes-executable "flake8")
+ '(flymake-python-pyflakes-extra-arguments (quote ("--max-line-length=100" "--ignore=E128")))
  '(global-hl-line-mode t)
  '(icicle-Completions-text-scale-decrease 0.0)
  '(icicle-TAB-completion-methods (quote (vanilla basic)))
@@ -59,7 +61,7 @@
  '(icicle-mode t)
  '(imenu-auto-rescan t)
  '(indent-tabs-mode nil)
- '(inferior-lisp-program "sbcl")
+ '(inferior-lisp-program "sbcl" t)
  '(jabber-account-list (("jeffrey.m.weiss@gmail.com")))
  '(jedi:server-args (quote ("--virtual-env" "/home/jweiss/workspace/cfme_pages/cfme")))
  '(mail-signature "Jeff Weiss
@@ -73,6 +75,7 @@ jweiss@redhat.com
  '(notmuch-search-oldest-first nil)
  '(notmuch-show-all-multipart/alternative-parts nil)
  '(org-agenda-files (quote ("~/tasks/7212467cf49c6e11eaff/jweiss.org")))
+ '(python-skeleton-autoinsert t)
  '(rcirc-authinfo (quote (("irc.freenode.net" nickserv "jweiss" "111111jm") ("irc.devel.redhat.com" userserv "jweiss" "111111jm"))))
  '(rcirc-default-full-name "Jeff Weiss")
  '(rcirc-default-user-name "jweiss")
@@ -108,6 +111,9 @@ jweiss@redhat.com
  '(default ((t (:background "black" :foreground "white" :slant normal :weight normal :height 92 :width normal :family "DejaVu Sans Mono"))))
  '(ac-completion-face ((t (:inherit default :foreground "darkgray" :underline t))))
  '(clojure-parens ((t (:foreground "gray38" :underline nil :weight bold))))
+ '(diff-added ((t (:inherit diff-changed :background "#113311" :foreground "gray70"))))
+ '(diff-removed ((t (:inherit diff-changed :background "#331111" :foreground "gray70"))))
+ '(ein:cell-input-area ((t nil)))
  '(erc-input-face ((t (:foreground "gray"))))
  '(fixed-pitch ((t (:inherit default))))
  '(hl-line ((t (:inherit highlight :background "#151500"))))

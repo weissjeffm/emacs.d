@@ -454,3 +454,7 @@
 ;; SLIME
 (load (expand-file-name "~/quicklisp/slime-helper.el") t) ;; don't throw error if not found
 
+;;Python lint checking
+(autoload 'flymake-python-pyflakes-load "flymake-python-pyflakes" nil t)
+(eval-after-load 'python-mode
+  '(add-hook 'python-mode-hook 'flymake-python-pyflakes-load))

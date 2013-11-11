@@ -3,3 +3,6 @@ backups/
 swank/
 places
 auto-save-list/
+image-dired/
+eshell/
+rcirc-log/
