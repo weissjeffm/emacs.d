@@ -127,6 +127,7 @@ Passwords are stored in `rcirc-authinfo' (which see)."
 (defvar notification-sound-file "/usr/share/sounds/freedesktop/stereo/complete.oga")
 
 (require 'rcirc-notify)
+(require 'rcirc-color)
 
 (defun my-notify (nick channel message)
   (start-process "notif" nil "play"

@@ -331,11 +331,15 @@
     ;; return the filenames
     files-list))
 
+(autoload 'magit-get-top-dir "magit" nil t)
+(defun magit-project-dir ()
+  (magit-get-top-dir (file-name-directory (or (buffer-file-name) default-directory))))
+
 (defun search-project (s)
   (interactive "sSearch project for regex: ")
   (apply #'icicle-search nil nil s t
          (directory-files-recursive
-          (let* ((magit-proj-dir (magit-get-top-dir (file-name-directory (buffer-file-name))))
+          (let* ((magit-proj-dir (magit-project-dir))
                  (src-subdir (concat magit-proj-dir "/src")))
             (if (file-exists-p src-subdir)
                 src-subdir
@@ -435,7 +439,11 @@
 
 (add-hook 'dired-mode-hook
           (lambda () (define-key dired-mode-map
-                       (kbd "C-c f") 'on-dired-marked-files)))
+                       (kbd "C-c f") 'on-dired-marked-files)
+            (define-key dired-mode-map (kbd "b") 'browse-url-of-dired-file)))
+;; open dired file in browser
+
+
 
 ;; example edit function (depends on mark-multiple) 
 (defun edit-with-client ()
@@ -456,5 +464,28 @@
 
 ;;Python lint checking
 (autoload 'flymake-python-pyflakes-load "flymake-python-pyflakes" nil t)
-(eval-after-load 'python-mode
+(eval-after-load 'python
   '(add-hook 'python-mode-hook 'flymake-python-pyflakes-load))
+
+
+(defun start-ipython-current-project (virtualenv-dir)
+  (interactive "DVirtualenv dir: ")
+  
+  (save-excursion
+    (let ((buf (get-buffer-create
+                (generate-new-buffer-name (file-name-nondirectory
+                                           (directory-file-name (file-name-directory (magit-project-dir))))))))
+      (shell buf)
+      (process-send-string buf (format ". %s/bin/activate\n" virtualenv-dir))
+      (process-send-string buf (format "cd %s;ipython notebook\n" (magit-project-dir)))
+      ))
+  ;(ein:notebooklist-open 8888)
+  ;(ein:notebook-worksheet-open-next-or-first)
+  )
+
+;; javascript
+(eval-after-load 'javascript-mode
+  '(progn (make-variable-buffer-local 'indent-tabs-mode)
+          (add-hook 'js-mode-hook (lambda ()
+                                    (setq js-indent-level 8)
+                                    (setq indent-tabs-mode t)))))
