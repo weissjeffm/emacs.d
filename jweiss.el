@@ -443,34 +443,26 @@
             (define-key dired-mode-map (kbd "b") 'browse-url-of-dired-file)))
 ;; open dired file in browser
 
-
-
-;; example edit function (depends on mark-multiple) 
-(defun edit-with-client ()
-  (interactive)
-  (when (search-forward "with-client\ " nil t)
-
-    (backward-word 2)
-    (set-mark (point))
-    (forward-word 2)
-    (mc/mark-all-like-this)
-    (backward-word)
-    (insert-string "queued-")
-    (paredit-forward)
-    (kill-sexp)))
-
 ;; SLIME
 (load (expand-file-name "~/quicklisp/slime-helper.el") t) ;; don't throw error if not found
 
 ;;Python lint checking
-(autoload 'flymake-python-pyflakes-load "flymake-python-pyflakes" nil t)
+(autoload 'flycheck "flycheck-mode")
+(autoload 'autopair "autopair-mode")
 (eval-after-load 'python
-  '(add-hook 'python-mode-hook 'flymake-python-pyflakes-load))
-
+  '(add-hook 'python-mode-hook (lambda ()
+                                 (flycheck-mode)
+                                 (autopair-mode)
+                                 (define-key python-mode-map (kbd "C-x p") 'ein:notebooklist-open))))
 
 (defun start-ipython-current-project (virtualenv-dir)
-  (interactive "DVirtualenv dir: ")
-  
+  (interactive
+   (let ((d (read-directory-name "VirtualEnv dir: "
+                                 "~/.virtualenvs/"
+                                 nil
+                                 t
+                                 )))
+     (list d)))
   (save-excursion
     (let ((buf (get-buffer-create
                 (generate-new-buffer-name (file-name-nondirectory
@@ -483,9 +475,20 @@
   ;(ein:notebook-worksheet-open-next-or-first)
   )
 
+;; ein save worksheet after running cell
+(eval-after-load 'ein:notebook-mode
+  '(defadvice ein:cell-execute (after ein:save-worksheet-after-execute activate)
+     (ein:notebook-save-notebook-command)))
+
 ;; javascript
 (eval-after-load 'javascript-mode
   '(progn (make-variable-buffer-local 'indent-tabs-mode)
           (add-hook 'js-mode-hook (lambda ()
                                     (setq js-indent-level 8)
                                     (setq indent-tabs-mode t)))))
+
+
+; java
+;; (add-to-list 'load-path "~/.emacs.d/jdee-2.4.1/lisp")
+;; (load "jde")
+
