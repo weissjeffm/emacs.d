@@ -45,6 +45,18 @@
 ;;                                           (string :tag "Password"))))
 ;;   :group 'rcirc)
 
+;; fix alternate nick to append underscore instead of backtick
+(require 'rcirc-notify)
+(require 'rcirc-color)
+
+
+(defun rcirc-handler-433 (process sender args text)
+  "ERR_NICKNAMEINUSE"
+  (rcirc-handler-generic process "433" sender args text)
+  (let* ((new-nick (concat (cadr args) "_")))
+    (with-rcirc-process-buffer process
+      (rcirc-cmd-nick new-nick nil process))))
+
 (defun rcirc-check-auth-status (process sender args text)
   "Check if the user just authenticated.
 If authenticated, runs `rcirc-authenticated-hook' with PROCESS as
@@ -126,9 +138,6 @@ Passwords are stored in `rcirc-authinfo' (which see)."
 
 (defvar notification-sound-file "/usr/share/sounds/freedesktop/stereo/complete.oga")
 
-(require 'rcirc-notify)
-(require 'rcirc-color)
-
 (defun my-notify (nick channel message)
   (start-process "notif" nil "play"
                  "-q" notification-sound-file)
@@ -139,35 +148,65 @@ Passwords are stored in `rcirc-authinfo' (which see)."
                             :sound-file notification-sound-file)
     (error nil)))
 
-(defun my-rcirc-notify-me (proc sender response target text)
+(defun rcirc-notify-allowed (nick &optional delay)
+  "Return non-nil if a notification should be made for NICK.
+If DELAY is specified, it will be the minimum time in seconds
+that can occur between two notifications.  The default is
+`rcirc-notify-timeout'."
+  ;; Check current frame buffers
+  (let ((rcirc-in-a-frame-p
+         (some (lambda (f)
+                 (and (equal "rcirc" (cdr f))
+                      (car f)))
+               (mapcar (lambda (f)
+                         (let ((buffer (car (frame-parameter f 'buffer-list))))
+                           (with-current-buffer buffer
+                             (cons buffer mode-name))))
+                       (visible-frame-list)))))
+    (if (or (and rcirc-notify-check-frame (not rcirc-in-a-frame-p))
+            (not rcirc-notify-check-frame))
+        (progn
+          (unless delay (setq delay rcirc-notify-timeout))
+          (let ((cur-time (float-time (current-time)))
+                (cur-assoc (assoc nick rcirc-notify--nick-alist))
+                (last-time))
+            (if cur-assoc
+                (progn
+                  (setq last-time (cdr cur-assoc))
+                  (setcdr cur-assoc cur-time)
+                  (> (abs (- cur-time last-time)) delay))
+              (push (cons nick cur-time) rcirc-notify--nick-alist)
+              t))))))
+
+(defun rcirc-notify-me (proc sender response target text)
   "Notify the current user when someone sends a message that
 matches the current nick or keywords."
   (interactive)
   (when (and (not (string= (rcirc-nick proc) sender))
 	     (not (string= (rcirc-server-name proc) sender)))
     (cond ((and (string-match (concat "\\b" (rcirc-nick proc) "\\b") text)
-                (my-rcirc-notify-allowed sender))
+                (rcirc-notify-allowed sender))
 	  ;; (my-rcirc-notify sender text)
           (my-notify sender target text) )
-	  (my-rcirc-notify-keywords
+	  (rcirc-notify-keywords
 	   (let (keywords)
              (dolist (key rcirc-keywords keywords)
                (when (string-match (concat "\\<" key "\\>")
                                    text)
                  (push key keywords)))
 	     (when keywords
-               (if (my-rcirc-notify-allowed sender)
+               (if (rcirc-notify-allowed sender)
                    ;;(my-rcirc-notify-keyword sender keywords text)
                    (my-notify sender target text))))))))
 
-(defun my-rcirc-notify-privmsg (proc sender response target text)
+(defun rcirc-notify-privmsg (proc sender response target text)
   "Notify the current user when someone sends a private message
 to them."
   (interactive)
   (when (and (string= response "PRIVMSG")
              (not (string= sender (rcirc-nick proc)))
              (not (rcirc-channel-p target))
-             (my-rcirc-notify-allowed sender))
+             (rcirc-notify-allowed sender))
     (my-notify sender target text)))
 
 (defun-rcirc-command reconnect (arg)
@@ -197,7 +236,6 @@ to them."
 
 ;;; Attempt reconnection at increasing intervals when a connection is
 ;;; lost.
-
 (defvar rcirc-reconnect-attempts 0)
 
 ;;;###autoload
@@ -318,3 +356,5 @@ to them."
   (rcirc-nick-remove process sender))
 
 (define-key rcirc-mode-map (kbd "C-c C-M-c") 'rcirc-clear-all-activity)
+
+(rcirc-notify-add-hooks)
