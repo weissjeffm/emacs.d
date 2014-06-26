@@ -55,11 +55,20 @@
 
 ;; Multiple cursors
 (require 'multiple-cursors)
-(global-set-key (kbd "C-c C-.") 'mc/mark-all-symbols-like-this)
-(global-set-key (kbd "C-c M-.") 'mc/mark-all-symbols-like-this-in-defun)
-(global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this-dwim)
-(global-set-key (kbd "C-c C-/") 'mc/mark-more-like-this-extended)
-(global-set-key (kbd "C-M-s") 'mc/mark-next-symbol-like-this)
+(define-prefix-command 'mc-key-map)
+(global-set-key (kbd "C-c m") 'mc-key-map)
+
+(define-key mc-key-map (kbd ".") 'mc/mark-all-symbols-like-this)
+(define-key mc-key-map (kbd "M-.") 'mc/mark-all-symbols-like-this-in-defun)
+(define-key mc-key-map (kbd ",") 'mc/mark-all-like-this-dwim)
+(define-key mc-key-map (kbd "/") 'mc/mark-more-like-this-extended)
+(define-key mc-key-map (kbd "s") 'mc/mark-next-symbol-like-this)
+
+;; (global-set-key (kbd "C-c C-.") 'mc/mark-all-symbols-like-this)
+;; (global-set-key (kbd "C-c M-.") 'mc/mark-all-symbols-like-this-in-defun)
+;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this-dwim)
+;; (global-set-key (kbd "C-c C-/") 'mc/mark-more-like-this-extended)
+;; (global-set-key (kbd "C-M-s") 'mc/mark-next-symbol-like-this)
 (define-key mc/keymap (kbd "TAB") 'mc/cycle-forward)
 
 ;;Green/red diff colors
@@ -92,7 +101,7 @@
 (define-key paredit-mode-map (kbd "M-(") 'paredit-wrap-round)
 
 ;;use imenu to search for symbols
-(global-set-key (kbd "C-o") 'imenu)
+(global-set-key (kbd "C-o") 'open-line)
 
 ;;use w tiling window mgr
 (setq pop-up-frames nil)
@@ -450,10 +459,12 @@
 (autoload 'flycheck "flycheck-mode")
 (autoload 'autopair "autopair-mode")
 (eval-after-load 'python
-  '(add-hook 'python-mode-hook (lambda ()
-                                 (flycheck-mode)
-                                 (autopair-mode)
-                                 (define-key python-mode-map (kbd "C-x p") 'ein:notebooklist-open))))
+  '(progn (add-hook 'python-mode-hook
+                    (lambda ()
+                      (flycheck-mode)
+                      (autopair-mode)
+                      (ein:connect-to-default-notebook)))
+          (define-key python-mode-map (kbd "C-x p") 'ein:notebooklist-open)))
 
 (defun start-ipython-current-project (virtualenv-dir)
   (interactive
@@ -492,3 +503,4 @@
 ;; (add-to-list 'load-path "~/.emacs.d/jdee-2.4.1/lisp")
 ;; (load "jde")
 
+(setq ein:use-auto-complete-superpack t)

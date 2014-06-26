@@ -34,6 +34,9 @@
  '(blink-cursor-mode nil)
  '(eclim-eclipse-dirs "~/.eclipse/")
  '(eclim-executable "/home/jweiss/.eclipse/org.eclipse.platform_793567567_linux_gtk_x86_64/eclim")
+ '(ein:connect-default-notebook "8888/dispatch")
+ '(ein:use-auto-complete-superpack t)
+ '(ein:worksheet-enable-undo (quote full))
  '(erc-autojoin-channels-alist (quote (("freenode.net" "#bitcoin" "#leiningen" "#emacs" "#clojure" "#katello" "#pulp") ("devel.redhat.com" "#cloud-qe" "#systemengine" "#systemengine-qe" "#candlepin" "#rdu16ne" "#rdu"))))
  '(erc-enable-logging t)
  '(erc-fill-column 100)
@@ -64,7 +67,7 @@
  '(icicle-mode t)
  '(imenu-auto-rescan t)
  '(indent-tabs-mode nil)
- '(inferior-lisp-program "sbcl")
+ '(inferior-lisp-program "sbcl" t)
  '(jabber-account-list (("jeffrey.m.weiss@gmail.com")))
  '(jedi:server-args (quote ("--virtual-env" "/home/jweiss/workspace/cfme_pages/cfme")))
  '(mail-signature "Jeff Weiss
@@ -97,9 +100,9 @@ jweiss@redhat.com
  '(send-mail-function (quote smtpmail-send-it))
  '(show-paren-mode t)
  '(show-paren-style (quote expression))
- '(smtpmail-default-smtp-server "mail.twc.com")
- '(smtpmail-smtp-server "mail.twc.com")
- '(smtpmail-smtp-service 587)
+ '(smtpmail-default-smtp-server "mail.twc.com" t)
+ '(smtpmail-smtp-server "mail.twc.com" t)
+ '(smtpmail-smtp-service 587 t)
  '(smtpmail-smtp-user "jweiss2@nc.rr.com")
  '(smtpmail-stream-type (quote starttls))
  '(tool-bar-mode nil)
@@ -111,7 +114,8 @@ jweiss@redhat.com
  '(yagist-authenticate-function (quote yagist-oauth2-authentication) t)
  '(yagist-github-token "32850b37f0394bf2e54326f66c60d73b7823f60d")
  '(yagist-github-user "weissjeffm")
- '(yagist-view-gist t))
+ '(yagist-view-gist t)
+ '(yaml-indent-offset 4))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
