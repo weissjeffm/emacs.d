@@ -3,6 +3,8 @@
              '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives
+             '("jweiss" . "http://qeblade5.rhq.lab.eng.bos/isos/emacs-package-archive/") t)
 (package-initialize)
 
 (when (not (package-installed-p 'melpa))
@@ -83,8 +85,10 @@ jweiss@redhat.com
  '(notmuch-search-result-format (quote (("authors" . "%-28s") ("date" . "%12s ") ("count" . "%-7s ") ("subject" . "%s ") ("tags" . "(%s)"))))
  '(notmuch-show-all-multipart/alternative-parts nil)
  '(org-agenda-files (quote ("~/workspace/cfme_tests/jweiss.org" "~/tasks/7212467cf49c6e11eaff/jweiss.org")))
+ '(package-archive-upload-base "/scp:root@qeblade5.rhq.lab.eng.bos:/root/ISOs/emacs-package-archive/")
  '(python-skeleton-autoinsert t)
  '(rcirc-authinfo (quote (("irc.freenode.net" nickserv "jweiss" "111111jm") ("irc.devel.redhat.com" userserv "jweiss" "111111jm"))))
+ '(rcirc-buffer-maximum-lines 2000)
  '(rcirc-default-full-name "Jeff Weiss")
  '(rcirc-default-user-name "jweiss")
  '(rcirc-fill-column (quote frame-width))
