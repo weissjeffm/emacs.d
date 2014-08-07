@@ -258,9 +258,9 @@ to them."
 		 (buffer-live-p (process-buffer process)))
 	(with-rcirc-process-buffer process
 	  (unless seconds
-	    (setq seconds (if (< rcirc-reconnect-attempts 5)
-                              (exp (1+ rcirc-reconnect-attempts))
-                              120))) 
+	    (setq seconds (if (< rcirc-reconnect-attempts 50)
+                              (+ 10 (exp (* rcirc-reconnect-attempts 0.1)))
+                              45))) 
 	  (rcirc-print
 	   process "my-rcirc.el" "ERROR" rcirc-target
 	   (format "scheduling reconnection attempt in %s second(s)." seconds) t)
