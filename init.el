@@ -54,6 +54,8 @@
  '(erc-server-reconnect-attempts t)
  '(erc-server-reconnect-timeout 60)
  '(erc-server-send-ping-timeout 30)
+ '(flycheck-highlighting-mode (quote sexps))
+ '(flycheck-python-flake8-executable "~/.virtualenvs/cfme/bin/flake8")
  '(flymake-python-pyflakes-executable "flake8")
  '(flymake-python-pyflakes-extra-arguments (quote ("--max-line-length=100" "--ignore=E128,E811")))
  '(global-hl-line-mode t)

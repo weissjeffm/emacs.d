@@ -452,6 +452,33 @@
             (define-key dired-mode-map (kbd "b") 'browse-url-of-dired-file)))
 ;; open dired file in browser
 
+;; dired stuff
+
+(define-prefix-command 'dired-subtree-key-map)
+(define-key dired-mode-map (kbd "C-c ,") 'dired-subtree-key-map)
+(define-key dired-subtree-key-map (kbd "i")'dired-subtree-insert)
+(define-key dired-mode-map (kbd "i")'dired-subtree-insert)
+(define-key dired-subtree-key-map (kbd "k")'dired-subtree-remove)
+(define-key dired-subtree-key-map (kbd "r")'dired-subtree-revert)
+(define-key dired-subtree-key-map (kbd "n")'dired-subtree-narrow)
+(define-key dired-subtree-key-map (kbd "u")'dired-subtree-up)
+(define-key dired-subtree-key-map (kbd "d")'dired-subtree-down)
+(define-key dired-subtree-key-map (kbd "C-n")'dired-subtree-next-sibling)
+(define-key dired-subtree-key-map (kbd "C-p")'dired-subtree-previous-sibling)
+(define-key dired-subtree-key-map (kbd "C-a")'dired-subtree-beginning)
+(define-key dired-subtree-key-map (kbd "C-e")'dired-subtree-end)
+(define-key dired-subtree-key-map (kbd "C-SPC")'dired-subtree-mark-subtree)
+(define-key dired-subtree-key-map (kbd "C-M-SPC")'dired-subtree-unmark-subtree)
+(define-key dired-subtree-key-map (kbd "o")'dired-subtree-only-this-file)
+(define-key dired-subtree-key-map (kbd "M-o")'dired-subtree-only-this-directory)
+(define-key dired-mode-map (kbd "/ k") 'dired-filter-mode)
+
+(define-key mc-key-map (kbd ".") 'mc/mark-all-symbols-like-this)
+(define-key mc-key-map (kbd "M-.") 'mc/mark-all-symbols-like-this-in-defun)
+(define-key mc-key-map (kbd ",") 'mc/mark-all-like-this-dwim)
+(define-key mc-key-map (kbd "/") 'mc/mark-more-like-this-extended)
+(define-key mc-key-map (kbd "s") 'mc/mark-next-symbol-like-this)
+
 ;; SLIME
 (load (expand-file-name "~/quicklisp/slime-helper.el") t) ;; don't throw error if not found
 
@@ -487,12 +514,12 @@
   )
 
 ;; ein save worksheet after running cell
-(eval-after-load 'ein:notebook-mode
+(eval-after-load 'ein-multilang
   '(defadvice ein:cell-execute (after ein:save-worksheet-after-execute activate)
      (ein:notebook-save-notebook-command)))
 
 ;; javascript
-(eval-after-load 'javascript-mode
+(eval-after-load 'js
   '(progn (make-variable-buffer-local 'indent-tabs-mode)
           (add-hook 'js-mode-hook (lambda ()
                                     (setq js-indent-level 8)
@@ -502,5 +529,4 @@
 ; java
 ;; (add-to-list 'load-path "~/.emacs.d/jdee-2.4.1/lisp")
 ;; (load "jde")
-
-(setq ein:use-auto-complete-superpack t)
+ 
