@@ -80,7 +80,8 @@
 ;; y instead of yes
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;;fix crazy paredit keybindings
+;;smartparens keybindings
+(require 'smartparens)
 (defface esk-paren-face
    '((((class color) (background dark))
       (:foreground "grey50"))
@@ -88,21 +89,16 @@
       (:foreground "grey55")))
    "Face used to dim parentheses."
    :group 'starter-kit-faces)
-(require 'paredit)
+
 (dolist (mode '(scheme emacs-lisp lisp clojure clojurescript eshell))
     (when (> (display-color-cells) 8)
       (font-lock-add-keywords (intern (concat (symbol-name mode) "-mode"))
                               '(("(\\|)" . 'esk-paren-face))))
     (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
-              'paredit-mode))
-(define-key paredit-mode-map (kbd "C-<left>") 'paredit-backward-slurp-sexp)
-(define-key paredit-mode-map (kbd "C-M-<left>") 'paredit-backward-barf-sexp)
-(define-key paredit-mode-map (kbd "C-M-<right>") 'paredit-forward-barf-sexp)
-(define-key paredit-mode-map (kbd "M-(") 'paredit-wrap-round)
-
-;;use imenu to search for symbols
-(global-set-key (kbd "C-o") 'open-line)
-
+              'smartparens-mode))
+(sp-pair "(" ")" :wrap "M-(")
+;; no '' pair in lisp
+(sp-local-pair '(emacs-lisp-mode clojure-mode) "'" nil :actions nil)
 ;;use w tiling window mgr
 (setq pop-up-frames nil)
 
@@ -429,11 +425,11 @@
 ;; eval-expression
 
 (eval-after-load 'icicles
-  '(progn (add-hook 'minibuffer-setup-hook 'conditionally-enable-paredit-mode)
-          (defun conditionally-enable-paredit-mode ()
-            "enable paredit-mode during eval-expression"
+  '(progn (add-hook 'minibuffer-setup-hook 'conditionally-enable-smartparens-mode)
+          (defun conditionally-enable-smartparens-mode ()
+            "enable smartparens-mode during eval-expression"
             (if (eq this-command 'icicle-pp-eval-expression)
-                (paredit-mode 1)))
+                (smartparens-mode 1)))
           (define-key icicle-read-expression-map [(tab)] 'hippie-expand)))
 
 ;; processing many files
@@ -484,12 +480,11 @@
 
 ;;Python lint checking
 (autoload 'flycheck "flycheck-mode")
-(autoload 'autopair "autopair-mode")
 (eval-after-load 'python
   '(progn (add-hook 'python-mode-hook
                     (lambda ()
                       (flycheck-mode)
-                      (autopair-mode)
+                      (smartparens-mode)
                       (ein:connect-to-default-notebook)))
           (define-key python-mode-map (kbd "C-x p") 'ein:notebooklist-open)))
 
@@ -515,8 +510,9 @@
 
 ;; ein save worksheet after running cell
 (eval-after-load 'ein-multilang
-  '(defadvice ein:cell-execute (after ein:save-worksheet-after-execute activate)
-     (ein:notebook-save-notebook-command)))
+  '(progn (defadvice ein:cell-execute (after ein:save-worksheet-after-execute activate)
+            (ein:notebook-save-notebook-command))
+          (add-hook 'ein:notebook-multilang-mode-hook 'smartparens-mode)))
 
 ;; javascript
 (eval-after-load 'js
@@ -525,8 +521,31 @@
                                     (setq js-indent-level 8)
                                     (setq indent-tabs-mode t)))))
 
+;;split frame either horizontally or vertically depending on screen orientation
+(defun resplit-frame ()
+  (interactive)
+  (delete-other-windows)
+  (if (> (x-display-pixel-width)
+         (x-display-pixel-height))
+      (split-window-right)
+    (split-window-below)))
 
-; java
-;; (add-to-list 'load-path "~/.emacs.d/jdee-2.4.1/lisp")
-;; (load "jde")
- 
+(global-set-key (kbd "C-c r") 'resplit-frame)
+
+
+;;open dired file in associated desktop app
+(defun dired-xdg-open-file ()
+  "Opens the current file in a Dired buffer."
+  (interactive)
+  (xdg-open-file (dired-get-file-for-visit)))
+
+(defun xdg-open-file (filename)
+  "xdg-opens the specified file."
+  (interactive "fFile to open: ")
+  (let ((process-connection-type nil))
+    (start-process "" nil "/usr/bin/xdg-open" filename)))
+
+ ;;'e' usually does 'dired-find-file, same as RET, rebinding it here
+(add-hook 'dired-mode-hook
+          (lambda ()
+            (define-key dired-mode-map (kbd "e") 'dired-xdg-open-file)))

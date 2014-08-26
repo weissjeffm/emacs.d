@@ -12,10 +12,10 @@
   (package-install 'melpa))
 
 ;; Add in your own as you wish:
-(defvar my-packages '(clojure-mode paredit magit find-file-in-project
+(defvar my-packages '(clojure-mode smartparens magit find-file-in-project
                        auto-complete ac-nrepl nrepl mwe-log-commands ace-jump-mode
                        haskell-mode markdown-mode bbdb eudc
-                       dired+ icicles elisp-slime-nav flymake-python-pyflakes)
+                       dired+ icicles elisp-slime-nav flycheck)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -102,6 +102,7 @@ jweiss@redhat.com
  '(rcirc-server-alist (quote (("irc.freenode.net" :channels ("#rcirc" "#emacs" "#clojure" "#python" "#bitcoin")) ("irc.devel.redhat.com" :channels ("#cloud-qe" "#rdu16ne" "#rdu" "#cfme-qe" "#cfme-eng" "#cloudforms") nil nil))))
  '(rcirc-track-minor-mode t)
  '(reb-re-syntax ((lambda nil (quote string))))
+ '(safe-local-variable-values (quote ((eval font-lock-add-keywords nil (\` (((\, (concat "(" (regexp-opt (quote ("sp-do-move-op" "sp-do-move-cl" "sp-do-put-op" "sp-do-put-cl" "sp-do-del-op" "sp-do-del-cl")) t) "\\_>")) 1 (quote font-lock-variable-name-face))))))))
  '(scroll-bar-mode nil)
  '(send-mail-function (quote smtpmail-send-it))
  '(show-paren-mode t)
@@ -111,6 +112,7 @@ jweiss@redhat.com
  '(smtpmail-smtp-service 587 t)
  '(smtpmail-smtp-user nil)
  '(smtpmail-stream-type nil)
+ '(sp-base-key-bindings (quote paredit))
  '(sp-highlight-pair-overlay nil)
  '(sp-highlight-wrap-overlay nil)
  '(sp-highlight-wrap-tag-overlay nil)
