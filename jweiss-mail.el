@@ -1,6 +1,3 @@
-(setq user-mail-address "jweiss@redhat.com")
-(setq user-full-name "Jeff Weiss")
-
 ;; (setq gnus-posting-styles '((".*"
 ;;                              (signature "Jeff Weiss\nPrincipal Quality Assurance Engineer\njweiss@redhat.com\n(919)886-6533"))))
 
@@ -15,12 +12,7 @@
 ;;                 (nnimap-authinfo-file
 ;;                  "/home/jweiss/.imap-authinfo"))))
 
-(setq message-send-mail-function 'smtpmail-send-it
-      smtpmail-starttls-credentials '(("smtp.corp.redhat.com" 25 nil nil))
-      
-      smtpmail-default-smtp-server "smtp.corp.redhat.com" 
-      smtpmail-smtp-server "smtp.corp.redhat.com"
-      smtpmail-smtp-service 25)
+(setq message-send-mail-function 'smtpmail-send-it)
 
 (require 'bbdb)
 (require 'bbdb-message)

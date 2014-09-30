@@ -26,8 +26,10 @@
       (loop for i from ?a to ?z collect i))
 ;;others
 (global-set-key (kbd "<f5>") 'revert-buffer)
-(global-set-key (kbd "<f12>") 'nrepl-jack-in)
-(autoload 'nrepl-mode-map "nrepl")
+(global-set-key (kbd "<f12>") 'cider-jack-in)
+(global-set-key (kbd "<f3>") 'find-file)
+(global-set-key (kbd "<f4>") 'find-file-in-project)
+;(autoload 'nrepl-mode-map "nrepl")
 
 ;;hippie expand
 (global-set-key (kbd "M-/") 'hippie-expand)
@@ -96,6 +98,7 @@
                               '(("(\\|)" . 'esk-paren-face))))
     (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
               'smartparens-mode))
+(add-hook 'cider-repl-mode-hook 'smartparens-strict-mode)
 (sp-pair "(" ")" :wrap "M-(")
 ;; no '' pair in lisp
 (sp-local-pair '(emacs-lisp-mode clojure-mode) "'" nil :actions nil)
@@ -121,8 +124,9 @@
                                         ; why this is necessary
 
                                         ;(add-to-list 'ac-dictionary-directories "~/.emacs.d/jweiss/ac-dict")
-(autoload 'ac-nrepl-setup "ac-nrepl")
-(add-hook 'clojure-mode-hook 'ac-nrepl-setup)
+;(autoload 'ac-nrepl-setup "ac-nrepl")
+;(add-hook 'clojure-mode-hook 'ac-nrepl-setup)
+;(remove-hook 'clojure-mode-hook 'ac-nrepl-setup)
 ;;org-mode
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 (add-hook 'org-mode-hook 'turn-on-font-lock) ; not needed when global-font-lock-mode is on
@@ -200,22 +204,22 @@
 (autoload 'clojure-mode "clojure-mode")
 (autoload 'clojure-mode-map "clojure-mode" nil nil 'keymap)
 (set-clojure-colors 'clojure-mode)
-(set-clojure-colors 'nrepl-mode)
+;(set-clojure-colors 'nrepl-mode)
 
 
-(defun show-nrepl ()
-  (interactive)
-  (switch-to-buffer "*nrepl*"))
-(global-set-key (kbd "<f9>") 'show-nrepl)
+;; (defun show-nrepl ()
+;;   (interactive)
+;;   (switch-to-buffer "*nrepl*"))
+;; (global-set-key (kbd "<f9>") 'show-nrepl)
 
-(defun nrepl-pst ()
-  (interactive)
-  (insert "(clojure.repl/pst 100)")
-  (nrepl-return))
+;; (defun nrepl-pst ()
+;;   (interactive)
+;;   (insert "(clojure.repl/pst 100)")
+;;   (nrepl-return))
 
-(defun switch-to-nrepl-ns ()
-  (nrepl-set-ns (plist-get
-                 (nrepl-send-string-sync "(symbol (str *ns*))") :value)))
+;; (defun switch-to-nrepl-ns ()
+;;   (nrepl-set-ns (plist-get
+;;                  (nrepl-send-string-sync "(symbol (str *ns*))") :value)))
 
 (add-hook 'clojure-mode-hook
           (lambda ()
@@ -223,31 +227,31 @@
             (define-key clojure-mode-map (kbd "M-[") 'paredit-wrap-square)
             (define-key clojure-mode-map (kbd "M-{") 'paredit-wrap-curly)))
 
-(add-hook 'nrepl-mode-hook
-          (lambda ()
-            (paredit-mode)
-            (define-key nrepl-mode-map [C-S-up] 'nrepl-previous-matching-input)
-            (define-key nrepl-mode-map (kbd "M-<f12>") 'nrepl-close)
-            (define-key nrepl-mode-map (kbd "M-j") 'nrepl-newline-and-indent)
-            ;(define-key nrepl-mode-map (kbd "C-x C-e") 'nrepl-eval-last-expression)
-            (define-key nrepl-mode-map (kbd "<f7>") 'nrepl-pst)
-            ;(define-key nrepl-mode-map (kbd "M-.") 'nrepl-jump)
-            (define-key nrepl-interaction-mode-map (kbd "C-c C-z") 'nrepl-switch-to-repl-buffer)
+;; (add-hook 'nrepl-mode-hook
+;;           (lambda ()
+;;             (paredit-mode)
+;;             (define-key nrepl-mode-map [C-S-up] 'nrepl-previous-matching-input)
+;;             (define-key nrepl-mode-map (kbd "M-<f12>") 'nrepl-close)
+;;             (define-key nrepl-mode-map (kbd "M-j") 'nrepl-newline-and-indent)
+;;             ;(define-key nrepl-mode-map (kbd "C-x C-e") 'nrepl-eval-last-expression)
+;;             (define-key nrepl-mode-map (kbd "<f7>") 'nrepl-pst)
+;;             ;(define-key nrepl-mode-map (kbd "M-.") 'nrepl-jump)
+;;             (define-key nrepl-interaction-mode-map (kbd "C-c C-z") 'nrepl-switch-to-repl-buffer)
 
             
-            (auto-complete-mode)
-            (ac-nrepl-setup)
-            (font-lock-mode nil)
-            (clojure-mode-font-lock-setup)
-            (font-lock-mode t)))
+;;             (auto-complete-mode)
+;;             (ac-nrepl-setup)
+;;             (font-lock-mode nil)
+;;             (clojure-mode-font-lock-setup)
+;;             (font-lock-mode t)))
 
-(add-hook 'nrepl-connected-hook 
-          (lambda ()
-            (nrepl-set-ns (plist-get
-                           (nrepl-send-string-sync "(symbol (str *ns*))") :value))))
+;; (add-hook 'nrepl-connected-hook 
+;;           (lambda ()
+;;             (nrepl-set-ns (plist-get
+;;                            (nrepl-send-string-sync "(symbol (str *ns*))") :value))))
 
-(add-hook 'nrepl-interaction-mode-hook
-          'nrepl-turn-on-eldoc-mode)
+;; (add-hook 'nrepl-interaction-mode-hook
+;;           'nrepl-turn-on-eldoc-mode)
 
 (defun goto-last-edit-point ()
   "Go to the last point where editing occurred."
@@ -510,9 +514,9 @@
 
 ;; ein save worksheet after running cell
 (eval-after-load 'ein-multilang
-  '(progn (defadvice ein:cell-execute (after ein:save-worksheet-after-execute activate)
-            (ein:notebook-save-notebook-command))
-          (add-hook 'ein:notebook-multilang-mode-hook 'smartparens-mode)))
+  (progn (defadvice ein:cell-execute (after ein:save-worksheet-after-execute activate)
+           (ein:notebook-save-notebook-command))
+         (add-hook 'ein:notebook-multilang-mode-hook 'smartparens-mode)))
 
 ;; javascript
 (eval-after-load 'js
@@ -525,13 +529,13 @@
 (defun resplit-frame ()
   (interactive)
   (delete-other-windows)
-  (if (> (x-display-pixel-width)
-         (x-display-pixel-height))
+  (if (> (frame-pixel-width)
+         (frame-pixel-height))
       (split-window-right)
     (split-window-below)))
 
 (global-set-key (kbd "C-c r") 'resplit-frame)
-
+(global-set-key (kbd "C-c x f") 'find-file-in-project)
 
 ;;open dired file in associated desktop app
 (defun dired-xdg-open-file ()
@@ -549,3 +553,24 @@
 (add-hook 'dired-mode-hook
           (lambda ()
             (define-key dired-mode-map (kbd "e") 'dired-xdg-open-file)))
+
+;;add option to just kill the buffer when prompted by save-some-buffers
+(add-to-list 'save-some-buffers-action-alist `((?\C-k) kill-buffer ,(purecopy "kill this buffer")))
+
+;;Go
+;;set paths
+
+(let ((mygopath "/home/jweiss/workspace/go/bin"))
+  (setenv "PATH" (concat (getenv "PATH") ":" mygopath))
+  (add-to-list 'exec-path mygopath))
+(setenv "GOPATH" "/home/jweiss/workspace/go/")
+(add-hook 'go-mode-hook
+          (lambda ()
+            (local-set-key (kbd "M-.") 'godef-jump)
+            (local-set-key (kbd "C-c C-j") 'imenu)
+            (electric-indent-mode)
+            (smartparens-mode)
+            ;;(setq tab-width 4)
+            ;;(setq indent-tabs-mode nil)
+            ))
+
