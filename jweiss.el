@@ -31,6 +31,12 @@
 (global-set-key (kbd "<f4>") 'find-file-in-project)
 ;(autoload 'nrepl-mode-map "nrepl")
 
+;;smex & ido
+(autoload 'smex-initialize "smex")
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+(ido-mode)
+
 ;;hippie expand
 (global-set-key (kbd "M-/") 'hippie-expand)
 
@@ -101,7 +107,7 @@
 (add-hook 'cider-repl-mode-hook 'smartparens-strict-mode)
 (sp-pair "(" ")" :wrap "M-(")
 ;; no '' pair in lisp
-(sp-local-pair '(emacs-lisp-mode clojure-mode) "'" nil :actions nil)
+(sp-local-pair '(emacs-lisp-mode slime-repl-mode clojure-mode 'cider-repl-mode) "'" nil :actions nil)
 ;;use w tiling window mgr
 (setq pop-up-frames nil)
 
@@ -567,4 +573,25 @@
 (defun start-ipython-current-project (virtualenv-dir)
   (interactive (list (read-directory-name "VirtualEnv dir: " "~/.virtualenvs/" nil t)))
   (let ((buf (virtualenv-shell virtualenv-dir " ipython")))
-    (process-send-string buf (format "cd %s;ipython notebook\n" (magit-project-dir)))))
+    (process-send-string buf (format "cd %s;ipython3 notebook\n" (magit-project-dir)))))
+
+
+;; copy filename of buffer
+
+(defun clip-file ()
+  "Put the current file name on the clipboard"
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      (file-name-directory default-directory)
+                    (buffer-file-name))))
+    (if filename
+        (progn (kill-new filename)
+               (x-select-text filename))
+      (error "unable to determine file name of current buffer."))))
+
+;; virtualenvs
+
+(require 'virtualenvwrapper)
+(venv-initialize-interactive-shells) ;; if you want interactive shell support
+(venv-initialize-eshell) ;; if you want eshell support
+(setq venv-location "~/.virtualenvs")

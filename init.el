@@ -1,10 +1,10 @@
+
 (require 'package)
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives
-             '("jweiss" . "http://qeblade5.rhq.lab.eng.bos/isos/emacs-package-archive/") t)
+
 (package-initialize)
 
 (when (not (package-installed-p 'melpa))
@@ -13,9 +13,9 @@
 
 ;; Add in your own as you wish:
 (defvar my-packages '(clojure-mode smartparens magit find-file-in-project
-                       auto-complete ac-nrepl nrepl mwe-log-commands ace-jump-mode
+                       auto-complete mwe-log-commands ace-jump-mode
                        haskell-mode markdown-mode bbdb eudc
-                       dired+ icicles elisp-slime-nav flycheck)
+                       dired+ icicles elisp-slime-nav flycheck ido smex)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -40,7 +40,7 @@
  '(ein:connect-default-notebook "8888/dispatch")
  '(ein:use-auto-complete-superpack t)
  '(ein:worksheet-enable-undo (quote full))
- '(erc-autojoin-channels-alist (quote (("freenode.net" "#bitcoin" "#leiningen" "#emacs" "#clojure" "#katello" "#pulp") ("devel.redhat.com" "#cloud-qe" "#systemengine" "#systemengine-qe" "#candlepin" "#rdu16ne" "#rdu"))))
+ '(erc-autojoin-channels-alist (quote (("freenode.net" "#bitcoin" "#leiningen" "#emacs" "#clojure" "#katello" "#pulp"))))
  '(erc-enable-logging t)
  '(erc-fill-column 100)
  '(erc-generate-log-file-name-function (lambda (buffer target nick server port) (let ((file (concat (if target (concat target "@")) server ":" (cond ((stringp port) port) ((numberp port) (number-to-string port))) ".txt"))) (convert-standard-filename file))))
@@ -69,30 +69,32 @@
  '(icicle-expand-input-to-common-match 1)
  '(icicle-incremental-completion (quote always))
  '(icicle-max-candidates 100)
- '(icicle-mode t)
+ '(icicle-mode nil)
+ '(ido-default-buffer-method (quote selected-window))
+ '(ido-default-file-method (quote selected-window))
  '(imenu-auto-rescan t)
  '(indent-tabs-mode nil)
- '(inferior-lisp-program "sbcl" t)
+ '(inferior-lisp-program "sbcl")
+ '(iswitchb-delim " | ")
+ '(iswitchb-mode t)
  '(jabber-account-list (("jeffrey.m.weiss@gmail.com")))
  '(jedi:server-args (quote ("--virtual-env" "/home/jweiss/workspace/cfme_pages/cfme")))
- '(mail-signature "Jeff Weiss
-Principal Quality Assurance Engineer
-jweiss@redhat.com
-(919)886-6533")
+ '(mail-signature nil)
  '(menu-bar-mode nil)
  '(minimap-update-delay 0.3)
  '(mouse-yank-at-point t)
  '(notmuch-crypto-process-mime t)
  '(notmuch-hello-thousands-separator ",")
- '(notmuch-saved-searches (quote (("newstuff" . "tag:new AND (folder:Redhat/INBOX OR folder:GMail/INBOX OR folder:Monetas/INBOX OR folder:Personal/INBOX OR folder:Redhat/Lists/katello/devel OR folder:Redhat/Lists/katello/internal)") ("announce-list" . "folder:RedHat/lists/announce-list AND tag:new"))))
+ '(notmuch-saved-searches (quote ((:name "newstuff" :query "tag:new AND (folder:GMail/INBOX OR folder:Monetas/INBOX OR folder:Personal/INBOX OR folder:Personal-Remote/INBOX)") (:name "Monetas-new" :query "tag:new AND folder:Monetas/INBOX"))))
  '(notmuch-search-oldest-first nil)
  '(notmuch-search-result-format (quote (("authors" . "%-28s") ("date" . "%12s ") ("count" . "%-7s ") ("subject" . "%s ") ("tags" . "(%s)"))))
  '(notmuch-show-all-multipart/alternative-parts nil)
  '(org-agenda-files (quote ("~/workspace/cfme_tests/jweiss.org" "~/tasks/7212467cf49c6e11eaff/jweiss.org")))
- '(package-archive-upload-base "/scp:root@qeblade5.rhq.lab.eng.bos:/root/ISOs/emacs-package-archive/")
+ '(org-startup-indented t)
+ '(package-archive-upload-base "/home/jweiss/.emacs.d/package-archives")
  '(proced-filter (quote all))
  '(python-skeleton-autoinsert t)
- '(rcirc-authinfo (quote (("irc.freenode.net" nickserv "jweiss" "111111jm") ("irc.devel.redhat.com" userserv "jweiss" "111111jm"))))
+ '(rcirc-authinfo (quote (("irc.freenode.net" nickserv "jweiss" "111111jm"))))
  '(rcirc-buffer-maximum-lines 2000)
  '(rcirc-default-full-name "Jeff Weiss")
  '(rcirc-default-user-name "jweiss")
@@ -102,7 +104,7 @@ jweiss@redhat.com
  '(rcirc-notify-message "%s: %s")
  '(rcirc-notify-message-private "(priv) %s: %s")
  '(rcirc-notify-timeout 30)
- '(rcirc-server-alist (quote (("irc.freenode.net" :channels ("#rcirc" "#emacs" "#clojure" "#python" "#bitcoin" "#monetas-dev" "#opentransactions" "#go-nuts")) ("irc.devel.redhat.com" :channels ("#cloud-qe" "#rdu16ne" "#rdu" "#cfme-qe" "#cfme-eng" "#cloudforms") nil nil))))
+ '(rcirc-server-alist (quote (("irc.freenode.net" :channels ("#rcirc" "#emacs" "#clojure" "#python" "#bitcoin" "#monetas-dev" "#opentransactions" "#go-nuts")))))
  '(rcirc-track-minor-mode t)
  '(reb-re-syntax ((lambda nil (quote string))))
  '(safe-local-variable-values (quote ((eval font-lock-add-keywords nil (quote (("(\\(dired-filter-define\\)[[:blank:]]+\\(.+\\)" (1 (quote font-lock-keyword-face)) (2 (quote font-lock-function-name-face)))))) (eval font-lock-add-keywords nil (\` (((\, (concat "(" (regexp-opt (quote ("sp-do-move-op" "sp-do-move-cl" "sp-do-put-op" "sp-do-put-cl" "sp-do-del-op" "sp-do-del-cl")) t) "\\_>")) 1 (quote font-lock-variable-name-face))))))))
@@ -110,9 +112,11 @@ jweiss@redhat.com
  '(send-mail-function (quote smtpmail-send-it))
  '(show-paren-mode t)
  '(show-paren-style (quote expression))
- '(smtpmail-default-smtp-server "localhost")
- '(smtpmail-smtp-server "localhost")
+ '(smtpmail-default-smtp-server nil)
+ '(smtpmail-smtp-server "jweiss.com")
  '(smtpmail-smtp-service 25)
+ '(smtpmail-smtp-user "jweiss")
+ '(smtpmail-stream-type nil)
  '(sp-base-key-bindings (quote paredit))
  '(sp-highlight-pair-overlay nil)
  '(sp-highlight-wrap-overlay nil)
@@ -134,7 +138,7 @@ jweiss@redhat.com
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:background "black" :foreground "white" :slant normal :weight normal :height 92 :width normal :family "DejaVu Sans Mono"))))
+ '(default ((t (:background "black" :foreground "white" :slant normal :weight normal :family "DejaVu Sans Mono"))))
  '(ac-completion-face ((t (:inherit default :foreground "darkgray" :underline t))))
  '(clojure-parens ((t (:foreground "gray38" :underline nil :weight bold))))
  '(diff-added ((t (:inherit diff-changed :background "#113311" :foreground "gray70"))))
@@ -145,6 +149,7 @@ jweiss@redhat.com
  '(hl-line ((t (:inherit highlight :background "#151500"))))
  '(icicle-current-candidate-highlight ((t (:background "yellow" :foreground "black"))))
  '(icicle-mode-line-help ((t (:weight bold))))
+ '(iswitchb-current-match ((t (:inherit font-lock-function-name-face :foreground "orange red"))))
  '(magit-item-highlight ((t (:background "gray10"))))
  '(minimap-active-region-background ((t (:background "#3517205D0000"))))
  '(minimap-font-face ((t (:height 20 :family "DejaVu Sans Mono"))))
@@ -166,3 +171,4 @@ jweiss@redhat.com
 (put 'upcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+(put 'erase-buffer 'disabled nil)

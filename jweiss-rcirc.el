@@ -153,30 +153,17 @@ Passwords are stored in `rcirc-authinfo' (which see)."
 If DELAY is specified, it will be the minimum time in seconds
 that can occur between two notifications.  The default is
 `rcirc-notify-timeout'."
-  ;; Check current frame buffers
-  (let ((rcirc-in-a-frame-p
-         (some (lambda (f)
-                 (and (equal "rcirc" (cdr f))
-                      (car f)))
-               (mapcar (lambda (f)
-                         (let ((buffer (car (frame-parameter f 'buffer-list))))
-                           (with-current-buffer buffer
-                             (cons buffer mode-name))))
-                       (visible-frame-list)))))
-    (if (or (and rcirc-notify-check-frame (not rcirc-in-a-frame-p))
-            (not rcirc-notify-check-frame))
+  (unless delay (setq delay rcirc-notify-timeout))
+  (let ((cur-time (time-to-seconds (current-time)))
+        (cur-assoc (assoc nick rcirc-notify--nick-alist))
+        (last-time))
+    (if cur-assoc
         (progn
-          (unless delay (setq delay rcirc-notify-timeout))
-          (let ((cur-time (float-time (current-time)))
-                (cur-assoc (assoc nick rcirc-notify--nick-alist))
-                (last-time))
-            (if cur-assoc
-                (progn
-                  (setq last-time (cdr cur-assoc))
-                  (setcdr cur-assoc cur-time)
-                  (> (abs (- cur-time last-time)) delay))
-              (push (cons nick cur-time) rcirc-notify--nick-alist)
-              t))))))
+          (setq last-time (cdr cur-assoc))
+          (setcdr cur-assoc cur-time)
+          (> (abs (- cur-time last-time)) delay))
+      (push (cons nick cur-time) rcirc-notify--nick-alist)
+      t)))
 
 (defun rcirc-notify-me (proc sender response target text)
   "Notify the current user when someone sends a message that

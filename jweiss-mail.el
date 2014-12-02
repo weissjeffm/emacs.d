@@ -28,7 +28,7 @@
 
 
 (setq ldap-host-parameters-alist
-      (quote (("ldap.corp.redhat.com" base "ou=users,dc=redhat,dc=com"))))
+      (quote ()))
 
 (require 'eudc)
 
@@ -59,8 +59,7 @@
 
 
 (eudc-set-server "localhost" 'bbdb t)
-(setq eudc-server-hotlist '(("localhost" . bbdb)
-			    ("ldap.corp.redhat.com" . ldap)))
+(setq eudc-server-hotlist '(("localhost" . bbdb)))
 
 (setq eudc-inline-expansion-servers 'hotlist)
 
@@ -90,7 +89,7 @@
      (defun notmuch-untag-all-new ()
        (interactive)
        (notmuch-search-tag-all '("-new"))
-       (notmuch-search-quit))
+       (notmuch-kill-this-buffer))
      (define-key notmuch-search-mode-map (kbd "C-c C-k") 'notmuch-untag-all-new)
 
      ;; Autorefresh notmuch-hello using D-Bus
@@ -115,7 +114,13 @@
      
      (define-key 'notmuch-search-mode-map (kbd "M-r") 'notmuch-mark-thread-read)
 
+     ;; variable pitch commented out because notmuch can't handle it
+     ;; esp for the search page, spacing is wrong
+     
+     ;;(add-hook 'notmuch-hello-mode-hook 'variable-pitch-mode)
+     ;;(add-hook 'notmuch-show-hook 'variable-pitch-mode)
      (add-hook 'notmuch-search-hook (lambda ()
+                                      ; (variable-pitch-mode) 
                                       (text-scale-set 2)))))
 
 
