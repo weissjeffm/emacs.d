@@ -89,7 +89,7 @@
      (defun notmuch-untag-all-new ()
        (interactive)
        (notmuch-search-tag-all '("-new"))
-       (notmuch-kill-this-buffer))
+       (notmuch-bury-or-kill-this-buffer))
      (define-key notmuch-search-mode-map (kbd "C-c C-k") 'notmuch-untag-all-new)
 
      ;; Autorefresh notmuch-hello using D-Bus

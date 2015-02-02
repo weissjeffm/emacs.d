@@ -3,19 +3,21 @@
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
-
+             '("melpa" . "http://melpa.org/packages/") t)
+(add-to-list 'package-archives '("local" . "/home/jweiss/.emacs.d/package-archives"))
 (package-initialize)
 
-(when (not (package-installed-p 'melpa))
-  (package-refresh-contents)
-  (package-install 'melpa))
+;; (when (not (package-installed-p 'melpa))
+;;   (package-refresh-contents)
+;;   (package-install "melpa"))
 
 ;; Add in your own as you wish:
 (defvar my-packages '(clojure-mode smartparens magit find-file-in-project
                        auto-complete mwe-log-commands ace-jump-mode
-                       haskell-mode markdown-mode bbdb eudc
-                       dired+ icicles elisp-slime-nav flycheck ido smex)
+                       haskell-mode markdown-mode bbdb eudc undo-tree
+                       dired+ dired-subtree icicles elisp-slime-nav flycheck ido smex
+                       multiple-cursors virtualenvwrapper rcirc-notify
+                       rcirc-color ein)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -24,7 +26,7 @@
 
 (setq package-archive-enable-alist nil)
 
-(require 'icicles)
+;;(require 'icicles)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -34,22 +36,46 @@
  '(ac-auto-show-menu t)
  '(ac-expand-on-auto-complete nil)
  '(blink-cursor-mode nil)
+ '(c-basic-offset 4)
+ '(cider-annotate-completion-candidates t)
+ '(cider-repl-use-clojure-font-lock t)
+ '(cider-repl-use-pretty-printing nil)
  '(dired-recursive-deletes (quote always))
  '(eclim-eclipse-dirs "~/.eclipse/")
- '(eclim-executable "/home/jweiss/.eclipse/org.eclipse.platform_793567567_linux_gtk_x86_64/eclim")
+ '(eclim-executable
+   "/home/jweiss/.eclipse/org.eclipse.platform_793567567_linux_gtk_x86_64/eclim")
  '(ein:connect-default-notebook "8888/dispatch")
  '(ein:use-auto-complete-superpack t)
  '(ein:worksheet-enable-undo (quote full))
- '(erc-autojoin-channels-alist (quote (("freenode.net" "#bitcoin" "#leiningen" "#emacs" "#clojure" "#katello" "#pulp"))))
+ '(erc-autojoin-channels-alist
+   (quote
+    (("freenode.net" "#bitcoin" "#leiningen" "#emacs" "#clojure" "#katello" "#pulp"))))
  '(erc-enable-logging t)
  '(erc-fill-column 100)
- '(erc-generate-log-file-name-function (lambda (buffer target nick server port) (let ((file (concat (if target (concat target "@")) server ":" (cond ((stringp port) port) ((numberp port) (number-to-string port))) ".txt"))) (convert-standard-filename file))))
+ '(erc-generate-log-file-name-function
+   (lambda
+     (buffer target nick server port)
+     (let
+         ((file
+           (concat
+            (if target
+                (concat target "@"))
+            server ":"
+            (cond
+             ((stringp port)
+              port)
+             ((numberp port)
+              (number-to-string port)))
+            ".txt")))
+       (convert-standard-filename file))))
  '(erc-join-buffer (quote bury))
  '(erc-log-channels-directory "~/.erc/logs/")
  '(erc-log-mode t)
  '(erc-log-write-after-insert t)
  '(erc-log-write-after-send t)
- '(erc-modules (quote (autojoin button completion fill irccontrols list log match menu move-to-prompt netsplit networks noncommands readonly ring stamp track)))
+ '(erc-modules
+   (quote
+    (autojoin button completion fill irccontrols list log match menu move-to-prompt netsplit networks noncommands readonly ring stamp track)))
  '(erc-save-buffer-on-part nil)
  '(erc-save-queries-on-quit nil)
  '(erc-server-reconnect-attempts t)
@@ -61,6 +87,7 @@
  '(flymake-python-pyflakes-extra-arguments (quote ("--max-line-length=100" "--ignore=E128,E811")))
  '(global-hl-line-mode t)
  '(global-undo-tree-mode t)
+ '(graphviz-dot-view-command "xdot %s")
  '(icicle-Completions-text-scale-decrease 0.0)
  '(icicle-TAB-completion-methods (quote (vanilla basic)))
  '(icicle-buffer-require-match-flag (quote partial-match-ok))
@@ -74,22 +101,35 @@
  '(ido-default-file-method (quote selected-window))
  '(imenu-auto-rescan t)
  '(indent-tabs-mode nil)
- '(inferior-lisp-program "sbcl")
+ '(inferior-lisp-program "sbcl" t)
  '(iswitchb-delim " | ")
  '(iswitchb-mode t)
  '(jabber-account-list (("jeffrey.m.weiss@gmail.com")))
- '(jedi:server-args (quote ("--virtual-env" "/home/jweiss/workspace/cfme_pages/cfme")))
+ '(jedi:server-args
+   (quote
+    ("--virtual-env" "/home/jweiss/workspace/cfme_pages/cfme")))
  '(mail-signature nil)
  '(menu-bar-mode nil)
  '(minimap-update-delay 0.3)
  '(mouse-yank-at-point t)
  '(notmuch-crypto-process-mime t)
  '(notmuch-hello-thousands-separator ",")
- '(notmuch-saved-searches (quote ((:name "newstuff" :query "tag:new AND (folder:GMail/INBOX OR folder:Monetas/INBOX OR folder:Personal/INBOX OR folder:Personal-Remote/INBOX)") (:name "Monetas-new" :query "tag:new AND folder:Monetas/INBOX"))))
+ '(notmuch-saved-searches
+   (quote
+    ((:name "newstuff" :query "tag:new AND (folder:GMail/INBOX OR folder:Monetas/INBOX OR folder:Personal/INBOX OR folder:Personal-Remote/INBOX)")
+     (:name "Monetas-new" :query "tag:new AND folder:Monetas/INBOX"))))
  '(notmuch-search-oldest-first nil)
- '(notmuch-search-result-format (quote (("authors" . "%-28s") ("date" . "%12s ") ("count" . "%-7s ") ("subject" . "%s ") ("tags" . "(%s)"))))
+ '(notmuch-search-result-format
+   (quote
+    (("authors" . "%-28s")
+     ("date" . "%12s ")
+     ("count" . "%-7s ")
+     ("subject" . "%s ")
+     ("tags" . "(%s)"))))
  '(notmuch-show-all-multipart/alternative-parts nil)
- '(org-agenda-files (quote ("~/workspace/cfme_tests/jweiss.org" "~/tasks/7212467cf49c6e11eaff/jweiss.org")))
+ '(org-agenda-files
+   (quote
+    ("~/Documents/monetas.org" "~/tasks/7212467cf49c6e11eaff/jweiss.org")))
  '(org-startup-indented t)
  '(package-archive-upload-base "/home/jweiss/.emacs.d/package-archives")
  '(proced-filter (quote all))
@@ -104,10 +144,32 @@
  '(rcirc-notify-message "%s: %s")
  '(rcirc-notify-message-private "(priv) %s: %s")
  '(rcirc-notify-timeout 30)
- '(rcirc-server-alist (quote (("irc.freenode.net" :channels ("#rcirc" "#emacs" "#clojure" "#python" "#bitcoin" "#monetas-dev" "#opentransactions" "#go-nuts")))))
+ '(rcirc-server-alist
+   (quote
+    (("irc.freenode.net" :channels
+      ("#rcirc" "#emacs" "#clojure" "#python" "#bitcoin" "#monetas-dev" "#opentransactions" "#go-nuts")))))
  '(rcirc-track-minor-mode t)
  '(reb-re-syntax ((lambda nil (quote string))))
- '(safe-local-variable-values (quote ((eval font-lock-add-keywords nil (quote (("(\\(dired-filter-define\\)[[:blank:]]+\\(.+\\)" (1 (quote font-lock-keyword-face)) (2 (quote font-lock-function-name-face)))))) (eval font-lock-add-keywords nil (\` (((\, (concat "(" (regexp-opt (quote ("sp-do-move-op" "sp-do-move-cl" "sp-do-put-op" "sp-do-put-cl" "sp-do-del-op" "sp-do-del-cl")) t) "\\_>")) 1 (quote font-lock-variable-name-face))))))))
+ '(safe-local-variable-values
+   (quote
+    ((eval font-lock-add-keywords nil
+           (quote
+            (("(\\(dired-filter-define\\)[[:blank:]]+\\(.+\\)"
+              (1
+               (quote font-lock-keyword-face))
+              (2
+               (quote font-lock-function-name-face))))))
+     (eval font-lock-add-keywords nil
+           (\`
+            (((\,
+               (concat "("
+                       (regexp-opt
+                        (quote
+                         ("sp-do-move-op" "sp-do-move-cl" "sp-do-put-op" "sp-do-put-cl" "sp-do-del-op" "sp-do-del-cl"))
+                        t)
+                       "\\_>"))
+              1
+              (quote font-lock-variable-name-face))))))))
  '(scroll-bar-mode nil)
  '(send-mail-function (quote smtpmail-send-it))
  '(show-paren-mode t)
@@ -140,6 +202,7 @@
  ;; If there is more than one, they won't work right.
  '(default ((t (:background "black" :foreground "white" :slant normal :weight normal :family "DejaVu Sans Mono"))))
  '(ac-completion-face ((t (:inherit default :foreground "darkgray" :underline t))))
+ '(clojure-keyword-face ((t (:inherit lisp-keyword))))
  '(clojure-parens ((t (:foreground "gray38" :underline nil :weight bold))))
  '(diff-added ((t (:inherit diff-changed :background "#113311" :foreground "gray70"))))
  '(diff-removed ((t (:inherit diff-changed :background "#331111" :foreground "gray70"))))

@@ -90,18 +90,11 @@
 
 ;;smartparens keybindings
 (require 'smartparens)
-(defface esk-paren-face
-   '((((class color) (background dark))
-      (:foreground "grey50"))
-     (((class color) (background light))
-      (:foreground "grey55")))
-   "Face used to dim parentheses."
-   :group 'starter-kit-faces)
 
 (dolist (mode '(scheme emacs-lisp lisp clojure clojurescript eshell))
-    (when (> (display-color-cells) 8)
-      (font-lock-add-keywords (intern (concat (symbol-name mode) "-mode"))
-                              '(("(\\|)" . 'esk-paren-face))))
+    ;; (when (> (display-color-cells) 8)
+    ;;   (font-lock-add-keywords (intern (concat (symbol-name mode) "-mode"))
+    ;;                           '(("(\\|)" . 'esk-paren-face))))
     (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
               'smartparens-mode))
 (add-hook 'cider-repl-mode-hook 'smartparens-strict-mode)
@@ -141,76 +134,117 @@
 (global-set-key "\C-cb" 'org-iswitchb)
 
 ;; More syntax coloring
+
+(setq my-lisp-font-lock-keywords
+      '(("(\\|)" . 'lisp-parens)
+        ("\\s-+:\\w+" . 'lisp-keyword)
+        ("#?\"" 0 'double-quote prepend)))
+
+(defun tweak-lisp-syntax (mode)
+  (font-lock-add-keywords mode my-lisp-font-lock-keywords))
+
 (defun tweak-clojure-syntax (mode)
-  (mapcar (lambda (x) (font-lock-add-keywords mode x))
-          '((("#?['`]*(\\|)" . 'clojure-parens))
-            (("#?\\^?{\\|}" . 'clojure-braces))
-            (("\\[\\|\\]" . 'clojure-brackets))
-            ((":\\w+" . 'clojure-keyword))
-            (("#?\"" 0 'clojure-double-quote prepend))
-            (("nil\\|true\\|false\\|%[1-9]?" . 'clojure-special))
-            
-            
-            (("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1
-              'clojure-java-call))
-            (("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 'font-lock-warning-face t))
-            ;; (("(\\(fn\\>\\)" 0 (progn (compose-region (match-beginning 1)
-            ;;                                           (match-end 1) "ƒ") nil)))
-            ;; (("(\\(->\\>\\)" 0 (progn (compose-region (match-beginning 1)
-            ;;                                           (match-end 1) "→") nil)))
-            ;; (("(\\(->>\\>\\)" 0 (progn (compose-region (match-beginning 1)
-            ;;                                            (match-end 1) "↠") nil)))
-            ;; (("(\\(complement\\>\\)" 0 (progn (compose-region
-            ;;                                    (match-beginning 1)
-            ;;                                    (match-end 1) "¬") nil))) 
-            (("^[a-zA-Z0-9-.*+!_?]+?>" . 'nrepl-prompt-face)))))
+  (tweak-lisp-syntax mode)
+  (font-lock-add-keywords
+   mode
+   '(("#?\\^?{\\|}" . 'clojure-braces)
+     ("\\[\\|\\]" . 'clojure-brackets)
+     ("nil\\|true\\|false\\|%[1-9]?" . 'clojure-special)
+     ("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1
+      'clojure-java-call)
+     ("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 'font-lock-warning-face t))
+   ;; (("(\\(fn\\>\\)" 0 (progn (compose-region (match-beginning 1)
+   ;;                                           (match-end 1) "ƒ") nil)))
+   ;; (("(\\(->\\>\\)" 0 (progn (compose-region (match-beginning 1)
+   ;;                                           (match-end 1) "→") nil)))
+   ;; (("(\\(->>\\>\\)" 0 (progn (compose-region (match-beginning 1)
+   ;;                                            (match-end 1) "↠") nil)))
+   ;; (("(\\(complement\\>\\)" 0 (progn (compose-region
+   ;;                                    (match-beginning 1)
+   ;;                                    (match-end 1) "¬") nil))) 
+   ))
 
 ;; Macro for face definition
-(defmacro defcljface (name color desc &optional others)
+(defmacro def-mode-face (name color desc &optional others)
   `(defface ,name '((((class color)) (:foreground ,color ,@others)))
      ,desc :group 'faces))
 
 ;; Define extra clojure faces
-(defcljface clojure-parens       "DimGrey"   "Clojure parens")
-(defcljface clojure-braces       "#49b2c7"   "Clojure braces")
-(defcljface clojure-brackets     "#0074e8"   "Clojure brackets")
-(defcljface clojure-keyword      "#45b8f2"   "Clojure keywords")
-(defcljface clojure-namespace    "#a9937a"   "Clojure namespace")
-(defcljface clojure-java-call    "#7587a6"   "Clojure Java calls")
-(defcljface clojure-special      "#0074e8"   "Clojure special")
-(defcljface clojure-double-quote "#00920A"   "Clojure special")
+(def-mode-face double-quote "#00920A"   "special")
+(def-mode-face lisp-keyword      "#45b8f2"   "Lisp keywords")
+(def-mode-face lisp-parens       "DimGrey"   "Lisp parens")
+(def-mode-face clojure-braces       "#49b2c7"   "Clojure braces")
+(def-mode-face clojure-brackets     "#0074e8"   "Clojure brackets")
+(def-mode-face clojure-namespace    "#a9937a"   "Clojure namespace")
+(def-mode-face clojure-java-call    "#7587a6"   "Clojure Java calls")
+(def-mode-face clojure-special      "#0074e8"   "Clojure special")
 
 ;;clojure colors
-(defun set-clojure-colors (mode-fn)
-  (tweak-clojure-syntax mode-fn)
+(defun set-lisp-colors (mode-fn)
+  (tweak-lisp-syntax mode-fn)
+  (set-face-foreground 'double-quote "LightSalmon")
   (set-face-foreground 'font-lock-string-face "#ffddaa")
-  (set-face-foreground 'clojure-parens "gray27")
-  (set-face-attribute 'clojure-parens nil :underline nil :bold t)
-  (set-face-foreground 'clojure-brackets "#445f5f")
-  (set-face-attribute 'clojure-brackets nil :underline nil :bold t)
-  (set-face-foreground 'clojure-double-quote "LightSalmon")
-  (set-face-foreground 'clojure-braces "#666644")
-  (set-face-attribute 'clojure-braces nil :underline nil :bold t)
-  (set-face-foreground 'clojure-keyword "#ffcccc")
-  (set-face-attribute 'clojure-keyword nil :underline nil :bold nil :italic t)
+  (set-face-foreground 'lisp-parens "gray32")
+  (set-face-attribute 'lisp-parens nil :underline nil :bold t)
+  (set-face-foreground 'lisp-keyword "#ffcccc")
+  (set-face-attribute 'lisp-keyword nil :underline nil :bold nil :italic t)
   (set-face-foreground 'font-lock-keyword-face "#eeaaff")
   (set-face-attribute 'font-lock-keyword-face nil :underline nil :bold t :italic nil)
-  (set-face-foreground 'clojure-java-call "#ccffcc")
-  (set-face-foreground 'clojure-namespace "#0000ff")
-  (set-face-attribute 'clojure-namespace nil :underline nil :bold t)
-
   (set-face-attribute 'font-lock-function-name-face nil :underline nil :bold t)
   (set-face-foreground 'font-lock-function-name-face "#ffeeaa")
   (set-face-attribute 'font-lock-builtin-face nil :underline nil :bold t)
-  (set-face-foreground 'font-lock-builtin-face "#aaddff")
+  (set-face-foreground 'font-lock-builtin-face "#aaddff"))
+
+(defun set-clojure-colors (mode-fn)
+  (tweak-clojure-syntax mode-fn)
+  (set-lisp-colors mode-fn)
+  
+  (set-face-foreground 'clojure-brackets "#445f5f")
+  (set-face-attribute 'clojure-brackets nil :underline nil :bold t)
+
+  (set-face-foreground 'clojure-braces "#5f4d44")
+  (set-face-attribute 'clojure-braces nil :underline nil :bold t)
+  
+
+  (set-face-foreground 'clojure-java-call "#ccffcc")
+  (set-face-foreground 'clojure-namespace "#0000ff")
+  (set-face-attribute 'clojure-namespace nil :underline nil :bold t)
 
   (set-face-foreground 'clojure-special "#bbbbff")
   (set-face-attribute 'clojure-special nil :underline nil :bold t :italic t))
 
 (autoload 'clojure-mode "clojure-mode")
 (autoload 'clojure-mode-map "clojure-mode" nil nil 'keymap)
-(set-clojure-colors 'clojure-mode)
-;(set-clojure-colors 'nrepl-mode)
+;(set-lisp-colors 'lisp-mode)
+(set-lisp-colors 'emacs-lisp-mode)
+;(set-clojure-colors 'clojure-mode)
+(add-hook 'cider-repl-mode-hook (lambda () (set-clojure-colors nil)
+                                  (font-lock-add-keywords nil clojure-font-lock-keywords)))
+;(set-lisp-colors 'slime-repl-mode)
+
+
+(defun slime-repl-font-lock-setup ()
+  (font-lock-mode nil)
+  (setq font-lock-defaults
+        '((my-lisp-font-lock-keywords lisp-font-lock-keywords-2)
+          ;; From lisp-mode.el
+          nil nil (("+-*/.<>=!?$%_&~^:@" . "w")) nil
+          (font-lock-syntactic-face-function
+           . lisp-font-lock-syntactic-face-function)))
+  ;; (set-lisp-colors 'slime-repl-mode)
+  (font-lock-mode t)
+  )
+
+(add-hook 'slime-repl-mode-hook 'slime-repl-font-lock-setup)
+
+(defadvice slime-repl-insert-prompt (after font-lock-face activate)
+  (let ((inhibit-read-only t))
+    (add-text-properties
+     slime-repl-prompt-start-mark (point)
+     '(font-lock-face
+      slime-repl-prompt-face
+      rear-nonsticky
+      (slime-repl-prompt read-only font-lock-face intangible)))))
 
 
 ;; (defun show-nrepl ()
@@ -227,37 +261,6 @@
 ;;   (nrepl-set-ns (plist-get
 ;;                  (nrepl-send-string-sync "(symbol (str *ns*))") :value)))
 
-(add-hook 'clojure-mode-hook
-          (lambda ()
-            (define-key clojure-mode-map (kbd "<f8>") 'align-locators)
-            (define-key clojure-mode-map (kbd "M-[") 'paredit-wrap-square)
-            (define-key clojure-mode-map (kbd "M-{") 'paredit-wrap-curly)))
-
-;; (add-hook 'nrepl-mode-hook
-;;           (lambda ()
-;;             (paredit-mode)
-;;             (define-key nrepl-mode-map [C-S-up] 'nrepl-previous-matching-input)
-;;             (define-key nrepl-mode-map (kbd "M-<f12>") 'nrepl-close)
-;;             (define-key nrepl-mode-map (kbd "M-j") 'nrepl-newline-and-indent)
-;;             ;(define-key nrepl-mode-map (kbd "C-x C-e") 'nrepl-eval-last-expression)
-;;             (define-key nrepl-mode-map (kbd "<f7>") 'nrepl-pst)
-;;             ;(define-key nrepl-mode-map (kbd "M-.") 'nrepl-jump)
-;;             (define-key nrepl-interaction-mode-map (kbd "C-c C-z") 'nrepl-switch-to-repl-buffer)
-
-            
-;;             (auto-complete-mode)
-;;             (ac-nrepl-setup)
-;;             (font-lock-mode nil)
-;;             (clojure-mode-font-lock-setup)
-;;             (font-lock-mode t)))
-
-;; (add-hook 'nrepl-connected-hook 
-;;           (lambda ()
-;;             (nrepl-set-ns (plist-get
-;;                            (nrepl-send-string-sync "(symbol (str *ns*))") :value))))
-
-;; (add-hook 'nrepl-interaction-mode-hook
-;;           'nrepl-turn-on-eldoc-mode)
 
 (defun goto-last-edit-point ()
   "Go to the last point where editing occurred."
@@ -444,13 +447,14 @@
 
 ;; processing many files
 ;; depends on dired+
-
+(require 'dired) ; not sure how to get autoload to work here instead
 (defun on-dired-marked-files (f)
   (interactive "aFunction to call on each file: ")
   (dolist (file (diredp-get-files nil nil t t))
     (when (not (file-directory-p file))
         (find-file file)
         (funcall f))))
+
 
 (add-hook 'dired-mode-hook
           (lambda () (define-key dired-mode-map
@@ -487,7 +491,15 @@
 
 ;; SLIME
 (load (expand-file-name "~/quicklisp/slime-helper.el") t) ;; don't throw error if not found
+(add-to-list 'load-path "~/.emacs.d/ac-slime-20141002.639/")
 
+
+(require 'ac-slime)
+(add-hook 'slime-mode-hook 'set-up-slime-ac)
+(add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
+(add-hook 'slime-repl-mode-hook 'smartparens-mode)
+(eval-after-load "auto-complete"
+  '(add-to-list 'ac-modes 'slime-repl-mode))
 ;;Python lint checking
 (autoload 'flycheck "flycheck-mode")
 (eval-after-load 'python
