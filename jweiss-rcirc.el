@@ -345,3 +345,8 @@ to them."
 (define-key rcirc-mode-map (kbd "C-c C-M-c") 'rcirc-clear-all-activity)
 
 (rcirc-notify-add-hooks)
+
+;;set account info from gnome-keyring
+(setq rcirc-authinfo `(("irc.freenode.net" nickserv
+                       ,(secrets-get-attribute "Login" "Freenode irc" :user)
+                       ,(secrets-get-secret "Login" "Freenode irc"))))

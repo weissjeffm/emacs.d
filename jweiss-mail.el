@@ -122,36 +122,3 @@
      (add-hook 'notmuch-search-hook (lambda ()
                                       ; (variable-pitch-mode) 
                                       (text-scale-set 2)))))
-
-
-
-
-
-;; auto check for new mail
-;; (require 'gnus-demon)
-
-;; (gnus-demon-add-handler 'gnus-demon-scan-news 10 t)
-
-;; (setq gnus-select-group-hook 'gnus-summary-insert-new-articles)
-
-;;  (setq-default
-;;      gnus-summary-line-format "%U%R%z %(%18&user-date;  %B %-15f: %s%)\n"
-;;      gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references
-;;      gnus-thread-sort-functions '(gnus-thread-sort-by-date)
-;;      gnus-sum-thread-tree-false-root ""
-;;      gnus-sum-thread-tree-indent " "
-;;      gnus-sum-thread-tree-leaf-with-other "├► "
-;;      gnus-sum-thread-tree-root ""
-;;      gnus-sum-thread-tree-single-leaf "╰► "
-;;      gnus-sum-thread-tree-vertical "│")
-
-;; (setq gnus-user-date-format-alist
-;;       '(((gnus-seconds-today) . "Today, %H:%M")
-;;         ((+ 86400 (gnus-seconds-today)) . "Yesterday, %H:%M")
-;;         (604800 . "%A %H:%M") ;;that's one week
-;;         ((gnus-seconds-month) . "%A %d")
-;;         ((gnus-seconds-year) . "%B %d")
-;;         (t . "%B %d '%y"))) ;;this one is used when no other does match
-
-
-

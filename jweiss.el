@@ -98,9 +98,26 @@
     (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
               'smartparens-mode))
 (add-hook 'cider-repl-mode-hook 'smartparens-strict-mode)
+(add-hook 'cider-mode-hook 'eldoc-mode)
 (sp-pair "(" ")" :wrap "M-(")
 ;; no '' pair in lisp
 (sp-local-pair '(emacs-lisp-mode slime-repl-mode clojure-mode 'cider-repl-mode) "'" nil :actions nil)
+
+;;cider autocomplete
+(eval-after-load 'cider-mode
+  '(progn (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
+          (add-hook 'cider-mode-hook 'ac-cider-setup)
+          (add-hook 'cider-repl-mode-hook 'ac-cider-setup)))
+(eval-after-load "auto-complete"
+  '(progn
+     (add-to-list 'ac-modes 'cider-mode)
+     (add-to-list 'ac-modes 'cider-repl-mode)))
+
+(defun set-auto-complete-as-completion-at-point-function ()
+  (setq completion-at-point-functions '(auto-complete)))
+(add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
+(add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
+
 ;;use w tiling window mgr
 (setq pop-up-frames nil)
 
@@ -247,21 +264,7 @@
       (slime-repl-prompt read-only font-lock-face intangible)))))
 
 
-;; (defun show-nrepl ()
-;;   (interactive)
-;;   (switch-to-buffer "*nrepl*"))
-;; (global-set-key (kbd "<f9>") 'show-nrepl)
-
-;; (defun nrepl-pst ()
-;;   (interactive)
-;;   (insert "(clojure.repl/pst 100)")
-;;   (nrepl-return))
-
-;; (defun switch-to-nrepl-ns ()
-;;   (nrepl-set-ns (plist-get
-;;                  (nrepl-send-string-sync "(symbol (str *ns*))") :value)))
-
-
+(add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
 (defun goto-last-edit-point ()
   "Go to the last point where editing occurred."
   (interactive)
@@ -607,3 +610,21 @@
 (venv-initialize-interactive-shells) ;; if you want interactive shell support
 (venv-initialize-eshell) ;; if you want eshell support
 (setq venv-location "~/.virtualenvs")
+
+;; c++
+(require 'ggtags)
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (when (derived-mode-p 'c-mode 'c++-mode 'asm-mode)
+              (ggtags-mode 1)
+              (setq-local imenu-create-index-function #'ggtags-build-imenu-index))))
+
+(define-key ggtags-mode-map (kbd "C-c g s") 'ggtags-find-other-symbol)
+(define-key ggtags-mode-map (kbd "C-c g h") 'ggtags-view-tag-history)
+(define-key ggtags-mode-map (kbd "C-c g r") 'ggtags-find-reference)
+(define-key ggtags-mode-map (kbd "C-c g f") 'ggtags-find-file)
+(define-key ggtags-mode-map (kbd "C-c g c") 'ggtags-create-tags)
+(define-key ggtags-mode-map (kbd "C-c g u") 'ggtags-update-tags)
+
+(define-key ggtags-mode-map (kbd "M-,") 'pop-tag-mark)
+

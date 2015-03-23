@@ -27,6 +27,7 @@
 (setq package-archive-enable-alist nil)
 
 ;;(require 'icicles)
+(require 'secrets)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -41,46 +42,9 @@
  '(cider-repl-use-clojure-font-lock t)
  '(cider-repl-use-pretty-printing nil)
  '(dired-recursive-deletes (quote always))
- '(eclim-eclipse-dirs "~/.eclipse/")
- '(eclim-executable
-   "/home/jweiss/.eclipse/org.eclipse.platform_793567567_linux_gtk_x86_64/eclim")
  '(ein:connect-default-notebook "8888/dispatch")
  '(ein:use-auto-complete-superpack t)
  '(ein:worksheet-enable-undo (quote full))
- '(erc-autojoin-channels-alist
-   (quote
-    (("freenode.net" "#bitcoin" "#leiningen" "#emacs" "#clojure" "#katello" "#pulp"))))
- '(erc-enable-logging t)
- '(erc-fill-column 100)
- '(erc-generate-log-file-name-function
-   (lambda
-     (buffer target nick server port)
-     (let
-         ((file
-           (concat
-            (if target
-                (concat target "@"))
-            server ":"
-            (cond
-             ((stringp port)
-              port)
-             ((numberp port)
-              (number-to-string port)))
-            ".txt")))
-       (convert-standard-filename file))))
- '(erc-join-buffer (quote bury))
- '(erc-log-channels-directory "~/.erc/logs/")
- '(erc-log-mode t)
- '(erc-log-write-after-insert t)
- '(erc-log-write-after-send t)
- '(erc-modules
-   (quote
-    (autojoin button completion fill irccontrols list log match menu move-to-prompt netsplit networks noncommands readonly ring stamp track)))
- '(erc-save-buffer-on-part nil)
- '(erc-save-queries-on-quit nil)
- '(erc-server-reconnect-attempts t)
- '(erc-server-reconnect-timeout 60)
- '(erc-server-send-ping-timeout 30)
  '(flycheck-highlighting-mode (quote sexps))
  '(flycheck-python-flake8-executable "~/.virtualenvs/cfme/bin/flake8")
  '(flymake-python-pyflakes-executable "flake8")
@@ -116,8 +80,9 @@
  '(notmuch-hello-thousands-separator ",")
  '(notmuch-saved-searches
    (quote
-    ((:name "newstuff" :query "tag:new AND (folder:GMail/INBOX OR folder:Monetas/INBOX OR folder:Personal/INBOX OR folder:Personal-Remote/INBOX)")
-     (:name "Monetas-new" :query "tag:new AND folder:Monetas/INBOX"))))
+    ((:name "newstuff" :query "tag:new AND (folder:GMail/INBOX OR folder:Monetas/INBOX OR folder:Personal/INBOX OR folder:Personal-Remote/INBOX or folder:Cognitect/INBOX)")
+     (:name "Monetas-new" :query "tag:new AND folder:Monetas/INBOX")
+     (:name "cognitect-new" :query "tag:new AND folder:Cognitect/INBOX"))))
  '(notmuch-search-oldest-first nil)
  '(notmuch-search-result-format
    (quote
@@ -134,7 +99,6 @@
  '(package-archive-upload-base "/home/jweiss/.emacs.d/package-archives")
  '(proced-filter (quote all))
  '(python-skeleton-autoinsert t)
- '(rcirc-authinfo (quote (("irc.freenode.net" nickserv "jweiss" "111111jm"))))
  '(rcirc-buffer-maximum-lines 2000)
  '(rcirc-default-full-name "Jeff Weiss")
  '(rcirc-default-user-name "jweiss")
@@ -189,10 +153,6 @@
  '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify))
  '(virtualenv-root "~/.virtualenvs/")
  '(visible-bell nil)
- '(yagist-authenticate-function (quote yagist-oauth2-authentication) t)
- '(yagist-github-token "32850b37f0394bf2e54326f66c60d73b7823f60d")
- '(yagist-github-user "weissjeffm")
- '(yagist-view-gist t)
  '(yaml-indent-offset 4))
 
 (custom-set-faces
