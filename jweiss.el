@@ -88,21 +88,6 @@
 ;; y instead of yes
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-;;smartparens keybindings
-(require 'smartparens)
-
-(dolist (mode '(scheme emacs-lisp lisp clojure clojurescript eshell))
-    ;; (when (> (display-color-cells) 8)
-    ;;   (font-lock-add-keywords (intern (concat (symbol-name mode) "-mode"))
-    ;;                           '(("(\\|)" . 'esk-paren-face))))
-    (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
-              'smartparens-mode))
-(add-hook 'cider-repl-mode-hook 'smartparens-strict-mode)
-(add-hook 'cider-mode-hook 'eldoc-mode)
-(sp-pair "(" ")" :wrap "M-(")
-;; no '' pair in lisp
-(sp-local-pair '(emacs-lisp-mode slime-repl-mode clojure-mode 'cider-repl-mode) "'" nil :actions nil)
-
 ;;cider autocomplete
 (eval-after-load 'cider-mode
   '(progn (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
@@ -150,121 +135,13 @@
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key "\C-cb" 'org-iswitchb)
 
-;; More syntax coloring
 
-(setq my-lisp-font-lock-keywords
-      '(("(\\|)" . 'lisp-parens)
-        ("\\s-+:\\w+" . 'lisp-keyword)
-        ("#?\"" 0 'double-quote prepend)))
-
-(defun tweak-lisp-syntax (mode)
-  (font-lock-add-keywords mode my-lisp-font-lock-keywords))
-
-(defun tweak-clojure-syntax (mode)
-  (tweak-lisp-syntax mode)
-  (font-lock-add-keywords
-   mode
-   '(("#?\\^?{\\|}" . 'clojure-braces)
-     ("\\[\\|\\]" . 'clojure-brackets)
-     ("nil\\|true\\|false\\|%[1-9]?" . 'clojure-special)
-     ("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1
-      'clojure-java-call)
-     ("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 'font-lock-warning-face t))
-   ;; (("(\\(fn\\>\\)" 0 (progn (compose-region (match-beginning 1)
-   ;;                                           (match-end 1) "ƒ") nil)))
-   ;; (("(\\(->\\>\\)" 0 (progn (compose-region (match-beginning 1)
-   ;;                                           (match-end 1) "→") nil)))
-   ;; (("(\\(->>\\>\\)" 0 (progn (compose-region (match-beginning 1)
-   ;;                                            (match-end 1) "↠") nil)))
-   ;; (("(\\(complement\\>\\)" 0 (progn (compose-region
-   ;;                                    (match-beginning 1)
-   ;;                                    (match-end 1) "¬") nil))) 
-   ))
 
 ;; Macro for face definition
 (defmacro def-mode-face (name color desc &optional others)
   `(defface ,name '((((class color)) (:foreground ,color ,@others)))
      ,desc :group 'faces))
 
-;; Define extra clojure faces
-(def-mode-face double-quote "#00920A"   "special")
-(def-mode-face lisp-keyword      "#45b8f2"   "Lisp keywords")
-(def-mode-face lisp-parens       "DimGrey"   "Lisp parens")
-(def-mode-face clojure-braces       "#49b2c7"   "Clojure braces")
-(def-mode-face clojure-brackets     "#0074e8"   "Clojure brackets")
-(def-mode-face clojure-namespace    "#a9937a"   "Clojure namespace")
-(def-mode-face clojure-java-call    "#7587a6"   "Clojure Java calls")
-(def-mode-face clojure-special      "#0074e8"   "Clojure special")
-
-;;clojure colors
-(defun set-lisp-colors (mode-fn)
-  (tweak-lisp-syntax mode-fn)
-  (set-face-foreground 'double-quote "LightSalmon")
-  (set-face-foreground 'font-lock-string-face "#ffddaa")
-  (set-face-foreground 'lisp-parens "gray32")
-  (set-face-attribute 'lisp-parens nil :underline nil :bold t)
-  (set-face-foreground 'lisp-keyword "#ffcccc")
-  (set-face-attribute 'lisp-keyword nil :underline nil :bold nil :italic t)
-  (set-face-foreground 'font-lock-keyword-face "#eeaaff")
-  (set-face-attribute 'font-lock-keyword-face nil :underline nil :bold t :italic nil)
-  (set-face-attribute 'font-lock-function-name-face nil :underline nil :bold t)
-  (set-face-foreground 'font-lock-function-name-face "#ffeeaa")
-  (set-face-attribute 'font-lock-builtin-face nil :underline nil :bold t)
-  (set-face-foreground 'font-lock-builtin-face "#aaddff"))
-
-(defun set-clojure-colors (mode-fn)
-  (tweak-clojure-syntax mode-fn)
-  (set-lisp-colors mode-fn)
-  
-  (set-face-foreground 'clojure-brackets "#445f5f")
-  (set-face-attribute 'clojure-brackets nil :underline nil :bold t)
-
-  (set-face-foreground 'clojure-braces "#5f4d44")
-  (set-face-attribute 'clojure-braces nil :underline nil :bold t)
-  
-
-  (set-face-foreground 'clojure-java-call "#ccffcc")
-  (set-face-foreground 'clojure-namespace "#0000ff")
-  (set-face-attribute 'clojure-namespace nil :underline nil :bold t)
-
-  (set-face-foreground 'clojure-special "#bbbbff")
-  (set-face-attribute 'clojure-special nil :underline nil :bold t :italic t))
-
-(autoload 'clojure-mode "clojure-mode")
-(autoload 'clojure-mode-map "clojure-mode" nil nil 'keymap)
-;(set-lisp-colors 'lisp-mode)
-(set-lisp-colors 'emacs-lisp-mode)
-;(set-clojure-colors 'clojure-mode)
-(add-hook 'cider-repl-mode-hook (lambda () (set-clojure-colors nil)
-                                  (font-lock-add-keywords nil clojure-font-lock-keywords)))
-;(set-lisp-colors 'slime-repl-mode)
-
-
-(defun slime-repl-font-lock-setup ()
-  (font-lock-mode nil)
-  (setq font-lock-defaults
-        '((my-lisp-font-lock-keywords lisp-font-lock-keywords-2)
-          ;; From lisp-mode.el
-          nil nil (("+-*/.<>=!?$%_&~^:@" . "w")) nil
-          (font-lock-syntactic-face-function
-           . lisp-font-lock-syntactic-face-function)))
-  ;; (set-lisp-colors 'slime-repl-mode)
-  (font-lock-mode t)
-  )
-
-(add-hook 'slime-repl-mode-hook 'slime-repl-font-lock-setup)
-
-(defadvice slime-repl-insert-prompt (after font-lock-face activate)
-  (let ((inhibit-read-only t))
-    (add-text-properties
-     slime-repl-prompt-start-mark (point)
-     '(font-lock-face
-      slime-repl-prompt-face
-      rear-nonsticky
-      (slime-repl-prompt read-only font-lock-face intangible)))))
-
-
-(add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
 (defun goto-last-edit-point ()
   "Go to the last point where editing occurred."
   (interactive)
@@ -280,7 +157,6 @@
 
 ;;browse link shortcut
 (global-set-key (kbd "C-c M-b") 'browse-url-at-point)
-
 
 ;;syntax highlight RoR log files
 (require 'generic-x)
@@ -374,11 +250,6 @@
 
 (global-set-key (kbd "<f6>") 'search-project-for-sexp-at-point)
 
-(defun align-locators ()
-  (interactive)
-  (mark-sexp)
-  (align-regexp (region-beginning) (region-end) "\\(\\s-*\\)[\\\"|\\(]"))
-
 (autoload 'notmuch "notmuch" nil t)
 (autoload 'icy-mode "icicles" nil t)
 
@@ -438,16 +309,6 @@
 (global-set-key (kbd "<f10>") 'show-eshell)
 (global-set-key (kbd "M-<f10>") 'eshell-pushd)
 
-;; eval-expression
-
-(eval-after-load 'icicles
-  '(progn (add-hook 'minibuffer-setup-hook 'conditionally-enable-smartparens-mode)
-          (defun conditionally-enable-smartparens-mode ()
-            "enable smartparens-mode during eval-expression"
-            (if (eq this-command 'icicle-pp-eval-expression)
-                (smartparens-mode 1)))
-          (define-key icicle-read-expression-map [(tab)] 'hippie-expand)))
-
 ;; processing many files
 ;; depends on dired+
 (require 'dired) ; not sure how to get autoload to work here instead
@@ -491,33 +352,6 @@
 (define-key mc-key-map (kbd ",") 'mc/mark-all-like-this-dwim)
 (define-key mc-key-map (kbd "/") 'mc/mark-more-like-this-extended)
 (define-key mc-key-map (kbd "s") 'mc/mark-next-symbol-like-this)
-
-;; SLIME
-(load (expand-file-name "~/quicklisp/slime-helper.el") t) ;; don't throw error if not found
-(add-to-list 'load-path "~/.emacs.d/ac-slime-20141002.639/")
-
-
-(require 'ac-slime)
-(add-hook 'slime-mode-hook 'set-up-slime-ac)
-(add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
-(add-hook 'slime-repl-mode-hook 'smartparens-mode)
-(eval-after-load "auto-complete"
-  '(add-to-list 'ac-modes 'slime-repl-mode))
-;;Python lint checking
-(autoload 'flycheck "flycheck-mode")
-(eval-after-load 'python
-  '(progn (add-hook 'python-mode-hook
-                    (lambda ()
-                      (flycheck-mode)
-                      (smartparens-mode)
-                      (ein:connect-to-default-notebook)))
-          (define-key python-mode-map (kbd "C-x p") 'ein:notebooklist-open)))
-
-;; ein save worksheet after running cell
-(eval-after-load 'ein-multilang
-  (progn (defadvice ein:cell-execute (after ein:save-worksheet-after-execute activate)
-           (ein:notebook-save-notebook-command))
-         (add-hook 'ein:notebook-multilang-mode-hook 'smartparens-mode)))
 
 ;; javascript
 (eval-after-load 'js
@@ -575,21 +409,6 @@
             ;;(setq indent-tabs-mode nil)
             ))
 
-(defun virtualenv-shell (virtualenv-dir &optional buffer-name-append)
-  (interactive (list (read-directory-name "VirtualEnv dir: " "~/.virtualenvs/" nil t) nil))
-  (save-excursion
-    (let* ((virtualenv-name (file-name-nondirectory (directory-file-name virtualenv-dir)))
-          (buf (get-buffer-create
-                (generate-new-buffer-name (concat "*" virtualenv-name buffer-name-append " virtualenv shell*")))))
-      (shell buf)
-      (process-send-string buf (format ". %s/bin/activate\n" virtualenv-dir))
-      buf)))
-
-(defun start-ipython-current-project (virtualenv-dir)
-  (interactive (list (read-directory-name "VirtualEnv dir: " "~/.virtualenvs/" nil t)))
-  (let ((buf (virtualenv-shell virtualenv-dir " ipython")))
-    (process-send-string buf (format "cd %s;ipython3 notebook\n" (magit-project-dir)))))
-
 
 ;; copy filename of buffer
 
@@ -603,13 +422,6 @@
         (progn (kill-new filename)
                (x-select-text filename))
       (error "unable to determine file name of current buffer."))))
-
-;; virtualenvs
-
-(require 'virtualenvwrapper)
-(venv-initialize-interactive-shells) ;; if you want interactive shell support
-(venv-initialize-eshell) ;; if you want eshell support
-(setq venv-location "~/.virtualenvs")
 
 ;; c++
 (require 'ggtags)

@@ -41,6 +41,12 @@
  '(cider-annotate-completion-candidates t)
  '(cider-repl-use-clojure-font-lock t)
  '(cider-repl-use-pretty-printing nil)
+ '(custom-safe-themes
+   (quote
+    ("4d7138452614f4726f8b4ccfecc5727faf63f13c9e034b3bd6179af3c3e4ad13" "e74e4efe1cb7550569a904742c1aa9de9a799dcce74f450454efc887fae2aeb6" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" default)))
+ '(custom-theme-load-path
+   (quote
+    ("/home/jweiss/.emacs.d/elpa/solarized-theme-20150319.102/" custom-theme-directory t "/home/jweiss/.emacs.d/themes")))
  '(dired-recursive-deletes (quote always))
  '(ein:connect-default-notebook "8888/dispatch")
  '(ein:use-auto-complete-superpack t)
@@ -66,7 +72,6 @@
  '(imenu-auto-rescan t)
  '(indent-tabs-mode nil)
  '(inferior-lisp-program "sbcl" t)
- '(iswitchb-delim " | ")
  '(iswitchb-mode t)
  '(jabber-account-list (("jeffrey.m.weiss@gmail.com")))
  '(jedi:server-args
@@ -137,6 +142,7 @@
  '(scroll-bar-mode nil)
  '(send-mail-function (quote smtpmail-send-it))
  '(show-paren-mode t)
+ '(show-paren-priority 0)
  '(show-paren-style (quote expression))
  '(smtpmail-default-smtp-server nil)
  '(smtpmail-smtp-server "jweiss.com")
@@ -160,32 +166,15 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:background "black" :foreground "white" :slant normal :weight normal :family "DejaVu Sans Mono"))))
- '(ac-completion-face ((t (:inherit default :foreground "darkgray" :underline t))))
- '(clojure-keyword-face ((t (:inherit lisp-keyword))))
- '(clojure-parens ((t (:foreground "gray38" :underline nil :weight bold))))
- '(diff-added ((t (:inherit diff-changed :background "#113311" :foreground "gray70"))))
- '(diff-removed ((t (:inherit diff-changed :background "#331111" :foreground "gray70"))))
- '(ein:cell-input-area ((t nil)))
- '(erc-input-face ((t (:foreground "gray"))))
- '(fixed-pitch ((t (:inherit default))))
- '(hl-line ((t (:inherit highlight :background "#151500"))))
- '(icicle-current-candidate-highlight ((t (:background "yellow" :foreground "black"))))
- '(icicle-mode-line-help ((t (:weight bold))))
- '(iswitchb-current-match ((t (:inherit font-lock-function-name-face :foreground "orange red"))))
- '(magit-item-highlight ((t (:background "gray10"))))
- '(minimap-active-region-background ((t (:background "#3517205D0000"))))
- '(minimap-font-face ((t (:height 20 :family "DejaVu Sans Mono"))))
- '(notmuch-search-count ((t (:inherit default :foreground "light gray"))))
- '(notmuch-search-date ((t (:inherit default :foreground "cyan"))))
- '(notmuch-search-subject ((t (:inherit default :foreground "DarkSeaGreen2"))))
- '(rcirc-timestamp ((t (:inherit default :background "black" :foreground "gray25"))))
- '(show-paren-match ((t (:background "#1a1d2e"))))
  '(variable-pitch ((t (:inherit default :family "DejaVu Sans")))))
 
 (load (concat user-emacs-directory "jweiss.el"))
 (load (concat user-emacs-directory "jweiss-rcirc.el"))
 (load (concat user-emacs-directory "jweiss-mail.el"))
+(load (concat user-emacs-directory "jweiss-smartparens.el"))
+(load (concat user-emacs-directory "jweiss-lisp.el"))
+(load (concat user-emacs-directory "jweiss-clojure.el"))
+(load (concat user-emacs-directory "jweiss-python.el"))
 
 ;;  '(icicle-apropos-complete-keys (quote ([9] [tab] [(control 105)])))
 ;;  '(icicle-prefix-complete-keys (quote ([S-tab] [S-iso-lefttab])))
