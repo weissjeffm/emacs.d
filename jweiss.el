@@ -399,15 +399,28 @@
   (setenv "PATH" (concat (getenv "PATH") ":" mygopath))
   (add-to-list 'exec-path mygopath))
 (setenv "GOPATH" "/home/jweiss/workspace/go/")
+(eval-after-load 'go-mode '(progn
+                             (require 'go-autocomplete)
+                             (require 'go-eldoc)
+                             (require 'flycheck)
+                             (load-file (concat (getenv "GOPATH")
+                                                "/src/code.google.com/p/go.tools/cmd/oracle/oracle.el"))))
+
+
 (add-hook 'go-mode-hook
           (lambda ()
             (local-set-key (kbd "M-.") 'godef-jump)
+            (local-set-key (kbd "M-,") 'pop-tag-mark)
             (local-set-key (kbd "C-c C-j") 'imenu)
             (electric-indent-mode)
             (smartparens-mode)
-            ;;(setq tab-width 4)
+            (setq tab-width 2)
+            (go-eldoc-setup)
+            (go-oracle-mode)
+            (flycheck-mode)
             ;;(setq indent-tabs-mode nil)
             ))
+
 
 
 ;; copy filename of buffer

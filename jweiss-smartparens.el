@@ -13,7 +13,7 @@
 (sp-pair "[" "]" :wrap "M-[")
 (sp-pair "{" "}" :wrap "M-{")
 ;; no '' pair in lisp
-(sp-local-pair '(emacs-lisp-mode slime-repl-mode clojure-mode 'cider-repl-mode) "'" nil :actions nil)
+(sp-local-pair '(emacs-lisp-mode slime-repl-mode clojure-mode lisp-interaction-mode cider-repl-mode) "'" nil :actions nil)
 
 ;; eval-expression
 (eval-after-load 'icicles

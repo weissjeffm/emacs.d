@@ -1,5 +1,6 @@
 
 (require 'package)
+(require 'cl)
 (add-to-list 'package-archives
              '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (add-to-list 'package-archives
@@ -12,12 +13,47 @@
 ;;   (package-install "melpa"))
 
 ;; Add in your own as you wish:
-(defvar my-packages '(clojure-mode smartparens magit find-file-in-project
-                       auto-complete mwe-log-commands ace-jump-mode
-                       haskell-mode markdown-mode bbdb eudc undo-tree
-                       dired+ dired-subtree icicles elisp-slime-nav flycheck ido smex
-                       multiple-cursors virtualenvwrapper rcirc-notify
-                       rcirc-color ein)
+
+(setq my-packages-alist
+      '((lisp
+         clojure-mode clojure-mode-extra-font-locking cider ac-cider smartparens elisp-slime-nav flycheck-clojure)
+
+        (golang
+         go-mode go-autocomplete go-eldoc go-errcheck flymake-go)
+
+        (ide
+         auto-complete magit find-file-in-project flycheck)
+
+        (formats
+         adoc-mode markdown-mode)
+
+        (languages
+         haskell-mode clang-format ggtags)
+
+        (irc
+         rcirc-notify rcirc-color)
+
+        (navigating
+         dired+ dired-subtree ace-jump-mode)
+        
+        (python
+         ein virtualenvwrapper)
+        
+        (editing
+         undo-tree multiple-cursors wgrep)
+        
+        (other
+         mwe-log-commands gist)
+        
+        (email
+         bbdb eudc)
+        
+        (completion
+         icicles ido smex)
+        ))
+
+(defvar my-packages (mapcan 'cdr (copy-tree my-packages-alist)) ; copy because mapcan modifies in-place
+  
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -43,7 +79,7 @@
  '(cider-repl-use-pretty-printing nil)
  '(custom-safe-themes
    (quote
-    ("4d7138452614f4726f8b4ccfecc5727faf63f13c9e034b3bd6179af3c3e4ad13" "e74e4efe1cb7550569a904742c1aa9de9a799dcce74f450454efc887fae2aeb6" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" default)))
+    ("45097d951e8ec98af5eb77818f3282f442f598b7907bec2481e01d53e2e71885" "f7431aef22ca157349e97d128372869db4ee82ce1c370e77b7619dae65110d35" "153155dc0f5464053145d48cf5b6c2e4348663d7f9183ddd22eae16eb2b6cbd8" "c5ee6f4310f0dff079f457b3a0d94f6b112d24e47987b090a96457ce5279d53d" "4d7138452614f4726f8b4ccfecc5727faf63f13c9e034b3bd6179af3c3e4ad13" "e74e4efe1cb7550569a904742c1aa9de9a799dcce74f450454efc887fae2aeb6" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" default)))
  '(custom-theme-load-path
    (quote
     ("/home/jweiss/.emacs.d/elpa/solarized-theme-20150319.102/" custom-theme-directory t "/home/jweiss/.emacs.d/themes")))
@@ -99,7 +135,7 @@
  '(notmuch-show-all-multipart/alternative-parts nil)
  '(org-agenda-files
    (quote
-    ("~/Documents/monetas.org" "~/tasks/7212467cf49c6e11eaff/jweiss.org")))
+    ("~/Documents/monetas/monetas.org" "~/tasks/7212467cf49c6e11eaff/jweiss.org")))
  '(org-startup-indented t)
  '(package-archive-upload-base "/home/jweiss/.emacs.d/package-archives")
  '(proced-filter (quote all))
