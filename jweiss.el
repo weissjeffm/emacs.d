@@ -418,6 +418,7 @@
             (go-eldoc-setup)
             (go-oracle-mode)
             (flycheck-mode)
+            (define-key go-mode-map (kbd "RET") 'my-electric-return)
             ;;(setq indent-tabs-mode nil)
             ))
 
@@ -453,3 +454,25 @@
 
 (define-key ggtags-mode-map (kbd "M-,") 'pop-tag-mark)
 
+;; open line
+
+;; Autoindent open-*-lines
+(defun newline-indent-open ()
+  (interactive)
+  (newline-and-indent)
+  (newline-and-indent)
+  (previous-line)
+  (indent-for-tab-command))
+(define-key global-map (kbd "C-<return>") 'newline-indent-open)
+
+
+;; good for opening new code blocks in curly braces langs. needs autopairing
+(defun my-electric-return ()
+  (interactive)
+  (if (and (char-equal (char-after (- (point) 1)) (string-to-char "{"))
+           (char-equal (char-after) (string-to-char "}")))
+      (progn (newline-and-indent)
+             (newline-and-indent)
+             (previous-line)
+             (indent-for-tab-command))
+    (reindent-then-newline-and-indent)))

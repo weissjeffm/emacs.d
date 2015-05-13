@@ -1,4 +1,4 @@
-
+(load-theme 'jweiss2 t)
 (require 'package)
 (require 'cl)
 (add-to-list 'package-archives
@@ -79,7 +79,7 @@
  '(cider-repl-use-pretty-printing nil)
  '(custom-safe-themes
    (quote
-    ("45097d951e8ec98af5eb77818f3282f442f598b7907bec2481e01d53e2e71885" "f7431aef22ca157349e97d128372869db4ee82ce1c370e77b7619dae65110d35" "153155dc0f5464053145d48cf5b6c2e4348663d7f9183ddd22eae16eb2b6cbd8" "c5ee6f4310f0dff079f457b3a0d94f6b112d24e47987b090a96457ce5279d53d" "4d7138452614f4726f8b4ccfecc5727faf63f13c9e034b3bd6179af3c3e4ad13" "e74e4efe1cb7550569a904742c1aa9de9a799dcce74f450454efc887fae2aeb6" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" default)))
+    ("79d9e31ba98aae3a35f18adff4b825f4695b5a5d919b8038c9d26ab330618d91" "faab0220334aec9b69074942b938a5648fa3fd5c82d5c4e41fb8cce600caf029" "45097d951e8ec98af5eb77818f3282f442f598b7907bec2481e01d53e2e71885" "f7431aef22ca157349e97d128372869db4ee82ce1c370e77b7619dae65110d35" "153155dc0f5464053145d48cf5b6c2e4348663d7f9183ddd22eae16eb2b6cbd8" "c5ee6f4310f0dff079f457b3a0d94f6b112d24e47987b090a96457ce5279d53d" "4d7138452614f4726f8b4ccfecc5727faf63f13c9e034b3bd6179af3c3e4ad13" "e74e4efe1cb7550569a904742c1aa9de9a799dcce74f450454efc887fae2aeb6" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" default)))
  '(custom-theme-load-path
    (quote
     ("/home/jweiss/.emacs.d/elpa/solarized-theme-20150319.102/" custom-theme-directory t "/home/jweiss/.emacs.d/themes")))
@@ -180,6 +180,7 @@
  '(show-paren-mode t)
  '(show-paren-priority 0)
  '(show-paren-style (quote expression))
+ '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
  '(smtpmail-default-smtp-server nil)
  '(smtpmail-smtp-server "jweiss.com")
  '(smtpmail-smtp-service 25)
@@ -202,6 +203,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(diff-added ((t (:inherit diff-changed :background "#335533" :foreground "light green"))))
+ '(diff-removed ((t (:inherit diff-changed :background "#553333" :foreground "red1"))))
  '(variable-pitch ((t (:inherit default :family "DejaVu Sans")))))
 
 (load (concat user-emacs-directory "jweiss.el"))

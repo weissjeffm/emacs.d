@@ -25,10 +25,14 @@
 
 (custom-theme-set-faces
  'jweiss2
+ '(notmuch-search-count ((t (:inherit default :foreground "light gray"))))     
+ '(notmuch-search-date ((t (:inherit default :foreground "cyan"))))            
+ '(notmuch-search-subject ((t (:inherit default :foreground "DarkSeaGreen2"))))
  '(default ((t (:background "black" :foreground "white" :slant normal :weight normal :family "DejaVu Sans Mono"))))
  '(ac-completion-face ((t (:inherit default :foreground "darkgray" :underline t))))
  '(clojure-keyword-face ((t (:inherit lisp-keyword))))
  '(ein:cell-input-area ((t nil)))
+ '(secondary-selection ((t (:background "gray11"))))
  '(fixed-pitch ((t (:inherit default))))
  '(hl-line ((t (:inherit highlight :background "#151500"))))
  '(iswitchb-current-match ((t (:inherit font-lock-function-name-face :foreground "orange red"))))

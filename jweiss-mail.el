@@ -77,10 +77,9 @@
 ;; Adds some hooks
 
 (eval-after-load "message"
-  '(define-key message-mode-map (kbd "TAB") 'enz-eudc-expand-inline))
+  ;;'(define-key message-mode-map (kbd "TAB") 'enz-eudc-expand-inline)
 
-
-
+  '(define-key message-mode-map (kbd "TAB") 'message-tab))
 
 (eval-after-load 'notmuch
   '(progn
@@ -121,4 +120,10 @@
      ;;(add-hook 'notmuch-show-hook 'variable-pitch-mode)
      (add-hook 'notmuch-search-hook (lambda ()
                                       ; (variable-pitch-mode) 
-                                      (text-scale-set 2)))))
+                                      (text-scale-set 2)))
+     (require 'notmuch-address)
+     (setq notmuch-address-command "/home/jweiss/bin/notmuch-addrlookup")
+     (notmuch-address-message-insinuate)
+     (setq notmuch-address-selection-function
+           (lambda (prompt collection initial-input)
+             (completing-read prompt (cons initial-input collection) nil t nil 'notmuch-address-history)))))
