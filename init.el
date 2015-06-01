@@ -84,6 +84,8 @@
    (quote
     ("/home/jweiss/.emacs.d/elpa/solarized-theme-20150319.102/" custom-theme-directory t "/home/jweiss/.emacs.d/themes")))
  '(dired-recursive-deletes (quote always))
+ '(eclim-executable "/home/jweiss/bin/eclim")
+ '(eclimd-executable "/home/jweiss/bin/eclimd")
  '(ein:connect-default-notebook "8888/dispatch")
  '(ein:use-auto-complete-superpack t)
  '(ein:worksheet-enable-undo (quote full))
@@ -214,6 +216,7 @@
 (load (concat user-emacs-directory "jweiss-lisp.el"))
 (load (concat user-emacs-directory "jweiss-clojure.el"))
 (load (concat user-emacs-directory "jweiss-python.el"))
+(load (concat user-emacs-directory "jweiss-java.el"))
 
 ;;  '(icicle-apropos-complete-keys (quote ([9] [tab] [(control 105)])))
 ;;  '(icicle-prefix-complete-keys (quote ([S-tab] [S-iso-lefttab])))
