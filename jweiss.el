@@ -483,3 +483,7 @@
              (previous-line)
              (indent-for-tab-command))
     (reindent-then-newline-and-indent)))
+
+;; github gists
+(global-set-key (kbd "C-c g b") 'jist-auth-buffer)
+(global-set-key (kbd "C-c g r") 'jist-auth-region)
