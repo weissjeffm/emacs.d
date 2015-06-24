@@ -127,3 +127,8 @@
      (setq notmuch-address-selection-function
            (lambda (prompt collection initial-input)
              (completing-read prompt (cons initial-input collection) nil t nil 'notmuch-address-history)))))
+
+;; saved searches are private
+(setq notmuch-saved-searches
+      (car (read-from-string (secrets-get-secret "Login" "notmuch-saved-searches"))))
+

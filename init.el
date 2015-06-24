@@ -111,21 +111,12 @@
  '(indent-tabs-mode nil)
  '(inferior-lisp-program "sbcl" t)
  '(iswitchb-mode t)
- '(jabber-account-list (("jeffrey.m.weiss@gmail.com")))
- '(jedi:server-args
-   (quote
-    ("--virtual-env" "/home/jweiss/workspace/cfme_pages/cfme")))
  '(mail-signature nil)
  '(menu-bar-mode nil)
  '(minimap-update-delay 0.3)
  '(mouse-yank-at-point t)
  '(notmuch-crypto-process-mime t)
  '(notmuch-hello-thousands-separator ",")
- '(notmuch-saved-searches
-   (quote
-    ((:name "newstuff" :query "tag:new AND (folder:GMail/INBOX OR folder:Monetas/INBOX OR folder:Personal/INBOX OR folder:Personal-Remote/INBOX or folder:Cognitect/INBOX)")
-     (:name "Monetas-new" :query "tag:new AND folder:Monetas/INBOX")
-     (:name "cognitect-new" :query "tag:new AND folder:Cognitect/INBOX"))))
  '(notmuch-search-oldest-first nil)
  '(notmuch-search-result-format
    (quote
@@ -151,10 +142,6 @@
  '(rcirc-notify-message "%s: %s")
  '(rcirc-notify-message-private "(priv) %s: %s")
  '(rcirc-notify-timeout 30)
- '(rcirc-server-alist
-   (quote
-    (("irc.freenode.net" :channels
-      ("#rcirc" "#emacs" "#clojure" "#python" "#bitcoin" "#monetas-dev" "#opentransactions" "#go-nuts")))))
  '(rcirc-track-minor-mode t)
  '(reb-re-syntax ((lambda nil (quote string))))
  '(safe-local-variable-values
@@ -193,6 +180,7 @@
  '(sp-highlight-wrap-overlay nil)
  '(sp-highlight-wrap-tag-overlay nil)
  '(tool-bar-mode nil)
+ '(tramp-default-proxies-alist (quote (("192.168.66" "root" "/ssh:%h:"))))
  '(undo-tree-auto-save-history t)
  '(undo-tree-visualizer-timestamps t)
  '(uniquify-buffer-name-style (quote post-forward-angle-brackets) nil (uniquify))
@@ -223,6 +211,6 @@
 ;;  '(icicle-word-completion-keys (quote ([M-tab] [M-iso-lefttab] [32] " ")))
 ;;  '(icicle-default-cycling-mode (quote apropos))
 (put 'upcase-region 'disabled nil)
-(put 'narrow-to-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (put 'erase-buffer 'disabled nil)
+(put 'narrow-to-region 'disabled nil)

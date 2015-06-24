@@ -350,3 +350,11 @@ to them."
 (setq rcirc-authinfo `(("irc.freenode.net" nickserv
                        ,(secrets-get-attribute "Login" "Freenode irc" :user)
                        ,(secrets-get-secret "Login" "Freenode irc"))))
+(setq rcirc-server-alist
+      `(("irc.freenode.net" :channels
+        ("#rcirc" "#emacs" "#clojure" "#python" "#bitcoin" "#go-nuts"))
+       ("irc.monetas.io" :nick "jweiss" :port 6697 :user-name ,(secrets-get-attribute "Login" "monetas irc" :user) :password ,(secrets-get-secret "Login" "monetas irc") :full-name "Jeff Weiss" :channels
+        ("#monetas-dev" "#dev")
+        :encryption tls)))
+;; deterministic nick colors
+(setq rcirc-color-is-deterministic t)
