@@ -1,7 +1,7 @@
 (defun s3ql-mount-backup (share-url mountpoint user secret encryption-password)
   ;; Mount 
   (let* ((proc-name (concat "mount.s3ql " share-url))
-         (proc (start-process proc-name
+         (proc (start-process-shell-command proc-name
                               proc-name
                               "mount.s3ql"
                               share-url
@@ -18,3 +18,5 @@
          (token (secrets-get-attribute collection item :token))
          (password (secrets-get-secret collection item)))
     (s3ql-mount-backup "gs://jweiss-backup/mail" "/home/jweiss/mail-backup" user token password)))
+
+(my-mount-s3ql)

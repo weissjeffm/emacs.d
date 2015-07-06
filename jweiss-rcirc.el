@@ -196,6 +196,18 @@ to them."
              (rcirc-notify-allowed sender))
     (my-notify sender target text)))
 
+;; reconnect
+(defvar rcirc-reconnections nil)
+
+(defun rcirc-enable-reconnection (server &optional port nick user-name
+                                         full-name startup-channels password encryption)
+  (setq rcirc-reconnections
+        (plist-put rcirc-reconnections server
+                   (apply-partially
+                    'rcirc-connect server port nick user-name full-name startup-channels password encryption))))
+
+(advice-add 'rcirc-connect :before #'rcirc-enable-reconnection)
+
 (defun-rcirc-command reconnect (arg)
   "Reconnect the server process."
   (interactive "i")
@@ -262,8 +274,7 @@ to them."
 
 (defun rcirc-reconnect-perform-reconnect (process)
   (when (and (eq 'closed (process-status process))
-	     (buffer-live-p (process-buffer process))
-	     )
+	     (buffer-live-p (process-buffer process)))
     (with-rcirc-process-buffer process
       (when rcirc-reconnect-mode
 	(if (get-buffer-process (process-buffer process))
@@ -279,7 +290,7 @@ to them."
 	      (progn
 		(save-window-excursion
 		  (save-excursion
-		    (rcirc-cmd-reconnect nil)))
+                    (funcall (plist-get rcirc-reconnections rcirc-server))))
 		(setq rcirc-reconnect-attempts 0))
 	    ((quit error)
 	     (incf rcirc-reconnect-attempts)
@@ -289,8 +300,7 @@ to them."
 
 (add-hook 'rcirc-mode-hook
           (lambda ()
-            (if (string-match (regexp-opt '("irc.freenode.net"
-                                            "irc.devel.redhat.com"))
+            (if (string-match (regexp-opt (mapcar 'car rcirc-server-alist))
                               (buffer-name))
                 (rcirc-reconnect-mode 1))))
 
@@ -350,11 +360,13 @@ to them."
 (setq rcirc-authinfo `(("irc.freenode.net" nickserv
                        ,(secrets-get-attribute "Login" "Freenode irc" :user)
                        ,(secrets-get-secret "Login" "Freenode irc"))))
-(setq rcirc-server-alist
+(setq rcirc-server-alist      
       `(("irc.freenode.net" :channels
         ("#rcirc" "#emacs" "#clojure" "#python" "#bitcoin" "#go-nuts"))
        ("irc.monetas.io" :nick "jweiss" :port 6697 :user-name ,(secrets-get-attribute "Login" "monetas irc" :user) :password ,(secrets-get-secret "Login" "monetas irc") :full-name "Jeff Weiss" :channels
         ("#monetas-dev" "#dev")
         :encryption tls)))
+
 ;; deterministic nick colors
 (setq rcirc-color-is-deterministic t)
+

@@ -15,7 +15,7 @@
 ;; no '' pair in lisp
 (sp-local-pair '(emacs-lisp-mode slime-repl-mode clojure-mode lisp-interaction-mode cider-repl-mode) "'" nil :actions nil)
 (sp-local-pair '(emacs-lisp-mode slime-repl-mode clojure-mode lisp-interaction-mode cider-repl-mode) "`" nil :actions nil)
-
+(define-key smartparens-mode-map (kbd "C-M-<backspace>") 'sp-backward-kill-sexp)
 ;; eval-expression
 (eval-after-load 'icicles
   '(progn (add-hook 'minibuffer-setup-hook 'conditionally-enable-smartparens-mode)
