@@ -1,140 +1,9 @@
 (autoload 'notifications-notify "notifications")
 
-;; (defcustom rcirc-authinfo nil
-;;   "List of authentication passwords.
-;; Each element of the list is a list with a SERVER-REGEXP string
-;; and a method symbol followed by method specific arguments.
-
-;; The valid METHOD symbols are `nickserv', `chanserv' and
-;; `bitlbee'.
-
-;; The ARGUMENTS for each METHOD symbol are:
-;;   `nickserv': NICK PASSWORD [NICKSERV-NICK]
-;;   `chanserv': NICK CHANNEL PASSWORD
-;;   `bitlbee': NICK PASSWORD
-;;   `quakenet': ACCOUNT PASSWORD
-
-;; Examples:
-;;  ((\"freenode\" nickserv \"bob\" \"p455w0rd\")
-;;   (\"freenode\" chanserv \"bob\" \"#bobland\" \"passwd99\")
-;;   (\"freenode\" userserv \"bob\" \"passwd99\")
-;;   (\"bitlbee\" bitlbee \"robert\" \"sekrit\")
-;;   (\"dal.net\" nickserv \"bob\" \"sekrit\" \"NickServ@services.dal.net\")
-;;   (\"quakenet.org\" quakenet \"bobby\" \"sekrit\"))"
-;;   :type '(alist :key-type (string :tag "Server")
-;; 		:value-type (choice (list :tag "NickServ"
-;; 					  (const nickserv)
-;; 					  (string :tag "Nick")
-;; 					  (string :tag "Password"))
-;;                                     (list :tag "USERSERV"
-;; 					  (const userserv)
-;; 					  (string :tag "Nick")
-;; 					  (string :tag "Password"))
-;; 				    (list :tag "ChanServ"
-;; 					  (const chanserv)
-;; 					  (string :tag "Nick")
-;; 					  (string :tag "Channel")
-;; 					  (string :tag "Password"))
-;; 				    (list :tag "BitlBee"
-;; 					  (const bitlbee)
-;; 					  (string :tag "Nick")
-;; 					  (string :tag "Password"))
-;;                                     (list :tag "QuakeNet"
-;;                                           (const quakenet)
-;;                                           (string :tag "Account")
-;;                                           (string :tag "Password"))))
-;;   :group 'rcirc)
-
-;; fix alternate nick to append underscore instead of backtick
 (require 'rcirc-notify)
 (require 'rcirc-color)
 
-
-(defun rcirc-handler-433 (process sender args text)
-  "ERR_NICKNAMEINUSE"
-  (rcirc-handler-generic process "433" sender args text)
-  (let* ((new-nick (concat (cadr args) "_")))
-    (with-rcirc-process-buffer process
-      (rcirc-cmd-nick new-nick nil process))))
-
-(defun rcirc-check-auth-status (process sender args text)
-  "Check if the user just authenticated.
-If authenticated, runs `rcirc-authenticated-hook' with PROCESS as
-the only argument."
-  (with-rcirc-process-buffer process
-    (when (and (not rcirc-user-authenticated)
-               rcirc-authenticate-before-join
-               rcirc-auto-authenticate-flag)
-      (let ((target (car args))
-            (message (cadr args)))
-        (when (or
-               (and ;; nickserv
-                (string= sender "NickServ")
-                (string= target rcirc-nick)
-                (member message
-                        (list
-                         (format "You are now identified for \C-b%s\C-b." rcirc-nick)
-			 (format "You are successfully identified as \C-b%s\C-b." rcirc-nick)
-                         "Password accepted - you are now recognized."
-                         )))
-               (and ;; userserv
-                (string= sender "USERSERV")
-                (string= target rcirc-nick)
-                (member message
-                        (list
-                         "Login successful"
-                         )))
-               (and ;; quakenet
-                (string= sender "Q")
-                (string= target rcirc-nick)
-                (string-match "\\`You are now logged in as .+\\.\\'" message)))
-          (setq rcirc-user-authenticated t)
-          (run-hook-with-args 'rcirc-authenticated-hook process)
-          (remove-hook 'rcirc-authenticated-hook 'rcirc-join-channels-post-auth t))))))
-
-(defun rcirc-authenticate ()
-  "Send authentication to process associated with current buffer.
-Passwords are stored in `rcirc-authinfo' (which see)."
-  (interactive)
-  (with-rcirc-server-buffer
-    (dolist (i rcirc-authinfo)
-      (let ((process (rcirc-buffer-process))
-	    (server (car i))
-	    (nick (caddr i))
-	    (method (cadr i))
-	    (args (cdddr i)))
-	(when (and (string-match server rcirc-server))
-          (if (and (memq method '(nickserv chanserv bitlbee userserv))
-                   (string-match nick rcirc-nick))
-              ;; the following methods rely on the user's nickname.
-              (case method
-                (nickserv
-                 (rcirc-send-privmsg
-                  process
-                  (or (cadr args) "NickServ")
-                  (concat "IDENTIFY " (car args))))
-                (userserv
-                 (rcirc-send-privmsg
-                  process
-                  "USERSERV"
-                  (concat "login " nick " " (car args)))) 
-                (chanserv
-                 (rcirc-send-privmsg
-                  process
-                  "ChanServ"
-                  (format "IDENTIFY %s %s" (car args) (cadr args))))
-                (bitlbee
-                 (rcirc-send-privmsg
-                  process
-                  "&bitlbee"
-                  (concat "IDENTIFY " (car args)))))
-            ;; quakenet authentication doesn't rely on the user's nickname.
-            ;; the variable `nick' here represents the Q account name.
-            (when (eq method 'quakenet)
-              (rcirc-send-privmsg
-               process
-               "Q@CServe.quakenet.org"
-               (format "AUTH %s %s" nick (car args))))))))))
+;; desktop notifications
 
 (defvar notification-sound-file "/usr/share/sounds/freedesktop/stereo/complete.oga")
 
@@ -148,23 +17,6 @@ Passwords are stored in `rcirc-authinfo' (which see)."
                             :sound-file notification-sound-file)
     (error nil)))
 
-(defun rcirc-notify-allowed (nick &optional delay)
-  "Return non-nil if a notification should be made for NICK.
-If DELAY is specified, it will be the minimum time in seconds
-that can occur between two notifications.  The default is
-`rcirc-notify-timeout'."
-  (unless delay (setq delay rcirc-notify-timeout))
-  (let ((cur-time (time-to-seconds (current-time)))
-        (cur-assoc (assoc nick rcirc-notify--nick-alist))
-        (last-time))
-    (if cur-assoc
-        (progn
-          (setq last-time (cdr cur-assoc))
-          (setcdr cur-assoc cur-time)
-          (> (abs (- cur-time last-time)) delay))
-      (push (cons nick cur-time) rcirc-notify--nick-alist)
-      t)))
-
 (defun rcirc-notify-me (proc sender response target text)
   "Notify the current user when someone sends a message that
 matches the current nick or keywords."
@@ -176,16 +28,14 @@ matches the current nick or keywords."
 	  ;; (my-rcirc-notify sender text)
           (my-notify sender target text) )
 	  (rcirc-notify-keywords
-	   (let (keywords)
-             (dolist (key rcirc-keywords keywords)
-               (when (string-match (concat "\\<" key "\\>")
-                                   text)
-                 (push key keywords)))
-	     (when keywords
-               (if (rcirc-notify-allowed sender)
-                   ;;(my-rcirc-notify-keyword sender keywords text)
-                   (my-notify sender target text))))))))
-
+	   (when (and (catch 'match
+                        (dolist (key rcirc-keywords)
+                          (when (string-match (regexp-quote key)
+                                              text)
+                            (throw 'match key))))
+                      (rcirc-notify-allowed sender))
+             (my-notify sender target text))))))
+ 
 (defun rcirc-notify-privmsg (proc sender response target text)
   "Notify the current user when someone sends a private message
 to them."
@@ -196,7 +46,10 @@ to them."
              (rcirc-notify-allowed sender))
     (my-notify sender target text)))
 
-;; reconnect
+(rcirc-notify-add-hooks)
+
+;; reconnect when network or server disconnects
+
 (defvar rcirc-reconnections nil)
 
 (defun rcirc-enable-reconnection (server &optional port nick user-name
@@ -305,9 +158,15 @@ to them."
                 (rcirc-reconnect-mode 1))))
 
 (defun rcirc-clear-all-activity ()
+  "Clear out all the built up activity in the modeline"
   (interactive)
   (setq rcirc-activity '())
   (rcirc-update-activity-string))
+
+(define-key rcirc-mode-map (kbd "C-c C-M-c") 'rcirc-clear-all-activity)
+
+;; less chatty versions of these handlers
+;; (only print when source nick was actually in this channel)
 
 (defun rcirc-handler-NICK (process sender args text)
   (let* ((old-nick sender)
@@ -352,14 +211,14 @@ to them."
 	(rcirc-nick-channels process sender))
   (rcirc-nick-remove process sender))
 
-(define-key rcirc-mode-map (kbd "C-c C-M-c") 'rcirc-clear-all-activity)
+;; set account info from gnome-keyring
 
-(rcirc-notify-add-hooks)
-
-;;set account info from gnome-keyring
 (setq rcirc-authinfo `(("irc.freenode.net" nickserv
                        ,(secrets-get-attribute "Login" "Freenode irc" :user)
-                       ,(secrets-get-secret "Login" "Freenode irc"))))
+                       ,(secrets-get-secret "Login" "Freenode irc"))
+                       ("irc.monetas.io" nickserv
+                        "jweiss"
+                        ,(secrets-get-secret "Login" "monetas irc"))))
 (setq rcirc-server-alist      
       `(("irc.freenode.net" :channels
         ("#rcirc" "#emacs" "#clojure" "#python" "#bitcoin" "#go-nuts"))
@@ -369,4 +228,3 @@ to them."
 
 ;; deterministic nick colors
 (setq rcirc-color-is-deterministic t)
-

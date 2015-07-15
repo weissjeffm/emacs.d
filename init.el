@@ -137,6 +137,7 @@
  '(rcirc-default-full-name "Jeff Weiss")
  '(rcirc-default-user-name "jweiss")
  '(rcirc-fill-column (quote frame-width))
+ '(rcirc-keywords (quote ("goats!")))
  '(rcirc-log-flag t)
  '(rcirc-notify-check-frame nil)
  '(rcirc-notify-message "%s: %s")
@@ -193,8 +194,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(diff-added ((t (:inherit diff-changed :background "#335533" :foreground "light green"))))
- '(diff-removed ((t (:inherit diff-changed :background "#553333" :foreground "red1"))))
+ '(diff-added ((t (:inherit diff-changed :background "#112211" :foreground "green2"))))
+ '(diff-removed ((t (:inherit diff-changed :background "#221111" :foreground "red1"))))
  '(variable-pitch ((t (:inherit default :family "DejaVu Sans")))))
 
 (load (concat user-emacs-directory "jweiss.el"))
