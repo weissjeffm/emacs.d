@@ -232,6 +232,11 @@
 (defun magit-project-dir ()
   (magit-get-top-dir (file-name-directory (or (buffer-file-name) default-directory))))
 
+(require 'magit)
+;;(require 'magit-gerrit)
+;;(setq-default magit-gerrit-ssh-creds "jeff@git.monetas.io")
+;;(setq-default magit-gerrit-remote "origin")
+
 (defun search-project (s)
   (interactive "sSearch project for regex: ")
   (apply #'icicle-search nil nil s t
@@ -462,6 +467,14 @@
 (define-key ggtags-mode-map (kbd "M-,") 'pop-tag-mark)
 
 ;; open line
+(defun open-line-above ()
+  "Insert a newline above the current line and put point at beginning."
+  (interactive)
+  (save-excursion
+    (move-end-of-line 0)
+    (open-line 1)))
+
+(define-key global-map (kbd "C-M-o") 'open-line-above)
 
 ;; Autoindent open-*-lines
 (defun newline-indent-open ()
@@ -487,3 +500,7 @@
 ;; github gists
 (global-set-key (kbd "C-c g b") 'jist-auth-buffer)
 (global-set-key (kbd "C-c g r") 'jist-auth-region)
+
+;;modeline
+(require 'powerline)
+(powerline-center-theme)

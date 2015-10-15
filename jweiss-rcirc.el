@@ -157,6 +157,16 @@ to them."
                               (buffer-name))
                 (rcirc-reconnect-mode 1))))
 
+; ignore buffers that aren't privmsg or channels i specify
+(add-hook 'rcirc-mode-hook
+          (lambda ()
+            (let ((buf-name (buffer-name)))
+              (setq rcirc-ignore-buffer-activity-flag
+                    (not (or (string= "#monetas-dev@irc.monetas.io" buf-name)
+                             (not (or (string-prefix-p "*" buf-name)
+                                      (string-prefix-p "#" buf-name)))))))))
+
+;(setq rcirc-mode-hook nil)
 (defun rcirc-clear-all-activity ()
   "Clear out all the built up activity in the modeline"
   (interactive)
@@ -218,12 +228,12 @@ to them."
                        ,(secrets-get-secret "Login" "Freenode irc"))
                        ("irc.monetas.io" nickserv
                         "jweiss"
-                        ,(secrets-get-secret "Login" "monetas irc"))))
+                        ,(secrets-get-attribute "Login" "monetas irc" :nickserv-password))))
 (setq rcirc-server-alist      
       `(("irc.freenode.net" :channels
         ("#rcirc" "#emacs" "#clojure" "#python" "#bitcoin" "#go-nuts"))
        ("irc.monetas.io" :nick "jweiss" :port 6697 :user-name ,(secrets-get-attribute "Login" "monetas irc" :user) :password ,(secrets-get-secret "Login" "monetas irc") :full-name "Jeff Weiss" :channels
-        ("#monetas-dev" "#dev")
+        ("#monetas-dev" "#dev" "#gotary-clients")
         :encryption tls)))
 
 ;; deterministic nick colors

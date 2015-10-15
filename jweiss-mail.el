@@ -120,7 +120,7 @@
      ;;(add-hook 'notmuch-show-hook 'variable-pitch-mode)
      (add-hook 'notmuch-search-hook (lambda ()
                                       ; (variable-pitch-mode) 
-                                      (text-scale-set 2)))
+                                      (text-scale-set 1)))
      (require 'notmuch-address)
      (setq notmuch-address-command "/home/jweiss/bin/notmuch-addrlookup")
      (notmuch-address-message-insinuate)

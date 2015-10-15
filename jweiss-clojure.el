@@ -43,6 +43,8 @@
 (add-hook 'cider-repl-mode-hook (lambda () (set-clojure-colors nil)
                                   (font-lock-add-keywords nil clojure-font-lock-keywords)))
 
+(add-hook 'clojure-mode-hook (lambda () (set-clojure-colors nil)
+                               (font-lock-add-keywords nil clojure-font-lock-keywords)))
 ;; Define extra clojure faces
 (def-mode-face clojure-braces       "#49b2c7"   "Clojure braces")
 (def-mode-face clojure-brackets     "#0074e8"   "Clojure brackets")
