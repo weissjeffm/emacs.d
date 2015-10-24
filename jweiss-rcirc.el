@@ -238,3 +238,36 @@ to them."
 
 ;; deterministic nick colors
 (setq rcirc-color-is-deterministic t)
+
+;; load backlog when opening channel buffer
+(defcustom rcirc-channel-log-lines 30
+  "Number of lines of previous log to load when opening a channel
+  buffer."
+  :type 'integer
+  :group 'rcirc)
+
+(defun tail-file-to-string (filename num-lines)
+  (interactive "f")
+  (condition-case nil
+      (save-excursion
+        (with-temp-buffer
+          (insert-file-contents filename)
+          (end-of-buffer)
+          (forward-line (- num-lines))
+          (buffer-substring-no-properties (point) (point-max))))
+    ('error "")))
+
+(defun insert-partial-log ()
+  (beginning-of-buffer)
+  (let ((inhibit-read-only t))
+    (insert (tail-file-to-string
+             (expand-file-name (funcall rcirc-log-filename-function
+                                        (rcirc-buffer-process) rcirc-target)
+                               rcirc-log-directory)
+             rcirc-channel-log-lines))
+    (setq-local rcirc-prompt-start-marker (point-max-marker))
+    (setq-local rcirc-prompt-end-marker (point-max-marker))
+    (rcirc-update-prompt)
+    (goto-char rcirc-prompt-end-marker)))
+
+(add-hook 'rcirc-mode-hook 'insert-partial-log)
