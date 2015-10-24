@@ -163,6 +163,7 @@ __________"))))
  '(rcirc-notify-message "%s: %s")
  '(rcirc-notify-message-private "(priv) %s: %s")
  '(rcirc-notify-timeout 30)
+ '(rcirc-time-format "%D %H:%M ")
  '(rcirc-track-minor-mode t)
  '(reb-re-syntax ((lambda nil (quote string))))
  '(safe-local-variable-values
