@@ -504,3 +504,13 @@
 ;;modeline
 (require 'powerline)
 (powerline-center-theme)
+
+;;in jabber buffers for example
+(defun jmw/highlight-go-code ()
+  (interactive)
+  (let ((inhibit-read-only t))
+    (exchange-point-and-mark)
+    (insert "\n")
+    (org-src-font-lock-fontify-block 'go (region-beginning) (region-end))))
+
+(setenv "SSH_AUTH_SOCK" "/run/user/1000/keyring/ssh")

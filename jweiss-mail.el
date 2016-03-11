@@ -32,7 +32,8 @@
 
 (require 'eudc)
 
-(require 'gnus-art) ;; http://notmuchmail.org/pipermail/notmuch/2012/012010.html
+;; error about gnus-inhibit-images when running emacs 24
+;; (require 'gnus-art) ;; http://notmuchmail.org/pipermail/notmuch/2012/012010.html
 
 (setq eudc-default-return-attributes nil
       eudc-strict-return-matches nil)
@@ -90,20 +91,22 @@
        (notmuch-search-tag-all '("-new"))
        (notmuch-bury-or-kill-this-buffer))
      (define-key notmuch-search-mode-map (kbd "C-c C-k") 'notmuch-untag-all-new)
-
+     (define-key notmuch-search-mode-map (kbd "=") 'notmuch-poll-and-refresh-this-buffer)
+     (define-key notmuch-hello-mode-map (kbd "=") 'notmuch-poll-and-refresh-this-buffer)
      ;; Autorefresh notmuch-hello using D-Bus
      (defun jweiss/notmuch-dbus-notify ()
        (save-excursion
 	 (save-restriction
 	   (when (get-buffer "*notmuch-hello*")
-	     (notmuch-hello-update t)))))
+	     (notmuch-hello-update t))))
+       (save-excursion
+	 (save-restriction
+	   (when (get-buffer "*notmuch-saved-search-Inbox*")
+	     (notmuch-poll)))))
      (ignore-errors
        (dbus-register-method :session dbus-service-emacs dbus-path-emacs
 			     dbus-service-emacs "NotmuchNewmail"
 			     'jweiss/notmuch-dbus-notify))
-     ;; turn off "original message" washing since zimbra doesn't
-     ;; produce messages that work well with this function
-     (setq notmuch-wash-original-regexp "a^")
      
      ;;mark thread read
      (defun notmuch-mark-thread-read ()
@@ -132,3 +135,15 @@
 (setq notmuch-saved-searches
       (car (read-from-string (secrets-get-secret "Login" "notmuch-saved-searches"))))
 
+(defun notmuch-show-decrypt-message ()
+  (interactive)
+  ;; make sure the content is not indented, as this confuses epa
+  (when notmuch-show-indent-content
+    (notmuch-show-toggle-thread-indentation))
+
+  (cl-letf ((extent (notmuch-show-message-extent))
+            ((symbol-function 'y-or-n-p) #'(lambda (msg) t)))
+    (epa-decrypt-armor-in-region (car extent) (cdr extent))))
+
+(require 'notmuch)
+(define-key 'notmuch-show-mode-map (kbd "C-c C-e d") 'notmuch-show-decrypt-message)

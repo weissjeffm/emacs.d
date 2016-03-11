@@ -28,6 +28,7 @@
 (def-mode-face lisp-parens       "DimGrey"   "Lisp parens")
 
 (set-lisp-colors 'emacs-lisp-mode)
+(set-lisp-colors 'lisp-mode)
 
 (defun slime-repl-font-lock-setup ()
   (font-lock-mode nil)
@@ -37,7 +38,7 @@
           nil nil (("+-*/.<>=!?$%_&~^:@" . "w")) nil
           (font-lock-syntactic-face-function
            . lisp-font-lock-syntactic-face-function)))
-  ;; (set-lisp-colors 'slime-repl-mode)
+  (set-lisp-colors 'slime-repl-mode)
   (font-lock-mode t))
 
 (add-hook 'slime-repl-mode-hook 'slime-repl-font-lock-setup)

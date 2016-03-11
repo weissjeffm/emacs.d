@@ -94,6 +94,8 @@
  '(ein:connect-default-notebook "8888/dispatch")
  '(ein:use-auto-complete-superpack t)
  '(ein:worksheet-enable-undo (quote full))
+ '(epg-debug t)
+ '(epg-gpg-program "gpg2")
  '(flycheck-highlighting-mode (quote sexps))
  '(flycheck-python-flake8-executable "~/.virtualenvs/cfme/bin/flake8")
  '(flymake-python-pyflakes-executable "flake8")
@@ -103,6 +105,11 @@
  '(gofmt-command
    "GOPATH=/home/jweiss/gotary-vendored-gopath:/home/jweiss/workspace/go/ goimports")
  '(graphviz-dot-view-command "xdot %s")
+ '(hipchat-api-key "IGRSoht9auMK0JgNjTgqY1f1kIE8vtEmHh5WpNyi")
+ '(hipchat-autojoin
+   (quote
+    ("1_sysops@conf.btf.hipchat.com" "1_privacy_ideas@conf.btf.hipchat.com" "1_monetas@conf.btf.hipchat.com" nil "1_las_palmas@conf.btf.hipchat.com" "1_android@conf.btf.hipchat.com" "1_devs@conf.btf.hipchat.com" "1_gotary@conf.btf.hipchat.com" "1_watercooler@conf.btf.hipchat.com")))
+ '(hipchat-nickname "Jeff Weiss")
  '(icicle-Completions-text-scale-decrease 0.0)
  '(icicle-TAB-completion-methods (quote (vanilla basic)))
  '(icicle-buffer-require-match-flag (quote partial-match-ok))
@@ -118,7 +125,17 @@
  '(indent-tabs-mode nil)
  '(inferior-lisp-program "sbcl" t)
  '(iswitchb-mode t)
- '(magit-revert-buffers (quote silent))
+ '(jabber-account-list
+   (quote
+    (("1_19@chat.btf.hipchat.com"
+      (:password . "ecDpj6w3PNrf")
+      (:network-server . "hipchat.monetas.io")
+      (:port . 5223)
+      (:connection-type . ssl)))))
+ '(jabber-mode-line-mode t)
+ '(jabber-muc-colorize-foreign t)
+ '(jabber-otr-message-history t)
+ '(magit-revert-buffers (quote silent) t)
  '(magit-save-repository-buffers nil)
  '(mail-signature nil)
  '(menu-bar-mode nil)
@@ -148,6 +165,22 @@ __________"))))
     ("~/Documents/monetas/monetas.org" "~/tasks/7212467cf49c6e11eaff/jweiss.org")))
  '(org-babel-load-languages (quote ((emacs-lisp . t) (shell . t))))
  '(org-bullets-bullet-list (quote ("●" "◉" "○" "★")))
+ '(org-src-lang-modes
+   (quote
+    (("ocaml" . tuareg)
+     ("elisp" . emacs-lisp)
+     ("ditaa" . artist)
+     ("asymptote" . asy)
+     ("dot" . fundamental)
+     ("sqlite" . sql)
+     ("calc" . fundamental)
+     ("C" . c)
+     ("cpp" . c++)
+     ("C++" . c++)
+     ("screen" . shell-script)
+     ("shell" . sh)
+     ("bash" . sh)
+     ("go" . go))))
  '(org-startup-indented t)
  '(package-archive-upload-base "/home/jweiss/.emacs.d/package-archives")
  '(powerline-default-separator (quote arrow-fade))
@@ -157,6 +190,7 @@ __________"))))
  '(rcirc-default-full-name "Jeff Weiss")
  '(rcirc-default-user-name "jweiss")
  '(rcirc-fill-column (quote frame-width))
+ '(rcirc-fill-flag nil)
  '(rcirc-keywords (quote ("goats!")))
  '(rcirc-log-flag t)
  '(rcirc-notify-check-frame nil)
@@ -168,7 +202,11 @@ __________"))))
  '(reb-re-syntax ((lambda nil (quote string))))
  '(safe-local-variable-values
    (quote
-    ((eval font-lock-add-keywords nil
+    ((Lowercase . Yes)
+     (Base . 10)
+     (Package . XLIB)
+     (Syntax . Common-lisp)
+     (eval font-lock-add-keywords nil
            (quote
             (("(\\(dired-filter-define\\)[[:blank:]]+\\(.+\\)"
               (1
@@ -230,6 +268,8 @@ __________"))))
 (load (concat user-emacs-directory "jweiss-clojure.el"))
 (load (concat user-emacs-directory "jweiss-python.el"))
 (load (concat user-emacs-directory "jweiss-java.el"))
+(load (concat user-emacs-directory "jabber-hipchat.el"))
+(load (concat user-emacs-directory "jweiss-hipchat.el"))
 
 ;;  '(icicle-apropos-complete-keys (quote ([9] [tab] [(control 105)])))
 ;;  '(icicle-prefix-complete-keys (quote ([S-tab] [S-iso-lefttab])))

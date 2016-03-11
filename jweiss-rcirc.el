@@ -166,6 +166,9 @@ to them."
                              (not (or (string-prefix-p "*" buf-name)
                                       (string-prefix-p "#" buf-name)))))))))
 
+;; make line wrapping "soft"
+(add-hook 'rcirc-mode-hook 'visual-line-mode)
+
 ;(setq rcirc-mode-hook nil)
 (defun rcirc-clear-all-activity ()
   "Clear out all the built up activity in the modeline"
@@ -223,16 +226,18 @@ to them."
 
 ;; set account info from gnome-keyring
 
+(setq monetas-server-keyring-item "monetas irc server")
+
 (setq rcirc-authinfo `(("irc.freenode.net" nickserv
                        ,(secrets-get-attribute "Login" "Freenode irc" :user)
                        ,(secrets-get-secret "Login" "Freenode irc"))
                        ("irc.monetas.io" nickserv
                         "jweiss"
-                        ,(secrets-get-attribute "Login" "monetas irc" :nickserv-password))))
+                        ,(secrets-get-attribute "Login" monetas-server-keyring-item :nickserv-password))))
 (setq rcirc-server-alist      
       `(("irc.freenode.net" :channels
         ("#rcirc" "#emacs" "#clojure" "#python" "#bitcoin" "#go-nuts"))
-       ("irc.monetas.io" :nick "jweiss" :port 6697 :user-name ,(secrets-get-attribute "Login" "monetas irc" :user) :password ,(secrets-get-secret "Login" "monetas irc") :full-name "Jeff Weiss" :channels
+       ("irc.monetas.io" :nick "jweiss" :port 6697 :user-name ,(secrets-get-attribute "Login" monetas-server-keyring-item :user) :password ,(secrets-get-secret "Login" monetas-server-keyring-item) :full-name "Jeff Weiss" :channels
         ("#monetas-dev" "#dev" "#gotary-clients")
         :encryption tls)))
 

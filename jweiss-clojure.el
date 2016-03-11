@@ -40,10 +40,14 @@
 (autoload 'clojure-mode "clojure-mode")
 (autoload 'clojure-mode-map "clojure-mode" nil nil 'keymap)
 
-(add-hook 'cider-repl-mode-hook (lambda () (set-clojure-colors nil)
+
+(add-hook 'cider-repl-mode-hook (lambda ()
+                                  (set-clojure-colors nil)
                                   (font-lock-add-keywords nil clojure-font-lock-keywords)))
 
-(add-hook 'clojure-mode-hook (lambda () (set-clojure-colors nil)
+(add-hook 'clojure-mode-hook (lambda ()
+                               (define-key clojure-mode-map (kbd "<return>") 'sp-forward-sexp)
+                               (set-clojure-colors nil)
                                (font-lock-add-keywords nil clojure-font-lock-keywords)))
 ;; Define extra clojure faces
 (def-mode-face clojure-braces       "#49b2c7"   "Clojure braces")
@@ -51,3 +55,4 @@
 (def-mode-face clojure-namespace    "#a9937a"   "Clojure namespace")
 (def-mode-face clojure-java-call    "#7587a6"   "Clojure Java calls")
 (def-mode-face clojure-special      "#0074e8"   "Clojure special")
+
