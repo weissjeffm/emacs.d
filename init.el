@@ -108,7 +108,7 @@
  '(hipchat-api-key "IGRSoht9auMK0JgNjTgqY1f1kIE8vtEmHh5WpNyi")
  '(hipchat-autojoin
    (quote
-    ("1_sysops@conf.btf.hipchat.com" "1_privacy_ideas@conf.btf.hipchat.com" "1_monetas@conf.btf.hipchat.com" nil "1_las_palmas@conf.btf.hipchat.com" "1_android@conf.btf.hipchat.com" "1_devs@conf.btf.hipchat.com" "1_gotary@conf.btf.hipchat.com" "1_watercooler@conf.btf.hipchat.com")))
+    ("1_sysops@conf.btf.hipchat.com" "1_privacy_ideas@conf.btf.hipchat.com" "1_monetas@conf.btf.hipchat.com" "1_las_palmas@conf.btf.hipchat.com" "1_android@conf.btf.hipchat.com" "1_devs@conf.btf.hipchat.com" "1_gotary@conf.btf.hipchat.com" "1_watercooler@conf.btf.hipchat.com")))
  '(hipchat-nickname "Jeff Weiss")
  '(icicle-Completions-text-scale-decrease 0.0)
  '(icicle-TAB-completion-methods (quote (vanilla basic)))
@@ -132,6 +132,9 @@
       (:network-server . "hipchat.monetas.io")
       (:port . 5223)
       (:connection-type . ssl)))))
+ '(jabber-alert-message-hooks nil)
+ '(jabber-alert-presence-hooks nil)
+ '(jabber-auto-reconnect t)
  '(jabber-mode-line-mode t)
  '(jabber-muc-colorize-foreign t)
  '(jabber-otr-message-history t)

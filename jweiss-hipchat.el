@@ -1,6 +1,12 @@
+(setq monetas-hipchat-keyring-item "monetas hipchat")
+(setq hipchat-api-key (secrets-get-attribute "Login" monetas-hipchat-keyring-item :api-key))
 (setq jabber-account-list
-      `(("1_19@chat.btf.hipchat.com"
-         (:password . ,(secrets-get-secret "Login" monetas-server-keyring-item))
+      `((,(secrets-get-attribute "Login" monetas-hipchat-keyring-item :login)
+         (:password . ,(secrets-get-secret "Login" monetas-hipchat-keyring-item))
          (:network-server . "hipchat.monetas.io")
-         (:port . 5223)
-         (:connection-type . ssl))))
+         (:port . 5222)
+         (:connection-type . starttls))))
+(setq jabber-invalid-certificate-servers '("hipchat.monetas.io" "chat.btf.hipchat.com"))
+(setq jabber-keepalive-interval 30)
+;;(setq jabber-keepalive-debug nil)
+(add-hook 'jabber-post-connect-hooks #'jabber-keepalive-start)

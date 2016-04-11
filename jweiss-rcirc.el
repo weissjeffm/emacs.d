@@ -236,10 +236,7 @@ to them."
                         ,(secrets-get-attribute "Login" monetas-server-keyring-item :nickserv-password))))
 (setq rcirc-server-alist      
       `(("irc.freenode.net" :channels
-        ("#rcirc" "#emacs" "#clojure" "#python" "#bitcoin" "#go-nuts"))
-       ("irc.monetas.io" :nick "jweiss" :port 6697 :user-name ,(secrets-get-attribute "Login" monetas-server-keyring-item :user) :password ,(secrets-get-secret "Login" monetas-server-keyring-item) :full-name "Jeff Weiss" :channels
-        ("#monetas-dev" "#dev" "#gotary-clients")
-        :encryption tls)))
+        ("#rcirc" "#emacs" "#clojure" "#python" "#bitcoin" "#go-nuts"))))
 
 ;; deterministic nick colors
 (setq rcirc-color-is-deterministic t)
