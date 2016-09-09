@@ -84,7 +84,8 @@
 
 (eval-after-load 'notmuch
   '(progn
-     (require 'dbus)
+     ;; (require 'dbus)
+     
      ;; to untag all new messages
      (defun notmuch-untag-all-new ()
        (interactive)
@@ -94,19 +95,19 @@
      (define-key notmuch-search-mode-map (kbd "=") 'notmuch-poll-and-refresh-this-buffer)
      (define-key notmuch-hello-mode-map (kbd "=") 'notmuch-poll-and-refresh-this-buffer)
      ;; Autorefresh notmuch-hello using D-Bus
-     (defun jweiss/notmuch-dbus-notify ()
-       (save-excursion
-	 (save-restriction
-	   (when (get-buffer "*notmuch-hello*")
-	     (notmuch-hello-update t))))
-       (save-excursion
-	 (save-restriction
-	   (when (get-buffer "*notmuch-saved-search-Inbox*")
-	     (notmuch-poll)))))
-     (ignore-errors
-       (dbus-register-method :session dbus-service-emacs dbus-path-emacs
-			     dbus-service-emacs "NotmuchNewmail"
-			     'jweiss/notmuch-dbus-notify))
+     ;; (defun jweiss/notmuch-dbus-notify ()
+     ;;   (save-excursion
+     ;;     (save-restriction
+     ;;       (when (get-buffer "*notmuch-hello*")
+     ;;         (notmuch-hello-update t))))
+     ;;   (save-excursion
+     ;;     (save-restriction
+     ;;       (when (get-buffer "*notmuch-saved-search-Inbox*")
+     ;;         (notmuch-poll)))))
+     ;; (ignore-errors
+     ;;   (dbus-register-method :session dbus-service-emacs dbus-path-emacs
+     ;;    		     dbus-service-emacs "NotmuchNewmail"
+     ;;    		     'jweiss/notmuch-dbus-notify))
      
      ;;mark thread read
      (defun notmuch-mark-thread-read ()
@@ -125,7 +126,7 @@
                                       ; (variable-pitch-mode) 
                                       (text-scale-set 1)))
      (require 'notmuch-address)
-     (setq notmuch-address-command "/home/jweiss/bin/notmuch-addrlookup")
+     (setq notmuch-address-command "/usr/local/bin/notmuch-addrlookup")
      (notmuch-address-message-insinuate)
      (setq notmuch-address-selection-function
            (lambda (prompt collection initial-input)

@@ -6,66 +6,13 @@
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/") t)
 (add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives
              '("org"       . "http://orgmode.org/elpa/"))
 (add-to-list 'package-archives '("local" . "/home/jweiss/.emacs.d/package-archives"))
 (package-initialize)
 
-;; (when (not (package-installed-p 'melpa))
-;;   (package-refresh-contents)
-;;   (package-install "melpa"))
-
-;; Add in your own as you wish:
-
-(setq my-packages-alist
-      '((lisp
-         clojure-mode clojure-mode-extra-font-locking cider ac-cider smartparens elisp-slime-nav flycheck-clojure)
-
-        (golang
-         go-mode go-autocomplete go-eldoc go-errcheck flymake-go)
-
-        (ide
-         auto-complete magit find-file-in-project flycheck)
-
-        (formats
-         adoc-mode markdown-mode)
-
-        (languages
-         haskell-mode clang-format ggtags)
-
-        (irc
-         rcirc-notify rcirc-color)
-
-        (navigating
-         dired+ dired-subtree ace-jump-mode)
-        
-        (python
-         ein virtualenvwrapper)
-        
-        (editing
-         undo-tree multiple-cursors wgrep)
-        
-        (other
-         mwe-log-commands gist)
-        
-        (email
-         bbdb eudc)
-        
-        (completion
-         icicles ido smex)
-        ))
-
-(defvar my-packages (mapcan 'cdr (copy-tree my-packages-alist)) ; copy because mapcan modifies in-place
-  
-  "A list of packages to ensure are installed at launch.")
-
-(dolist (p my-packages)
-  (when (not (package-installed-p p))
-    (package-install p)))
-
-(setq package-archive-enable-alist nil)
-
-;;(require 'icicles)
-(require 'secrets)
+(set-face-attribute 'default nil :family "DejaVu Sans Mono")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -74,6 +21,10 @@
  ;; If there is more than one, they won't work right.
  '(ac-auto-show-menu t)
  '(ac-expand-on-auto-complete nil)
+ '(auth-sources
+   (quote
+    ("~/.authinfo" "~/.authinfo.gpg" "~/.netrc" macos-keychain-generic)))
+ '(auto-revert-remote-files t)
  '(blink-cursor-mode nil)
  '(c-basic-offset 4)
  '(cider-annotate-completion-candidates t)
@@ -124,7 +75,6 @@
  '(imenu-auto-rescan t)
  '(indent-tabs-mode nil)
  '(inferior-lisp-program "sbcl" t)
- '(iswitchb-mode t)
  '(jabber-account-list
    (quote
     (("1_19@chat.btf.hipchat.com"
@@ -138,17 +88,19 @@
  '(jabber-mode-line-mode t)
  '(jabber-muc-colorize-foreign t)
  '(jabber-otr-message-history t)
+ '(magit-diff-refine-hunk (quote all))
  '(magit-revert-buffers (quote silent) t)
  '(magit-save-repository-buffers nil)
  '(mail-signature nil)
  '(menu-bar-mode nil)
  '(minimap-update-delay 0.3)
  '(mouse-yank-at-point t)
+ '(notmuch-command "/usr/local/bin/notmuch")
  '(notmuch-crypto-process-mime t)
  '(notmuch-hello-thousands-separator ",")
  '(notmuch-saved-searches
    (quote
-    ((:name "Inbox" :query "tag:new AND (folder:GMail/INBOX OR folder:Monetas/INBOX OR folder:Personal/INBOX OR folder:Personal-Remote/INBOX or folder:Cognitect/INBOX folder:LookingGlass/INBOX)")
+    ((:name "Inbox" :query "tag:new AND (folder:GMail/INBOX OR folder:Monetas/INBOX OR folder:Personal/INBOX OR folder:Personal-Remote/INBOX or folder:LG/INBOX folder:LG-365/INBOX)")
      (:name "Monetas" :query "tag:new AND folder:Monetas/INBOX")
      (:name "cognitect" :query "tag:new AND folder:Cognitect/INBOX")
      (:name "LG" :query "tag:new AND folder:LookingGlass/INBOX"))))
@@ -163,9 +115,7 @@
      ("count" . "%s
 __________"))))
  '(notmuch-show-all-multipart/alternative-parts nil)
- '(org-agenda-files
-   (quote
-    ("~/Documents/monetas/monetas.org" "~/tasks/7212467cf49c6e11eaff/jweiss.org")))
+ '(org-agenda-files (quote ("~/Documents/LG/lg_ics.org")))
  '(org-babel-load-languages (quote ((emacs-lisp . t) (shell . t))))
  '(org-bullets-bullet-list (quote ("●" "◉" "○" "★")))
  '(org-src-lang-modes
@@ -188,6 +138,7 @@ __________"))))
  '(package-archive-upload-base "/home/jweiss/.emacs.d/package-archives")
  '(powerline-default-separator (quote arrow-fade))
  '(proced-filter (quote all))
+ '(ps-spool-duplex t)
  '(python-skeleton-autoinsert t)
  '(rcirc-buffer-maximum-lines 2000)
  '(rcirc-default-full-name "Jeff Weiss")
@@ -242,6 +193,11 @@ __________"))))
  '(sp-highlight-pair-overlay nil)
  '(sp-highlight-wrap-overlay nil)
  '(sp-highlight-wrap-tag-overlay nil)
+ '(starttls-extra-arguments (quote ("--insecure")))
+ '(starttls-gnutls-program "/usr/local/bin/gnutls-cli")
+ '(tls-program
+   (quote
+    ("openssl s_client -connect %h:%p -no_ssl2 -ign_eof" "gnutls-cli --insecure -p %p %h" "gnutls-cli --insecure -p %p %h --protocols ssl3")))
  '(tool-bar-mode nil)
  '(tramp-default-proxies-alist (quote (("192.168.66" "root" "/ssh:%h:"))))
  '(undo-tree-auto-save-history t)
@@ -258,21 +214,24 @@ __________"))))
  ;; If there is more than one, they won't work right.
  '(diff-added ((t (:inherit diff-changed :background "#112211" :foreground "green2"))))
  '(diff-removed ((t (:inherit diff-changed :background "#221111" :foreground "red1"))))
- '(notmuch-search-subject ((t (:inherit default :foreground "DarkSeaGreen2" :height 1.2))))
+ '(notmuch-message-summary-face ((t (:background "#303030" :height 1.3))))
+ '(notmuch-search-matching-authors ((t (:inherit default :height 1.2))))
+ '(notmuch-search-subject ((t (:inherit default :foreground "DarkSeaGreen2"))))
+ '(notmuch-tree-match-author-face ((t (:foreground "OliveDrab1"))))
  '(powerline-active1 ((t (:inherit mode-line :background "grey50"))))
  '(powerline-active2 ((t (:inherit mode-line :background "grey80"))))
  '(variable-pitch ((t (:inherit default :family "DejaVu Sans")))))
 
 (load (concat user-emacs-directory "jweiss.el"))
-(load (concat user-emacs-directory "jweiss-rcirc.el"))
-(load (concat user-emacs-directory "jweiss-mail.el"))
+;(load (concat user-emacs-directory "jweiss-rcirc.el"))
+;(load (concat user-emacs-directory "jweiss-mail.el"))
 (load (concat user-emacs-directory "jweiss-smartparens.el"))
 (load (concat user-emacs-directory "jweiss-lisp.el"))
 (load (concat user-emacs-directory "jweiss-clojure.el"))
-(load (concat user-emacs-directory "jweiss-python.el"))
-(load (concat user-emacs-directory "jweiss-java.el"))
-(load (concat user-emacs-directory "jabber-hipchat.el"))
-(load (concat user-emacs-directory "jweiss-hipchat.el"))
+;(load (concat user-emacs-directory "jweiss-python.el"))
+;(load (concat user-emacs-directory "jweiss-java.el"))
+;(load (concat user-emacs-directory "jabber-hipchat.el"))
+;(load (concat user-emacs-directory "jweiss-hipchat.el"))
 
 ;;  '(icicle-apropos-complete-keys (quote ([9] [tab] [(control 105)])))
 ;;  '(icicle-prefix-complete-keys (quote ([S-tab] [S-iso-lefttab])))

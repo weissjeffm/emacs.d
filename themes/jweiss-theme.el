@@ -10,7 +10,6 @@
  '(ein:cell-input-area ((t nil)))
  '(fixed-pitch ((t (:inherit default))))
  '(hl-line ((t (:inherit highlight :background "#151500"))))
- '(iswitchb-current-match ((t (:inherit font-lock-function-name-face :foreground "orange red"))))
  '(magit-item-highlight ((t (:background "gray10"))))
  '(notmuch-search-count ((t (:inherit default :foreground "light gray"))))
  '(notmuch-search-date ((t (:inherit default :foreground "cyan"))))

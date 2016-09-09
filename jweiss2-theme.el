@@ -29,7 +29,7 @@
  '(secondary-selection ((t (:background "gray11"))))
  '(fixed-pitch ((t (:inherit default))))
  '(hl-line ((t (:inherit highlight :background "#151500"))))
- '(iswitchb-current-match ((t (:foreground "orange red" :inherit font-lock-function-name-face))))
+ 
  '(rcirc-timestamp ((t (:inherit default :background "black" :foreground "gray25"))))
  '(region ((t (:background "#57230c"))))
  '(variable-pitch ((t (:inherit default :family "DejaVu Sans"))))

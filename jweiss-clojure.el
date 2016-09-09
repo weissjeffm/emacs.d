@@ -56,3 +56,16 @@
 (def-mode-face clojure-java-call    "#7587a6"   "Clojure Java calls")
 (def-mode-face clojure-special      "#0074e8"   "Clojure special")
 
+(setq cider-cljs-lein-repl "(do (use 'figwheel-sidecar.repl-api) (start-figwheel!) (cljs-repl))")
+
+;; fix cider-jack-in over TRAMP the default function will return a
+;; wrong path if jacking in on a tramp dir. just use lein without full
+;; path and assume lein is on the PATH at the remote end.
+(defun cider--lein-resolve-command ()
+  "Find `cider-lein-command' on `exec-path' if possible, or return `nil'.
+
+In case `default-directory' is non-local we assume the command is available."
+  (shell-quote-argument (or (when (file-remote-p default-directory)
+                              cider-lein-command)
+                            (executable-find cider-lein-command)
+                            (executable-find (concat cider-lein-command ".bat")))))

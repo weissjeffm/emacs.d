@@ -1,6 +1,11 @@
 ;;time loading of this file
 (require 'cl) ; a rare necessary use of REQUIRE (for mwe-log-commands?)
 
+;;set path to include /usr/local
+(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
+(setq exec-path (append exec-path '("/usr/local/bin")))
+
+
 ;;disable suspending emacs on ctrl-z
 (global-set-key (kbd "C-z") 'undo)
 (global-set-key (kbd "<f11>") 'make-frame)
@@ -8,6 +13,10 @@
                                         ;jump to line
 (global-set-key (kbd "C-c M-l") 'goto-line)
                                         ;buffer switch
+
+;;disable print key on mac, hangs emacs
+(global-unset-key (kbd "s-p"))
+
 ;;(global-set-key (kbd "C-,") 'ido-switch-buffer)
 ;;(global-set-key [insert] 'ido-switch-buffer)
 (global-set-key (kbd "C-q") 'switch-to-buffer)
@@ -133,8 +142,6 @@
 (add-hook 'org-mode-hook 'turn-on-font-lock) ; not needed when global-font-lock-mode is on
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-ca" 'org-agenda)
-(global-set-key "\C-cb" 'org-iswitchb)
-
 
 
 ;; Macro for face definition
@@ -513,4 +520,14 @@
     (insert "\n")
     (org-src-font-lock-fontify-block 'go (region-beginning) (region-end))))
 
-(setenv "SSH_AUTH_SOCK" "/run/user/1000/keyring/ssh")
+;(setenv "SSH_AUTH_SOCK" "/run/user/1000/keyring/ssh")
+
+(defun add-ssh-agent-to-tramp ()
+  (cl-pushnew '("-A")
+              (cadr (assoc 'tramp-login-args
+                           (assoc "ssh" tramp-methods)))
+              :test #'equal))
+(add-ssh-agent-to-tramp)
+
+;; mac-compatible secret retrieval
+;; (funcall (plist-get (first (auth-source-search :port "lg imap")) :secret))
