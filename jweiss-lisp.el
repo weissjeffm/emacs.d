@@ -23,9 +23,9 @@
   (set-face-attribute 'font-lock-builtin-face nil :underline nil :bold t)
   (set-face-foreground 'font-lock-builtin-face "#aaddff"))
 
-(def-mode-face double-quote "#00920A"   "special")
-(def-mode-face lisp-keyword      "#45b8f2"   "Lisp keywords")
-(def-mode-face lisp-parens       "DimGrey"   "Lisp parens")
+(def-mode-face double-quote "#00920A" "special")
+(def-mode-face lisp-keyword "#45b8f2" "Lisp keywords")
+(def-mode-face lisp-parens "DimGrey" "Lisp parens")
 
 (set-lisp-colors 'emacs-lisp-mode)
 (set-lisp-colors 'lisp-mode)
