@@ -16,19 +16,19 @@
    ;;                                            (match-end 1) "↠") nil)))
    ;; (("(\\(complement\\>\\)" 0 (progn (compose-region
    ;;                                    (match-beginning 1)
-   ;;                                    (match-end 1) "¬") nil))) 
+   ;;                                    (match-end 1) "¬") nil)))
    ))
 
 (defun set-clojure-colors (mode-fn)
   (tweak-clojure-syntax mode-fn)
   (set-lisp-colors mode-fn)
-  
+
   (set-face-foreground 'clojure-brackets "#445f5f")
   (set-face-attribute 'clojure-brackets nil :underline nil :bold t)
 
   (set-face-foreground 'clojure-braces "#5f4d44")
   (set-face-attribute 'clojure-braces nil :underline nil :bold t)
-  
+
 
   (set-face-foreground 'clojure-java-call "#ccffcc")
   (set-face-foreground 'clojure-namespace "#0000ff")
@@ -43,12 +43,24 @@
 
 (add-hook 'cider-repl-mode-hook (lambda ()
                                   (set-clojure-colors nil)
-                                  (font-lock-add-keywords nil clojure-font-lock-keywords)))
+                                  (font-lock-add-keywords nil clojure-font-lock-keywords)
+                                  (eldoc-mode)))
 
+(require 'clj-refactor)
 (add-hook 'clojure-mode-hook (lambda ()
                                (define-key clojure-mode-map (kbd "<return>") 'sp-forward-sexp)
+                               ;; imenu keybind
+                               (define-key clojure-mode-map (kbd "C-c i") 'imenu)
+                               ;; disable kill-sentence
+                               (define-key clojure-mode-map (kbd "M-k") nil)
+                               ;;enable clojure refactor
+                               (clj-refactor-mode 1)
+                               (yas-minor-mode 1)
                                (set-clojure-colors nil)
                                (font-lock-add-keywords nil clojure-font-lock-keywords)))
+(add-hook 'inf-clojure-mode-hook (lambda ()
+                                   (set-clojure-colors nil)
+                                   (font-lock-add-keywords 'inf-clojure-mode clojure-font-lock-keywords)))
 ;; Define extra clojure faces
 (def-mode-face clojure-braces       "#49b2c7"   "Clojure braces")
 (def-mode-face clojure-brackets     "#0074e8"   "Clojure brackets")
@@ -61,11 +73,12 @@
 ;; fix cider-jack-in over TRAMP the default function will return a
 ;; wrong path if jacking in on a tramp dir. just use lein without full
 ;; path and assume lein is on the PATH at the remote end.
-(defun cider--lein-resolve-command ()
-  "Find `cider-lein-command' on `exec-path' if possible, or return `nil'.
+(eval-after-load 'cider
+  (defun cider--lein-resolve-command ()
+    "Find `cider-lein-command' on `exec-path' if possible, or return `nil'.
 
 In case `default-directory' is non-local we assume the command is available."
-  (shell-quote-argument (or (when (file-remote-p default-directory)
-                              cider-lein-command)
-                            (executable-find cider-lein-command)
-                            (executable-find (concat cider-lein-command ".bat")))))
+    (shell-quote-argument (or (when (file-remote-p default-directory)
+                                cider-lein-command)
+                              (executable-find cider-lein-command)
+                              (executable-find (concat cider-lein-command ".bat"))))))
