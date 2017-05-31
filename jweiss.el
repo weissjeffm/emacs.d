@@ -547,3 +547,7 @@
 ;; bullets mode for org buffers
 (add-hook 'org-mode-hook #'org-bullets-mode)
 
+;; point undo (like undo but for point position)
+(require 'point-undo)
+(define-key global-map (kbd "M-;") 'point-undo)
+(define-key global-map (kbd "M-'") 'point-redo)
