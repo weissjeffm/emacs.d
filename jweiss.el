@@ -86,7 +86,7 @@
 ;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this-dwim)
 ;; (global-set-key (kbd "C-c C-/") 'mc/mark-more-like-this-extended)
 ;; (global-set-key (kbd "C-M-s") 'mc/mark-next-symbol-like-this)
-(define-key mc/keymap (kbd "TAB") 'mc/cycle-forward)
+ (define-key mc/keymap (kbd "M-n") 'mc/cycle-forward)
 
 ;;Green/red diff colors
 (eval-after-load 'diff-mode
