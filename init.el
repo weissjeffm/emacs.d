@@ -113,9 +113,11 @@
      ("count" . "%s
 __________"))))
  '(notmuch-show-all-multipart/alternative-parts nil)
+ '(nrepl-sync-request-timeout nil)
  '(org-agenda-files (quote ("~/Documents/LG/lg_ics.org")))
  '(org-babel-load-languages (quote ((emacs-lisp . t) (shell . t))))
  '(org-bullets-bullet-list (quote ("●" "◉" "○" "★")))
+ '(org-confirm-babel-evaluate nil)
  '(org-src-lang-modes
    (quote
     (("ocaml" . tuareg)
