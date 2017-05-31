@@ -2,14 +2,10 @@
 (require 'package)
 (require 'cl)
 (add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/") t)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/") t)
-(add-to-list 'package-archives
              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (add-to-list 'package-archives
-             '("org"       . "http://orgmode.org/elpa/"))
-(add-to-list 'package-archives '("local" . "/home/jweiss/.emacs.d/package-archives"))
+             '("org". "http://orgmode.org/elpa/"))
+
 (package-initialize)
 
 (set-face-attribute 'default nil :family "DejaVu Sans Mono")
