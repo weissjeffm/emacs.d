@@ -539,3 +539,8 @@
 
 ;; mac-compatible secret retrieval
 ;; (funcall (plist-get (first (auth-source-search :port "lg imap")) :secret))
+;; go straight to magit from find-file
+(require 'magit-extras)
+(define-key ido-common-completion-map
+  (kbd "C-x g") 'ido-enter-magit-status)
+
