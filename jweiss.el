@@ -544,3 +544,6 @@
 (define-key ido-common-completion-map
   (kbd "C-x g") 'ido-enter-magit-status)
 
+;; bullets mode for org buffers
+(add-hook 'org-mode-hook #'org-bullets-mode)
+
