@@ -25,3 +25,32 @@
                 (smartparens-mode 1)))
           (define-key icicle-read-expression-map [(tab)] 'hippie-expand)))
 (add-to-list 'sp-navigate-consider-stringlike-sexp 'html-mode)
+
+
+;; focus mode - narrow to expanding or contracting sexps
+(defun narrow-to-expression ()
+  (interactive)
+  (mark-sexp)
+  (narrow-to-region (point) (mark))
+  (deactivate-mark t))
+
+(defun focus-lisp-movement (motion-fn) 
+  (widen)
+  (let ((pt (point)))
+    (funcall motion-fn)
+    (if (not (eq pt (point)))
+        (narrow-to-expression))
+    (deactivate-mark t)))
+
+(defun focus-lisp-up ()
+  (interactive)
+  (focus-lisp-movement 'sp-backward-up-sexp))
+
+(defun focus-lisp-down ()
+  (interactive)
+  (focus-lisp-movement 'sp-down-sexp))
+
+(define-key smartparens-mode-map (kbd "C-M-S-U") 'focus-lisp-up)
+(define-key smartparens-mode-map (kbd "C-M-S-D") 'focus-lisp-down)
+(define-key smartparens-mode-map (kbd "C-M-u") 'sp-backward-up-sexp)
+(global-set-key (kbd "C-x n e") 'narrow-to-expression)
