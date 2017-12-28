@@ -47,20 +47,28 @@
                                   (eldoc-mode)))
 
 (require 'clj-refactor)
-(add-hook 'clojure-mode-hook (lambda ()
-                               (define-key clojure-mode-map (kbd "<return>") 'sp-forward-sexp)
-                               ;; imenu keybind
-                               (define-key clojure-mode-map (kbd "C-c i") 'imenu)
-                               ;; disable kill-sentence
-                               (define-key clojure-mode-map (kbd "M-k") nil)
-                               ;;enable clojure refactor
-                               (clj-refactor-mode 1)
-                               (yas-minor-mode 1)
-                               (set-clojure-colors nil)
-                               (font-lock-add-keywords nil clojure-font-lock-keywords)))
-(add-hook 'inf-clojure-mode-hook (lambda ()
-                                   (set-clojure-colors nil)
-                                   (font-lock-add-keywords 'inf-clojure-mode clojure-font-lock-keywords)))
+(require 'highlight-symbol)
+(add-hook 'clojure-mode-hook
+          (lambda ()
+            (define-key clojure-mode-map (kbd "<return>") 'sp-forward-sexp)
+            ;; imenu keybind
+            (define-key clojure-mode-map (kbd "C-c i") 'imenu)
+            ;; disable kill-sentence
+            (define-key clojure-mode-map (kbd "M-k") nil)
+            ;;enable clojure refactor
+            (clj-refactor-mode 1)
+            ;; highlight symbols
+            (highlight-symbol-mode 1)
+            (define-key clojure-mode-map (kbd "C-M-,") 'highlight-symbol-prev)
+            (define-key clojure-mode-map (kbd "C-M-.") 'highlight-symbol-next)
+            (yas-minor-mode 1)
+            (set-clojure-colors nil)
+            (font-lock-add-keywords nil clojure-font-lock-keywords)))
+
+(add-hook 'inf-clojure-mode-hook
+          (lambda ()
+            (set-clojure-colors nil)
+            (font-lock-add-keywords 'inf-clojure-mode clojure-font-lock-keywords)))
 ;; Define extra clojure faces
 (def-mode-face clojure-braces       "#49b2c7"   "Clojure braces")
 (def-mode-face clojure-brackets     "#0074e8"   "Clojure brackets")

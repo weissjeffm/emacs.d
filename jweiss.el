@@ -80,13 +80,13 @@
 (define-key mc-key-map (kbd ",") 'mc/mark-all-like-this-dwim)
 (define-key mc-key-map (kbd "/") 'mc/mark-more-like-this-extended)
 (define-key mc-key-map (kbd "s") 'mc/mark-next-symbol-like-this)
-
+(define-key mc-key-map (kbd "m") 'mc/mark-all-dwim)
 ;; (global-set-key (kbd "C-c C-.") 'mc/mark-all-symbols-like-this)
 ;; (global-set-key (kbd "C-c M-.") 'mc/mark-all-symbols-like-this-in-defun)
 ;; (global-set-key (kbd "C-c C-,") 'mc/mark-all-like-this-dwim)
 ;; (global-set-key (kbd "C-c C-/") 'mc/mark-more-like-this-extended)
 ;; (global-set-key (kbd "C-M-s") 'mc/mark-next-symbol-like-this)
- (define-key mc/keymap (kbd "M-n") 'mc/cycle-forward)
+(define-key mc/keymap (kbd "M-n") 'mc/cycle-forward)
 
 ;;Green/red diff colors
 (eval-after-load 'diff-mode
@@ -255,6 +255,7 @@
 (defun search-project (s)
   (interactive "sSearch project for regex: ")
   (apply #'icicle-search nil nil s t
+         (projectile-files-in-project-directory (projectile-))
          (directory-files-recursive
           (let* ((magit-proj-dir (magit-project-dir))
                  (src-subdir (concat magit-proj-dir "/src")))
@@ -517,8 +518,10 @@
 (global-set-key (kbd "C-c g r") 'jist-auth-region)
 
 ;;modeline
-(require 'powerline)
-(powerline-center-theme)
+(require 'smart-mode-line-powerline-theme)
+(sml/setup)
+;;(require 'powerline)
+;;(powerline-center-theme)
 
 ;;in jabber buffers for example
 (defun jmw/highlight-go-code ()
@@ -529,7 +532,7 @@
     (org-src-font-lock-fontify-block 'go (region-beginning) (region-end))))
 
 ;(setenv "SSH_AUTH_SOCK" "/run/user/1000/keyring/ssh")
-
+(require 'tramp)
 (defun add-ssh-agent-to-tramp ()
   (cl-pushnew '("-A")
               (cadr (assoc 'tramp-login-args
@@ -539,6 +542,7 @@
 
 ;; mac-compatible secret retrieval
 ;; (funcall (plist-get (first (auth-source-search :port "lg imap")) :secret))
+
 ;; go straight to magit from find-file
 (require 'magit-extras)
 (define-key ido-common-completion-map

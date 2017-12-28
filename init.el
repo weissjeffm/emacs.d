@@ -33,10 +33,10 @@
  '(clojure-docstring-fill-prefix-width 3)
  '(custom-safe-themes
    (quote
-    ("3ad26136c15ec0da8e22cc01b8e1a07aff009eac5c550309dd886bdbae414a65" "79d9e31ba98aae3a35f18adff4b825f4695b5a5d919b8038c9d26ab330618d91" "faab0220334aec9b69074942b938a5648fa3fd5c82d5c4e41fb8cce600caf029" "45097d951e8ec98af5eb77818f3282f442f598b7907bec2481e01d53e2e71885" "f7431aef22ca157349e97d128372869db4ee82ce1c370e77b7619dae65110d35" "153155dc0f5464053145d48cf5b6c2e4348663d7f9183ddd22eae16eb2b6cbd8" "c5ee6f4310f0dff079f457b3a0d94f6b112d24e47987b090a96457ce5279d53d" "4d7138452614f4726f8b4ccfecc5727faf63f13c9e034b3bd6179af3c3e4ad13" "e74e4efe1cb7550569a904742c1aa9de9a799dcce74f450454efc887fae2aeb6" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" default)))
+    ("b04425cc726711a6c91e8ebc20cf5a3927160681941e06bc7900a5a5bfe1a77f" "87c63ab110a49130c6a9753486571b6d2724468ccfdef23374d4f78e7d94625b" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "3ad26136c15ec0da8e22cc01b8e1a07aff009eac5c550309dd886bdbae414a65" "79d9e31ba98aae3a35f18adff4b825f4695b5a5d919b8038c9d26ab330618d91" "faab0220334aec9b69074942b938a5648fa3fd5c82d5c4e41fb8cce600caf029" "45097d951e8ec98af5eb77818f3282f442f598b7907bec2481e01d53e2e71885" "f7431aef22ca157349e97d128372869db4ee82ce1c370e77b7619dae65110d35" "153155dc0f5464053145d48cf5b6c2e4348663d7f9183ddd22eae16eb2b6cbd8" "c5ee6f4310f0dff079f457b3a0d94f6b112d24e47987b090a96457ce5279d53d" "4d7138452614f4726f8b4ccfecc5727faf63f13c9e034b3bd6179af3c3e4ad13" "e74e4efe1cb7550569a904742c1aa9de9a799dcce74f450454efc887fae2aeb6" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" default)))
  '(custom-theme-load-path
    (quote
-    ("/home/jweiss/.emacs.d/elpa/solarized-theme-20150319.102/" custom-theme-directory t "/home/jweiss/.emacs.d/themes")))
+    ("/home/jweiss/.emacs.d/elpa/solarized-theme-20150319.102/" custom-theme-directory t "/home/jweiss/.emacs.d/themes")) t)
  '(dired-recursive-deletes (quote always))
  '(eclim-executable "/home/jweiss/bin/eclim")
  '(eclimd-executable "/home/jweiss/bin/eclimd")
@@ -54,6 +54,7 @@
  '(gofmt-command
    "GOPATH=/home/jweiss/gotary-vendored-gopath:/home/jweiss/workspace/go/ goimports")
  '(graphviz-dot-view-command "xdot %s")
+ '(highlight-symbol-idle-delay 0.8)
  '(hipchat-api-key "IGRSoht9auMK0JgNjTgqY1f1kIE8vtEmHh5WpNyi")
  '(hipchat-autojoin
    (quote
@@ -89,6 +90,7 @@
  '(magit-diff-refine-hunk (quote all))
  '(magit-revert-buffers (quote silent) t)
  '(magit-save-repository-buffers nil)
+ '(magithub-hub-executable "/usr/local/bin/hub")
  '(mail-signature nil)
  '(menu-bar-mode nil)
  '(minimap-update-delay 0.3)
@@ -135,7 +137,18 @@ __________"))))
      ("bash" . sh)
      ("go" . go))))
  '(org-startup-indented t)
+ '(org-startup-with-inline-images t)
  '(package-archive-upload-base "/home/jweiss/.emacs.d/package-archives")
+ '(package-archives
+   (quote
+    (("local" . "/home/jweiss/.emacs.d/package-archives")
+     ("org" . "http://orgmode.org/elpa/")
+     ("gnu" . "http://elpa.gnu.org/packages/")
+     ("melpa" . "http://melpa.org/packages/")
+     ("melpa-stable" . "https://stable.melpa.org/packages/"))))
+ '(package-selected-packages
+   (quote
+    (smart-mode-line smart-mode-line-powerline-theme htmlize magithub point-undo multifiles pt helm helm-projectile helm-pt projectile clj-refactor wgrep virtualenvwrapper undo-tree swiper smex smartparens restclient rcirc-notify rcirc-color python-mode org-present org-bullets notmuch mwe-log-commands multiple-cursors markdown-mode magit json-mode js2-mode jabber inf-clojure icicles highlight-symbol haskell-mode go-errcheck go-eldoc go-autocomplete gist ggtags flymake-go flycheck-clojure find-file-in-project epresent elisp-slime-nav ein dired-subtree dired+ clojure-mode-extra-font-locking clang-format bbdb adoc-mode ace-jump-mode ac-slime ac-cider)))
  '(powerline-default-separator (quote arrow-fade))
  '(proced-filter (quote all))
  '(ps-spool-duplex t)
@@ -184,6 +197,7 @@ __________"))))
  '(show-paren-priority 0)
  '(show-paren-style (quote expression))
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
+ '(sml/theme (quote smart-mode-line-powerline))
  '(smtpmail-default-smtp-server nil)
  '(smtpmail-smtp-server "jweiss.com")
  '(smtpmail-smtp-service 587)
@@ -214,12 +228,11 @@ __________"))))
  ;; If there is more than one, they won't work right.
  '(diff-added ((t (:inherit diff-changed :background "#112211" :foreground "green2"))))
  '(diff-removed ((t (:inherit diff-changed :background "#221111" :foreground "red1"))))
+ '(highlight-symbol-face ((t (:background "DarkOrange3"))))
  '(notmuch-message-summary-face ((t (:background "#303030" :height 1.3))))
  '(notmuch-search-matching-authors ((t (:inherit default :height 1.2))))
  '(notmuch-search-subject ((t (:inherit default :foreground "DarkSeaGreen2"))))
  '(notmuch-tree-match-author-face ((t (:foreground "OliveDrab1"))))
- '(powerline-active1 ((t (:inherit mode-line :background "grey50"))))
- '(powerline-active2 ((t (:inherit mode-line :background "grey80"))))
  '(variable-pitch ((t (:inherit default :family "DejaVu Sans")))))
 
 (load (concat user-emacs-directory "jweiss.el"))

@@ -24,7 +24,7 @@
             (if (eq this-command 'icicle-pp-eval-expression)
                 (smartparens-mode 1)))
           (define-key icicle-read-expression-map [(tab)] 'hippie-expand)))
-(add-to-list 'sp-navigate-consider-stringlike-sexp 'html-mode)
+
 
 
 ;; focus mode - narrow to expanding or contracting sexps
