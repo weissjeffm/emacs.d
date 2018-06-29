@@ -54,7 +54,7 @@
             ;; imenu keybind
             (define-key clojure-mode-map (kbd "C-c i") 'imenu)
             ;; disable kill-sentence
-            (define-key clojure-mode-map (kbd "M-k") nil)
+            (define-key global-map (kbd "M-k") nil)
             ;;enable clojure refactor
             (clj-refactor-mode 1)
             ;; highlight symbols
@@ -63,7 +63,9 @@
             (define-key clojure-mode-map (kbd "C-M-.") 'highlight-symbol-next)
             (yas-minor-mode 1)
             (set-clojure-colors nil)
-            (font-lock-add-keywords nil clojure-font-lock-keywords)))
+            (font-lock-add-keywords nil clojure-font-lock-keywords)
+            ;;(aggressive-indent-mode t)
+            ))
 
 (add-hook 'inf-clojure-mode-hook
           (lambda ()
@@ -77,16 +79,3 @@
 (def-mode-face clojure-special      "#0074e8"   "Clojure special")
 
 (setq cider-cljs-lein-repl "(do (use 'figwheel-sidecar.repl-api) (start-figwheel!) (cljs-repl))")
-
-;; fix cider-jack-in over TRAMP the default function will return a
-;; wrong path if jacking in on a tramp dir. just use lein without full
-;; path and assume lein is on the PATH at the remote end.
-(eval-after-load 'cider
-  (defun cider--lein-resolve-command ()
-    "Find `cider-lein-command' on `exec-path' if possible, or return `nil'.
-
-In case `default-directory' is non-local we assume the command is available."
-    (shell-quote-argument (or (when (file-remote-p default-directory)
-                                cider-lein-command)
-                              (executable-find cider-lein-command)
-                              (executable-find (concat cider-lein-command ".bat"))))))

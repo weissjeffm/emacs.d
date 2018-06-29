@@ -555,3 +555,13 @@
 (require 'point-undo)
 (define-key global-map (kbd "M-;") 'point-undo)
 (define-key global-map (kbd "M-'") 'point-redo)
+
+;; help text, setting this to nil helps tooltips work
+(setq help-at-pt-display-when-idle nil)
+
+;; swiper/counsel
+
+(global-set-key (kbd "C-s") 'swiper)
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "C-c j") 'counsel-git-grep)
