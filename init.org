@@ -13,10 +13,6 @@
 #+OPTIONS: toc:4 h:4
 #+STARTUP: showeverything
 #+PROPERTY: header-args :tangle yes
-
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
-
 * Setup
 ** Bootstrap
 When this configuration is loaded for the first time, the
@@ -38,7 +34,9 @@ When this configuration is loaded for the first time, the
 #+END_SRC
 
 In order for it to be bootstrapped, that file should be renamed to
-~init.el~ before emacs starts.
+~init.el~ before emacs starts. My git repo has an init.el in it
+already with the contents above, so no need to do anything except
+start emacs if you've cloned my repo.
 
 As soon as emacs starts, ~init.el~ will be overwritten with the
 configuration specified in this file.
@@ -118,7 +116,7 @@ All the custom colors and fonts that I prefer.
 Make them more convenient or easier to reach
 
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-q") 'switch-to-buffer) ;; switch buffer in an easy combo
+  (global-set-key (kbd "C-q") 'ivy-switch-buffer) ;; switch buffer in an easy combo
   (global-set-key (kbd "<f5>") 'revert-buffer) ;; reload a buffer
 
   ;; frame switching with shift-arrow keys
