@@ -269,8 +269,9 @@ Add some keybindings to do paren motion and editing
   (sp-pair "[" "]" :wrap "M-[")
   (sp-pair "{" "}" :wrap "M-{")
 
-  ;; delete backward
   (define-key smartparens-mode-map (kbd "C-M-<backspace>") 'sp-backward-kill-sexp)
+  (define-key smartparens-mode-map (kbd "M-s") 'sp-unwrap-sexp)
+  (define-key smartparens-mode-map (kbd "M-S-<up>") 'sp-raise-sexp)
 #+END_SRC
 
 Some other settings
