@@ -18,7 +18,7 @@
 #+END_SRC
 
 * Setup
-** Bootstrap 
+** Bootstrap
    When this configuration is loaded for the first time, the
    ~init-first-time.el~ is the file that is loaded. It looks like this:
 
@@ -134,7 +134,7 @@
 
 * Global Settings
 ** Include /usr/local on path
-*** 
+***
    #+BEGIN_SRC emacs-lisp
      (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
      (setq exec-path (append exec-path '("/usr/local/bin")))
@@ -167,7 +167,7 @@
 ** Use y/n instead of yes/no
    #+BEGIN_SRC emacs-lisp
      (defalias 'yes-or-no-p 'y-or-n-p)
-   #+END_SRC 
+   #+END_SRC
 
 ** Disable graphical decorations
    #+BEGIN_SRC emacs-lisp
@@ -207,7 +207,7 @@
     (require 'cl)
     (require 'package)
   #+END_SRC
-   
+
   There are several package repositories, we will specify which ones we
   want to use and then initialize the package system so it's ready to
   install any packages that might be missing.
@@ -234,7 +234,7 @@
       (setq powerline-default-separator 'arrow-fade
 	    sml/theme 'smart-mode-line-powerline)
     #+END_SRC
-   
+
 *** New faces
     This macro will let us easily define new "faces" later.
 
@@ -313,7 +313,7 @@
 	 (narrow-to-region (point) (mark))
 	 (deactivate-mark t))
 
-       (defun focus-lisp-movement (motion-fn) 
+       (defun focus-lisp-movement (motion-fn)
 	 (widen)
 	 (let ((pt (point)))
 	   (funcall motion-fn)
@@ -338,7 +338,7 @@
 *** Undo Tree
     Allows you to undo and redo without losing any previous states.
     #+BEGIN_SRC emacs-lisp
-      (package-install 'undo-tree) 
+      (package-install 'undo-tree)
       (autoload 'global-undo-tree-mode "undo-tree")
       (global-undo-tree-mode)
       (setq undo-tree-auto-save-history t
@@ -369,24 +369,31 @@
     Lets you jump anywhere on screen with a few keypresses.
 
     #+BEGIN_SRC emacs-lisp
-      (package-install 'ace-jump-mode) 
+      (package-install 'ace-jump-mode)
 
       (global-set-key (kbd "C-'") 'ace-jump-mode)
       (setq ace-jump-mode-scope 'frame) ;;current frame only
       (setq ace-jump-mode-move-keys ;;lower case hotkeys only
 	    (loop for i from ?a to ?z collect i))
     #+END_SRC
- 
+
 ** Source Control
    Magit is the best. It's a wrapper for git, and it makes things so much easier.
    #+BEGIN_SRC emacs-lisp
      (package-install 'magit)
      (require 'magit)
      (global-set-key (kbd "<f2>") 'magit-status)
+     (setq magit-diff-refine-hunk 'all
+	   magit-revert-buffers 'silent
+	   magit-save-repository-buffers nil)
    #+END_SRC
 
-   #+RESULTS:
-   : magit-status
+   Add the ability to jump right into magit from find-file, so you can
+   go to the repository and straight to magit. ~M-o g~ will jump to
+   magit from whatever the current candidate is.
+   #+BEGIN_SRC emacs-lisp
+     (ivy-set-actions 'counsel-find-file '(("g" magit-status "magit")))
+   #+END_SRC
 
 ** Programming Languages
 *** Generic Lisp
@@ -415,7 +422,7 @@
        (def-mode-face lisp-keyword "#45b8f2" "Lisp keywords")
        (def-mode-face lisp-parens "DimGrey" "Lisp parens")
 
-       (font-lock-add-keywords 'lisp-mode my-lisp-font-lock-keywords)  
+       (font-lock-add-keywords 'lisp-mode my-lisp-font-lock-keywords)
 
      #+END_SRC
 **** Highlight symbols
@@ -449,7 +456,7 @@
     #+END_SRC
 
     Use eldoc in elisp mode. Eldoc is what displays function signatures in
-    the echo area, so we can see what arguments a function expects. 
+    the echo area, so we can see what arguments a function expects.
     #+BEGIN_SRC emacs-lisp
       (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
     #+END_SRC
@@ -506,7 +513,7 @@
 		     ("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1 'clojure-java-call)
 		     ("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 'font-lock-warning-face t))))
       (font-lock-add-keywords 'clojure-mode my-clojure-font-lock-keywords)
-        
+
       ;; Define extra clojure faces
       (def-mode-face clojure-braces "#49b2c7" "Clojure braces")
       (def-mode-face clojure-brackets "#0074e8" "Clojure brackets")
