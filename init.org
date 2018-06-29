@@ -19,469 +19,512 @@
 
 * Setup
 ** Bootstrap 
-When this configuration is loaded for the first time, the
-~init-first-time.el~ is the file that is loaded. It looks like this:
+   When this configuration is loaded for the first time, the
+   ~init-first-time.el~ is the file that is loaded. It looks like this:
 
-#+BEGIN_SRC emacs-lisp :tangle init-first-time.el
-;; This file replaces itself with the actual configuration at first run.
+   #+BEGIN_SRC emacs-lisp :tangle init-first-time.el
+     ;; This file replaces itself with the actual configuration at first run.
 
-;; We can't tangle without org!
-(require 'org)
-;; Open the configuration
-(find-file (concat user-emacs-directory "init.org"))
-;; tangle it
-(org-babel-tangle)
-;; load it
-(load-file (concat user-emacs-directory "init.el"))
-;; finally byte-compile it
-(byte-compile-file (concat user-emacs-directory "init.el"))
-#+END_SRC
+     ;; We can't tangle without org!
+     (require 'org)
+     ;; Open the configuration
+     (find-file (concat user-emacs-directory "init.org"))
+     ;; tangle it
+     (org-babel-tangle)
+     ;; load it
+     (load-file (concat user-emacs-directory "init.el"))
+     ;; finally byte-compile it
+     (byte-compile-file (concat user-emacs-directory "init.el"))
+   #+END_SRC
 
-In order for it to be bootstrapped, that file should be renamed to
-~init.el~ before emacs starts.
+   In order for it to be bootstrapped, that file should be renamed to
+   ~init.el~ before emacs starts.
 
-As soon as emacs starts, ~init.el~ will be overwritten with the
-configuration specified in this file.
+   As soon as emacs starts, ~init.el~ will be overwritten with the
+   configuration specified in this file.
 ** Development of this configuration
-A little script to create a fresh .emacs.d, copy this file into it,
-and start a new emacs process.
+   A little script to create a fresh .emacs.d, copy this file into it,
+   and start a new emacs process.
 
-#+BEGIN_SRC sh
-INITDIR=~/test/.emacs.d
-#rm -rf $INITDIR
-#mkdir -p $INITDIR
-cp ~/.emacs.d/init-first-time.el $INITDIR/init.el
-rm $INITDIR/init.elc
-cp ~/.emacs.d/init.org $INITDIR
-HOME=~/test/
-/Applications/Emacs-Plus/Contents/MacOS/Emacs --debug-init &
-#+END_SRC
+   #+BEGIN_SRC sh
+     INITDIR=~/test/.emacs.d
+     #rm -rf $INITDIR
+     #mkdir -p $INITDIR
+     cp ~/.emacs.d/init-first-time.el $INITDIR/init.el
+     rm $INITDIR/init.elc
+     cp ~/.emacs.d/init.org $INITDIR
+     HOME=~/test/
+     /Applications/Emacs-Plus/Contents/MacOS/Emacs --debug-init &
+   #+END_SRC
 
-#+RESULTS:
+   #+RESULTS:
+* Org mode
+  There are a few features we want, to be able to write org mode
+  documents like this one.
+
+  org-babel is what allows you to execute code blocks inside the org
+  mode file. There are some add ons for different languages.
+
+  #+BEGIN_SRC emacs-lisp
+    (require 'ob-clojure)
+    (setq org-babel-load-languages '((emacs-lisp . t) (shell . t))
+	  org-confirm-babel-evaluate nil
+	  org-startup-indented t
+	  org-startup-with-inline-images t)
+  #+END_SRC
+
+  Install HTMLize so that we can export files like this one to HTML
+  and get pretty fonts and colors just like we see in emacs!
+
+  #+BEGIN_SRC emacs-lisp
+    (package-install 'htmlize)
+  #+END_SRC
+
+  Next we enable bullets mode which makes pretty bulleted outlines,
+  instead of just using the asterisk character.
+
+  #+BEGIN_SRC emacs-lisp
+    (package-install 'org-bullets)
+    (require 'org-bullets)
+    (setq org-bullets-bullet-list '("●" "○" "★"))
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+  #+END_SRC
 * Theme
-All the custom colors and fonts that I prefer.
-#+BEGIN_SRC emacs-lisp
-(deftheme jweiss
-  "Created 2015-09-08.")
+  All the custom colors and fonts that I prefer.
+  #+BEGIN_SRC emacs-lisp
+    (deftheme jweiss
+      "Created 2015-09-08.")
 
-(custom-theme-set-faces
- 'jweiss
- '(notmuch-search-count ((t (:inherit default :foreground "light gray"))))
- '(notmuch-search-date ((t (:inherit default :foreground "cyan"))))
- '(notmuch-search-subject ((t (:inherit default :foreground "DarkSeaGreen2"))))
- '(ac-completion-face ((t (:inherit default :foreground "darkgray" :underline t))))
- '(clojure-keyword-face ((t (:inherit lisp-keyword))))
- '(secondary-selection ((t (:background "gray11"))))
- '(fixed-pitch ((t (:inherit default))))
- '(hl-line ((t (:inherit highlight :background "#151500"))))
- '(rcirc-timestamp ((t (:inherit default :background "black" :foreground "gray25"))))
- '(region ((t (:background "#57230c"))))
- '(variable-pitch ((t (:inherit default :family "DejaVu Sans"))))
- '(show-paren-match ((t (:background "#292903"))))
- '(org-level-1 ((t (:foreground "white" :height 1.75 :weight bold :inherit outline-1))))
- '(org-level-2 ((t (:foreground "gray80" :height 1.5 :weight bold :inherit outline-2))))
- '(org-level-3 ((t (:foreground "gray60" :height 1.25 :weight bold :inherit outline-3))))
- '(org-level-4 ((t (:foreground "gray40" :height 1.1 :weight bold :inherit outline-4))))
- '(double-quote ((t (:foreground "LightSalmon"))))
- '(font-lock-string-face ((t (:foreground "#ffddaa"))))
- '(lisp-parens ((t (:foreground "gray32" :bold t :underline nil))))
- '(lisp-keyword ((t (:foreground "#ffcccc" :italic t))))
- '(font-lock-keyword-face ((t (:foreground "#eeaaff" :bold t))))
- '(font-lock-function-name-face ((t (:foreground "#ffeeaa" :bold t))))
- '(font-lock-builtin-face ((t (:foreground "#aaddff" :bold t))))
- '(clojure-brackets ((t (:foreground "#445f5f" :bold t))))
- '(clojure-braces ((t (:foreground "#5f4d44" :bold t))))
- '(clojure-java-call ((t (:foreground "#ccffcc"))))
- '(clojure-namespace ((t (:foreground "#0000ff" :bold t))))
- '(clojure-special ((t (:foreground "#bbbbff" :bold t :italic t))))
- '(default ((t (:background "black" :foreground "white" :slant normal :weight normal :family "DejaVu Sans Mono")))))
+    (custom-theme-set-faces
+     'jweiss
+     '(notmuch-search-count ((t (:inherit default :foreground "light gray"))))
+     '(notmuch-search-date ((t (:inherit default :foreground "cyan"))))
+     '(notmuch-search-subject ((t (:inherit default :foreground "DarkSeaGreen2"))))
+     '(ac-completion-face ((t (:inherit default :foreground "darkgray" :underline t))))
+     '(clojure-keyword-face ((t (:inherit lisp-keyword))))
+     '(secondary-selection ((t (:background "gray11"))))
+     '(fixed-pitch ((t (:inherit default))))
+     '(hl-line ((t (:inherit highlight :background "#151500"))))
+     '(rcirc-timestamp ((t (:inherit default :background "black" :foreground "gray25"))))
+     '(region ((t (:background "#57230c"))))
+     '(variable-pitch ((t (:inherit default :family "DejaVu Sans"))))
+     '(show-paren-match ((t (:background "#292903"))))
+     '(org-level-1 ((t (:foreground "white" :height 1.75 :weight bold :inherit outline-1))))
+     '(org-level-2 ((t (:foreground "gray80" :height 1.5 :weight bold :inherit outline-2))))
+     '(org-level-3 ((t (:foreground "gray60" :height 1.25 :weight bold :inherit outline-3))))
+     '(org-level-4 ((t (:foreground "gray40" :height 1.1 :weight bold :inherit outline-4))))
+     '(double-quote ((t (:foreground "LightSalmon"))))
+     '(font-lock-string-face ((t (:foreground "#ffddaa"))))
+     '(lisp-parens ((t (:foreground "gray32" :bold t :underline nil))))
+     '(lisp-keyword ((t (:foreground "#ffcccc" :italic t))))
+     '(font-lock-keyword-face ((t (:foreground "#eeaaff" :bold t))))
+     '(font-lock-function-name-face ((t (:foreground "#ffeeaa" :bold t))))
+     '(font-lock-builtin-face ((t (:foreground "#aaddff" :bold t))))
+     '(clojure-brackets ((t (:foreground "#445f5f" :bold t))))
+     '(clojure-braces ((t (:foreground "#5f4d44" :bold t))))
+     '(clojure-java-call ((t (:foreground "#ccffcc"))))
+     '(clojure-namespace ((t (:foreground "#0000ff" :bold t))))
+     '(clojure-special ((t (:foreground "#bbbbff" :bold t :italic t))))
+     '(default ((t (:background "black" :foreground "white" :slant normal :weight normal :family "DejaVu Sans Mono")))))
 
-(setq custom-safe-themes '("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default))
-(provide-theme 'jweiss)
-(enable-theme 'jweiss)
-#+END_SRC
+    (setq custom-safe-themes '("3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default))
+    (provide-theme 'jweiss)
+    (enable-theme 'jweiss)
+  #+END_SRC
 
 * Global Settings
 ** Include /usr/local on path
-#+BEGIN_SRC emacs-lisp
-(setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
-(setq exec-path (append exec-path '("/usr/local/bin")))
-#+END_SRC
+*** 
+   #+BEGIN_SRC emacs-lisp
+     (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
+     (setq exec-path (append exec-path '("/usr/local/bin")))
+   #+END_SRC
 
 ** Unbind some keys that have unwanted behavior
-#+BEGIN_SRC emacs-lisp
-(global-unset-key (kbd "C-z")) ;; suspend
-(global-unset-key (kbd "s-p")) ;; print (hangs emacs on macos?)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (global-unset-key (kbd "C-z")) ;; suspend
+     (global-unset-key (kbd "s-p")) ;; print (hangs emacs on macos?)
+   #+END_SRC
 
 ** Change some global keybindings
-Make them more convenient or easier to reach
+   Make them more convenient or easier to reach
 
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-q") 'switch-to-buffer) ;; switch buffer in an easy combo
-(global-set-key (kbd "<f5>") 'revert-buffer) ;; reload a buffer
+   #+BEGIN_SRC emacs-lisp
+     (global-set-key (kbd "C-q") 'switch-to-buffer) ;; switch buffer in an easy combo
+     (global-set-key (kbd "<f5>") 'revert-buffer) ;; reload a buffer
 
-;; frame switching with shift-arrow keys
-(global-set-key (kbd "S-<left>") 'windmove-left)
-(global-set-key (kbd "S-<right>") 'windmove-right)
-(global-set-key (kbd "S-<up>") 'windmove-up)
-(global-set-key (kbd "S-<down>") 'windmove-down)
+     ;; frame switching with shift-arrow keys
+     (global-set-key (kbd "S-<left>") 'windmove-left)
+     (global-set-key (kbd "S-<right>") 'windmove-right)
+     (global-set-key (kbd "S-<up>") 'windmove-up)
+     (global-set-key (kbd "S-<down>") 'windmove-down)
 
-;; Font size
-(define-key global-map (kbd "C-+") 'text-scale-increase)
-(define-key global-map (kbd "C--") 'text-scale-decrease)
-
-#+END_SRC
+     ;; Font size
+     (define-key global-map (kbd "C-+") 'text-scale-increase)
+     (define-key global-map (kbd "C--") 'text-scale-decrease)
+   #+END_SRC
 
 ** Use y/n instead of yes/no
-#+BEGIN_SRC emacs-lisp
-(defalias 'yes-or-no-p 'y-or-n-p)
-#+END_SRC 
+   #+BEGIN_SRC emacs-lisp
+     (defalias 'yes-or-no-p 'y-or-n-p)
+   #+END_SRC 
 
 ** Disable graphical decorations
-#+BEGIN_SRC emacs-lisp
-(menu-bar-mode -1)
-(scroll-bar-mode -1)
-(tool-bar-mode -1)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (menu-bar-mode -1)
+     (scroll-bar-mode -1)
+     (tool-bar-mode -1)
+   #+END_SRC
 ** Highlight current line and s-expression
-#+BEGIN_SRC emacs-lisp
-(hl-line-mode t)
-(show-paren-mode)
-(setq show-paren-priority 0
-      show-paren-style 'expression)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (hl-line-mode t)
+     (show-paren-mode)
+     (setq show-paren-priority 0
+	show-paren-style 'expression)
+   #+END_SRC
 ** Frame Splitting
-Split the current frame either horizontally or vertically, depending
-on whether the frame is wide or tall. Good for emacs installations
-that may be run on vertical and horizontal monitors.
-#+BEGIN_SRC emacs-lisp
-(defun resplit-frame ()
-  (interactive)
-  (delete-other-windows)
-  (if (> (frame-pixel-width)
-         (frame-pixel-height))
-      (split-window-right)
-    (split-window-below)))
+   Split the current frame either horizontally or vertically, depending
+   on whether the frame is wide or tall. Good for emacs installations
+   that may be run on vertical and horizontal monitors.
+   #+BEGIN_SRC emacs-lisp
+     (defun resplit-frame ()
+       (interactive)
+       (delete-other-windows)
+       (if (> (frame-pixel-width)
+	      (frame-pixel-height))
+	   (split-window-right)
+	 (split-window-below)))
 
-(global-set-key (kbd "C-c r") 'resplit-frame)
-#+END_SRC
+     (global-set-key (kbd "C-c r") 'resplit-frame)
+   #+END_SRC
 * Features and Extensions
+  To install new features, we need to load the =package= system. =cl= is
+  a library that contains many functions from Common Lisp, and comes in
+  handy quite often, so we want to make sure it's loaded, along with
+  =package=, which is obviously needed.
 
-To install new features, we need to load the =package= system. =cl= is
-a library that contains many functions from Common Lisp, and comes in
-handy quite often, so we want to make sure it's loaded, along with
-=package=, which is obviously needed.
-
-#+BEGIN_SRC emacs-lisp
-(require 'cl)
-(require 'package)
-#+END_SRC
+  #+BEGIN_SRC emacs-lisp
+    (require 'cl)
+    (require 'package)
+  #+END_SRC
    
-There are several package repositories, we will specify which ones we
-want to use and then initialize the package system so it's ready to
-install any packages that might be missing.
+  There are several package repositories, we will specify which ones we
+  want to use and then initialize the package system so it's ready to
+  install any packages that might be missing.
 
-#+BEGIN_SRC emacs-lisp
-;; add repositories
-(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-;;(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("org". "http://orgmode.org/elpa/"))
+  #+BEGIN_SRC emacs-lisp
+    ;; add repositories
+    (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+    ;;(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+    (add-to-list 'package-archives '("org". "http://orgmode.org/elpa/"))
 
-;; initialize packages
-(package-initialize)
-(package-refresh-contents nil)
-#+END_SRC
+    ;; initialize packages
+    (package-initialize)
+    (package-refresh-contents nil)
+  #+END_SRC
 
-Now we're ready to start loading and configuring individual features.
+  Now we're ready to start loading and configuring individual features.
 ** Visual Style
 *** Mode Line
-We'll use Powerline to set up the mode line.
-#+BEGIN_SRC emacs-lisp
-(package-install 'smart-mode-line-powerline-theme)
-(require 'smart-mode-line-powerline-theme)
-(sml/setup)
-(setq powerline-default-separator 'arrow-fade
-      sml/theme 'smart-mode-line-powerline)
-#+END_SRC
+    We'll use Powerline to set up the mode line.
+    #+BEGIN_SRC emacs-lisp
+      (package-install 'smart-mode-line-powerline-theme)
+      (require 'smart-mode-line-powerline-theme)
+      (sml/setup)
+      (setq powerline-default-separator 'arrow-fade
+	    sml/theme 'smart-mode-line-powerline)
+    #+END_SRC
    
 *** New faces
-This macro will let us easily define new "faces" later.
+    This macro will let us easily define new "faces" later.
 
-#+BEGIN_SRC emacs-lisp
-(defmacro def-mode-face (name color desc &optional others)
-  `(defface ,name '((((class color)) (:foreground ,color ,@others)))
-     ,desc :group 'faces))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (defmacro def-mode-face (name color desc &optional others)
+	`(defface ,name '((((class color)) (:foreground ,color ,@others)))
+	   ,desc :group 'faces))
+    #+END_SRC
 
 ** General Editing
 *** Completion
-For automatic completion and narrowing of candidates, we'll use [[https://github.com/abo-abo/swiper][Ivy]]
-(also contains functionality called Swiper and Counsel).
+    For automatic completion and narrowing of candidates, we'll use [[https://github.com/abo-abo/swiper][Ivy]]
+    (also contains functionality called Swiper and Counsel).
 
-This tool helps you choose from lists, for things like selecting a
-buffer, finding a file, finding a command, etc.
+    This tool helps you choose from lists, for things like selecting a
+    buffer, finding a file, finding a command, etc.
 
-Swiper shows all of the occurrences of a particular regex in one
-place, it can be a replacement for the builtin ~re-search-forward~.
+    Swiper shows all of the occurrences of a particular regex in one
+    place, it can be a replacement for the builtin ~re-search-forward~.
 
-~counsel-git-grep~ is a replacement for ~find-grep~.
+    ~counsel-git-grep~ is a replacement for ~find-grep~.
 
-#+BEGIN_SRC emacs-lisp
-(package-install 'counsel)
-(require 'counsel)
-(setq ivy-use-virtual-buffers t) ; for showing recently used first
-(global-set-key (kbd "C-s") 'swiper)
-(global-set-key (kbd "M-x") 'counsel-M-x)
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "C-c j") 'counsel-git-grep)
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (package-install 'counsel)
+      (require 'counsel)
+      (setq ivy-use-virtual-buffers t) ; for showing recently used first
+      (global-set-key (kbd "C-s") 'swiper)
+      (global-set-key (kbd "M-x") 'counsel-M-x)
+      (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+      (global-set-key (kbd "C-c j") 'counsel-git-grep)
+    #+END_SRC
 
 *** Smartparens
-#+BEGIN_SRC emacs-lisp
-(package-install 'smartparens)
-(require 'smartparens)
-(require 'smartparens-config)
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (package-install 'smartparens)
+      (require 'smartparens)
+      (require 'smartparens-config)
+    #+END_SRC
 
-Set up smartparens to run in strict mode in these major modes (where
-it doesn't allow parens to become unbalanced!)
-#+BEGIN_SRC emacs-lisp
-(dolist (mode '(scheme emacs-lisp lisp clojure clojurescript eshell html cider-repl))
-    (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
-              #'smartparens-strict-mode))
-#+END_SRC
+    Set up smartparens to run in strict mode in these major modes (where
+    it doesn't allow parens to become unbalanced!)
+    #+BEGIN_SRC emacs-lisp
+      (dolist (mode '(scheme emacs-lisp lisp clojure clojurescript eshell html cider-repl))
+	  (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
+		    #'smartparens-strict-mode))
+    #+END_SRC
 
 
-Add some keybindings to do paren motion and editing
-#+BEGIN_SRC emacs-lisp
-;; wrap with parens
-(sp-pair "(" ")" :wrap "M-(")
-(sp-pair "[" "]" :wrap "M-[")
-(sp-pair "{" "}" :wrap "M-{")
+    Add some keybindings to do paren motion and editing
+    #+BEGIN_SRC emacs-lisp
+      ;; wrap with parens
+      (sp-pair "(" ")" :wrap "M-(")
+      (sp-pair "[" "]" :wrap "M-[")
+      (sp-pair "{" "}" :wrap "M-{")
 
-;; delete backward
-(define-key smartparens-mode-map (kbd "C-M-<backspace>") 'sp-backward-kill-sexp)
-#+END_SRC
+      ;; delete backward
+      (define-key smartparens-mode-map (kbd "C-M-<backspace>") 'sp-backward-kill-sexp)
+    #+END_SRC
 
-Some other settings
-#+BEGIN_SRC emacs-lisp
-(setq sp-base-key-bindings 'paredit
-      sp-highlight-pair-overlay nil
-      sp-highlight-wrap-overlay nil
-      sp-highlight-wrap-tag-overlay nil)
-#+END_SRC
+    Some other settings
+    #+BEGIN_SRC emacs-lisp
+      (setq sp-base-key-bindings 'paredit
+	    sp-highlight-pair-overlay nil
+	    sp-highlight-wrap-overlay nil
+	    sp-highlight-wrap-tag-overlay nil)
+    #+END_SRC
 
-*** Focus Mode
-My own little experiment using smartparens and emacs' built in
-narrowing to focus on a particular s-expression. It has commands to
-narrow or expand the focus.
-#+BEGIN_SRC emacs-lisp
-(defun narrow-to-expression ()
-  (interactive)
-  (mark-sexp)
-  (narrow-to-region (point) (mark))
-  (deactivate-mark t))
+**** Focus Mode
+     My own little experiment using smartparens and emacs' built in
+     narrowing to focus on a particular s-expression. It has commands to
+     narrow or expand the focus.
+     #+BEGIN_SRC emacs-lisp
+       (defun narrow-to-expression ()
+	 (interactive)
+	 (mark-sexp)
+	 (narrow-to-region (point) (mark))
+	 (deactivate-mark t))
 
-(defun focus-lisp-movement (motion-fn) 
-  (widen)
-  (let ((pt (point)))
-    (funcall motion-fn)
-    (if (not (eq pt (point)))
-        (narrow-to-expression))
-    (deactivate-mark t)))
+       (defun focus-lisp-movement (motion-fn) 
+	 (widen)
+	 (let ((pt (point)))
+	   (funcall motion-fn)
+	   (if (not (eq pt (point)))
+	       (narrow-to-expression))
+	   (deactivate-mark t)))
 
-(defun focus-lisp-up ()
-  (interactive)
-  (focus-lisp-movement 'sp-backward-up-sexp))
+       (defun focus-lisp-up ()
+	 (interactive)
+	 (focus-lisp-movement 'sp-backward-up-sexp))
 
-(defun focus-lisp-down ()
-  (interactive)
-  (focus-lisp-movement 'sp-down-sexp))
+       (defun focus-lisp-down ()
+	 (interactive)
+	 (focus-lisp-movement 'sp-down-sexp))
 
-(define-key smartparens-mode-map (kbd "C-M-S-U") 'focus-lisp-up)
-(define-key smartparens-mode-map (kbd "C-M-S-D") 'focus-lisp-down)
-(define-key smartparens-mode-map (kbd "C-M-u") 'sp-backward-up-sexp)
-(global-set-key (kbd "C-x n e") 'narrow-to-expression)
-#+END_SRC
+       (define-key smartparens-mode-map (kbd "C-M-S-U") 'focus-lisp-up)
+       (define-key smartparens-mode-map (kbd "C-M-S-D") 'focus-lisp-down)
+       (define-key smartparens-mode-map (kbd "C-M-u") 'sp-backward-up-sexp)
+       (global-set-key (kbd "C-x n e") 'narrow-to-expression)
+     #+END_SRC
 
 *** Undo Tree
-Allows you to undo and redo without losing any previous states.
-#+BEGIN_SRC emacs-lisp
-(package-install 'undo-tree) 
-(autoload 'global-undo-tree-mode "undo-tree")
-(global-undo-tree-mode)
-(setq undo-tree-auto-save-history t
-      undo-tree-visualizer-timestamps t)
-#+END_SRC
+    Allows you to undo and redo without losing any previous states.
+    #+BEGIN_SRC emacs-lisp
+      (package-install 'undo-tree) 
+      (autoload 'global-undo-tree-mode "undo-tree")
+      (global-undo-tree-mode)
+      (setq undo-tree-auto-save-history t
+	    undo-tree-visualizer-timestamps t)
+    #+END_SRC
 *** Multiple cursors
-A powerful tool that allows you to perform any edit operation in many
-places simultaneously. It's great for making the same structural edits
-repeatedly. Same functionality as keyboard macros, but allows you to
-see the results at each step.
+    A powerful tool that allows you to perform any edit operation in many
+    places simultaneously. It's great for making the same structural edits
+    repeatedly. Same functionality as keyboard macros, but allows you to
+    see the results at each step.
 
-#+BEGIN_SRC emacs-lisp
-(package-install 'multiple-cursors)
-(require 'multiple-cursors)
-(define-prefix-command 'mc-key-map)
-(global-set-key (kbd "C-c m") 'mc-key-map)
+    #+BEGIN_SRC emacs-lisp
+      (package-install 'multiple-cursors)
+      (require 'multiple-cursors)
+      (define-prefix-command 'mc-key-map)
+      (global-set-key (kbd "C-c m") 'mc-key-map)
 
-(define-key mc-key-map (kbd ".") 'mc/mark-all-symbols-like-this)
-(define-key mc-key-map (kbd "M-.") 'mc/mark-all-symbols-like-this-in-defun)
-(define-key mc-key-map (kbd ",") 'mc/mark-all-like-this-dwim)
-(define-key mc-key-map (kbd "/") 'mc/mark-more-like-this-extended)
-(define-key mc-key-map (kbd "s") 'mc/mark-next-symbol-like-this)
-(define-key mc-key-map (kbd "m") 'mc/mark-all-dwim)
-(define-key mc/keymap (kbd "M-n") 'mc/cycle-forward)
-#+END_SRC
+      (define-key mc-key-map (kbd ".") 'mc/mark-all-symbols-like-this)
+      (define-key mc-key-map (kbd "M-.") 'mc/mark-all-symbols-like-this-in-defun)
+      (define-key mc-key-map (kbd ",") 'mc/mark-all-like-this-dwim)
+      (define-key mc-key-map (kbd "/") 'mc/mark-more-like-this-extended)
+      (define-key mc-key-map (kbd "s") 'mc/mark-next-symbol-like-this)
+      (define-key mc-key-map (kbd "m") 'mc/mark-all-dwim)
+      (define-key mc/keymap (kbd "M-n") 'mc/cycle-forward)
+    #+END_SRC
 
 *** Ace Jump Mode
-Lets you jump anywhere on screen with a few keypresses.
+    Lets you jump anywhere on screen with a few keypresses.
 
-#+BEGIN_SRC emacs-lisp
-(package-install 'ace-jump-mode) 
+    #+BEGIN_SRC emacs-lisp
+      (package-install 'ace-jump-mode) 
 
-(global-set-key (kbd "C-'") 'ace-jump-mode)
-(setq ace-jump-mode-scope 'frame) ;;current frame only
-(setq ace-jump-mode-move-keys ;;lower case hotkeys only
-      (loop for i from ?a to ?z collect i))
-#+END_SRC
+      (global-set-key (kbd "C-'") 'ace-jump-mode)
+      (setq ace-jump-mode-scope 'frame) ;;current frame only
+      (setq ace-jump-mode-move-keys ;;lower case hotkeys only
+	    (loop for i from ?a to ?z collect i))
+    #+END_SRC
  
+** Source Control
+   Magit is the best. It's a wrapper for git, and it makes things so much easier.
+   #+BEGIN_SRC emacs-lisp
+     (package-install 'magit)
+     (require 'magit)
+     (global-set-key (kbd "<f2>") 'magit-status)
+   #+END_SRC
+
+   #+RESULTS:
+   : magit-status
+
 ** Programming Languages
 *** Generic Lisp
-There are some features that apply to all flavors of Lisp, including
-Emacs Lisp, Common Lisp, and Clojure. We'll define them once and apply
-them to the whole lisp family.
+    There are some features that apply to all flavors of Lisp, including
+    Emacs Lisp, Common Lisp, and Clojure. We'll define them once and apply
+    them to the whole lisp family.
 
 **** Colors for keywords, parens, and quotes
-It's nice to have the quote character be a slightly different color
-than the text it's enclosing.
+     It's nice to have the quote character be a slightly different color
+     than the text it's enclosing.
 
-Lisp keywords (that start with ~:~) are easier to pick out if they are
-a different color from normal lisp symbols.
+     Lisp keywords (that start with ~:~) are easier to pick out if they are
+     a different color from normal lisp symbols.
 
-Dimming parens to a dark gray is great, as a lisp programmer you tend
-to stop looking at them and only notice the indent level most of the
-time.
+     Dimming parens to a dark gray is great, as a lisp programmer you tend
+     to stop looking at them and only notice the indent level most of the
+     time.
 
-#+BEGIN_SRC emacs-lisp
-(setq my-lisp-font-lock-keywords
-      '(("(\\|)" . 'lisp-parens)
-        ("\\s-+:\\w+" . 'lisp-keyword)
-        ("#?\"" 0 'double-quote prepend)))
+     #+BEGIN_SRC emacs-lisp
+       (setq my-lisp-font-lock-keywords
+	     '(("(\\|)" . 'lisp-parens)
+	       ("\\s-+:\\w+" . 'lisp-keyword)
+	       ("#?\"" 0 'double-quote prepend)))
 
-(def-mode-face double-quote "#00920A" "special")
-(def-mode-face lisp-keyword "#45b8f2" "Lisp keywords")
-(def-mode-face lisp-parens "DimGrey" "Lisp parens")
+       (def-mode-face double-quote "#00920A" "special")
+       (def-mode-face lisp-keyword "#45b8f2" "Lisp keywords")
+       (def-mode-face lisp-parens "DimGrey" "Lisp parens")
 
-(font-lock-add-keywords 'lisp-mode my-lisp-font-lock-keywords)  
+       (font-lock-add-keywords 'lisp-mode my-lisp-font-lock-keywords)  
 
-#+END_SRC
+     #+END_SRC
 **** Highlight symbols
-:PROPERTIES:
-:CUSTOM_ID: highlight-symbol
-:END:
-This is a feature that highlights all the occurrences of the symbol at
-point, so that you can see where else that symbol is used. We'll use
-autoload so that we only load the feature when it's called upon.
-#+BEGIN_SRC emacs-lisp
-(package-install 'highlight-symbol)
-(autoload 'highlight-symbol-mode "highlight-symbol")
-#+END_SRC
+     :PROPERTIES:
+     :CUSTOM_ID: highlight-symbol
+     :END:
+     This is a feature that highlights all the occurrences of the symbol at
+     point, so that you can see where else that symbol is used. We'll use
+     autoload so that we only load the feature when it's called upon.
+     #+BEGIN_SRC emacs-lisp
+       (package-install 'highlight-symbol)
+       (autoload 'highlight-symbol-mode "highlight-symbol")
+     #+END_SRC
 *** Emacs Lisp
-We'll add features to Emacs Lisp first since that's what we're using
-to add functionality to everything else.
+    We'll add features to Emacs Lisp first since that's what we're using
+    to add functionality to everything else.
 
-Enable completion when reading an elisp expression from the minibuffer.
-#+BEGIN_SRC emacs-lisp
-(define-key read-expression-map (kbd "TAB") 'completion-at-point)
-#+END_SRC
+    Enable completion when reading an elisp expression from the minibuffer.
+    #+BEGIN_SRC emacs-lisp
+      (define-key read-expression-map (kbd "TAB") 'completion-at-point)
+    #+END_SRC
 
-For navigating elisp, jumping into functions and back, we'll use the
-slime nav style, which means using ~M-.~ and ~M-,~. Enable it in
-~ielm-mode~ too (an elisp REPL).
-#+BEGIN_SRC emacs-lisp
-(package-install 'elisp-slime-nav)
-(require 'elisp-slime-nav)
-(dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
-  (add-hook hook 'elisp-slime-nav-mode))
-#+END_SRC
+    For navigating elisp, jumping into functions and back, we'll use the
+    slime nav style, which means using ~M-.~ and ~M-,~. Enable it in
+    ~ielm-mode~ too (an elisp REPL).
+    #+BEGIN_SRC emacs-lisp
+      (package-install 'elisp-slime-nav)
+      (require 'elisp-slime-nav)
+      (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
+	(add-hook hook 'elisp-slime-nav-mode))
+    #+END_SRC
 
-Use eldoc in elisp mode. Eldoc is what displays function signatures in
-the echo area, so we can see what arguments a function expects. 
-#+BEGIN_SRC emacs-lisp
-(add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
-#+END_SRC
+    Use eldoc in elisp mode. Eldoc is what displays function signatures in
+    the echo area, so we can see what arguments a function expects. 
+    #+BEGIN_SRC emacs-lisp
+      (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
+    #+END_SRC
 
-Use special colors for parens, keywords, and quotes, as we defined
-earlier for generic lisp.
+    Use special colors for parens, keywords, and quotes, as we defined
+    earlier for generic lisp.
 
-#+BEGIN_SRC emacs-lisp
-(font-lock-add-keywords 'emacs-lisp-mode my-lisp-font-lock-keywords)
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (font-lock-add-keywords 'emacs-lisp-mode my-lisp-font-lock-keywords)
+    #+END_SRC
 *** Clojure
-First set up the clojure mode, and its hook to define some extra
-behavior in clojure mode:
+    First set up the clojure mode, and its hook to define some extra
+    behavior in clojure mode:
 
-+ ~imenu~ - bring up a menu of top-level symbols defined in this
-  namespace, with completion
-+ Disable ~kill-sentence~ which doesn't make sense in structured text
-  like lisp. It will end up unbalancing parens and generally making a
-  mess.
-+ Use [[#highlight-symbol][highlight-symbol]] mode, and bind some keys for jumping to
-  next/previous occurrence
-+ Use clj-refactor which adds refactor tools like ~require~
-  management, renaming, etc.
+    + ~imenu~ - bring up a menu of top-level symbols defined in this
+      namespace, with completion
+    + Disable ~kill-sentence~ which doesn't make sense in structured text
+      like lisp. It will end up unbalancing parens and generally making a
+      mess.
+    + Use [[#highlight-symbol][highlight-symbol]] mode, and bind some keys for jumping to
+      next/previous occurrence
+    + Use clj-refactor which adds refactor tools like ~require~
+      management, renaming, etc.
 
-#+BEGIN_SRC emacs-lisp
-(package-install 'clojure-mode)
-(autoload 'clojure-mode "clojure-mode")
-(autoload 'clojure-mode-map "clojure-mode" nil nil 'keymap)
-(autoload 'clj-refactor-mode "clj-refactor")
-(add-hook 'clojure-mode-hook
-          (lambda ()
-            ;;(define-key clojure-mode-map (kbd "<return>") 'sp-forward-sexp)
-            ;; imenu keybind
-            (define-key clojure-mode-map (kbd "C-c i") 'imenu)
-            ;; disable kill-sentence
-            (define-key global-map (kbd "M-k") nil)
-            ;;enable clojure refactor
-            (clj-refactor-mode 1)
-            ;; highlight symbols
-            (highlight-symbol-mode 1)
-            (define-key clojure-mode-map (kbd "C-M-,") 'highlight-symbol-prev)
-            (define-key clojure-mode-map (kbd "C-M-.") 'highlight-symbol-next)))
-#+END_SRC
+    #+BEGIN_SRC emacs-lisp
+      (package-install 'clojure-mode)
+      (autoload 'clojure-mode "clojure-mode")
+      (autoload 'clojure-mode-map "clojure-mode" nil nil 'keymap)
+      (autoload 'clj-refactor-mode "clj-refactor")
+      (add-hook 'clojure-mode-hook
+		(lambda ()
+		  ;;(define-key clojure-mode-map (kbd "<return>") 'sp-forward-sexp)
+		  ;; imenu keybind
+		  (define-key clojure-mode-map (kbd "C-c i") 'imenu)
+		  ;; disable kill-sentence
+		  (define-key global-map (kbd "M-k") nil)
+		  ;;enable clojure refactor
+		  (clj-refactor-mode 1)
+		  ;; highlight symbols
+		  (highlight-symbol-mode 1)
+		  (define-key clojure-mode-map (kbd "C-M-,") 'highlight-symbol-prev)
+		  (define-key clojure-mode-map (kbd "C-M-.") 'highlight-symbol-next)))
+    #+END_SRC
 
-Add the same sort of extra highlighting for clojure that we have for
-generic lisp, but add some extra features (such as different
-highlighting for square and curly braces, booleans etc).
-#+BEGIN_SRC emacs-lisp
-(setq my-clojure-font-lock-keywords
-      (nconc my-lisp-font-lock-keywords
-             '(("#?\\^?{\\|}" . 'clojure-braces)
-               ("\\[\\|\\]" . 'clojure-brackets)
-               ("nil\\|true\\|false\\|%[1-9]?" . 'clojure-special)
-               ("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1 'clojure-java-call)
-               ("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 'font-lock-warning-face t))))
-(font-lock-add-keywords 'clojure-mode my-clojure-font-lock-keywords)
+    Add the same sort of extra highlighting for clojure that we have for
+    generic lisp, but add some extra features (such as different
+    highlighting for square and curly braces, booleans etc).
+    #+BEGIN_SRC emacs-lisp
+      (setq my-clojure-font-lock-keywords
+	    (nconc my-lisp-font-lock-keywords
+		   '(("#?\\^?{\\|}" . 'clojure-braces)
+		     ("\\[\\|\\]" . 'clojure-brackets)
+		     ("nil\\|true\\|false\\|%[1-9]?" . 'clojure-special)
+		     ("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1 'clojure-java-call)
+		     ("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 'font-lock-warning-face t))))
+      (font-lock-add-keywords 'clojure-mode my-clojure-font-lock-keywords)
         
-;; Define extra clojure faces
-(def-mode-face clojure-braces "#49b2c7" "Clojure braces")
-(def-mode-face clojure-brackets "#0074e8" "Clojure brackets")
-(def-mode-face clojure-namespace "#a9937a" "Clojure namespace")
-(def-mode-face clojure-java-call "#7587a6" "Clojure Java calls")
-(def-mode-face clojure-special "#0074e8" "Clojure special")
+      ;; Define extra clojure faces
+      (def-mode-face clojure-braces "#49b2c7" "Clojure braces")
+      (def-mode-face clojure-brackets "#0074e8" "Clojure brackets")
+      (def-mode-face clojure-namespace "#a9937a" "Clojure namespace")
+      (def-mode-face clojure-java-call "#7587a6" "Clojure Java calls")
+      (def-mode-face clojure-special "#0074e8" "Clojure special")
 
-(font-lock-add-keywords 'clojure-mode my-clojure-font-lock-keywords)
-#+END_SRC
+      (font-lock-add-keywords 'clojure-mode my-clojure-font-lock-keywords)
+    #+END_SRC
 **** Interactive Development
-For interactive programming with clojure, use cider. Use eldoc mode in
-the repl to display function signatures.
+     For interactive programming with clojure, use cider. Use eldoc mode in
+     the repl to display function signatures. Allow execution of clojure
+     code blocks in org-mode files.
 
-#+BEGIN_SRC emacs-lisp
-(package-install 'cider)
-(autoload 'cider-repl-mode "cider")
-(font-lock-add-keywords 'cider-repl-mode my-clojure-font-lock-keywords)
-(add-hook 'cider-repl-mode-hook #'eldoc-mode)
-#+END_SRC
+     #+BEGIN_SRC emacs-lisp
+       (package-install 'cider)
+       (autoload 'cider-repl-mode "cider")
+       (font-lock-add-keywords 'cider-repl-mode my-clojure-font-lock-keywords)
+       (add-hook 'cider-repl-mode-hook #'eldoc-mode)
+       (setq org-babel-clojure-backend 'cider)
+     #+END_SRC
