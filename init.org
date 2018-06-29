@@ -134,7 +134,6 @@
 
 * Global Settings
 ** Include /usr/local on path
-***
    #+BEGIN_SRC emacs-lisp
      (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
      (setq exec-path (append exec-path '("/usr/local/bin")))
@@ -170,12 +169,16 @@
    #+END_SRC
 
 ** Disable graphical decorations
+   By default, emacs has a graphical toolbar, a scrollbar on the
+   right, and a menu. We don't need any of that stuff.
    #+BEGIN_SRC emacs-lisp
      (menu-bar-mode -1)
      (scroll-bar-mode -1)
      (tool-bar-mode -1)
    #+END_SRC
 ** Highlight current line and s-expression
+   Add a subtle highlight to the line that point is on, and also add
+   additional highlighting to the expression that point is on.
    #+BEGIN_SRC emacs-lisp
      (hl-line-mode t)
      (show-paren-mode)
@@ -266,7 +269,14 @@
       (global-set-key (kbd "C-x C-f") 'counsel-find-file)
       (global-set-key (kbd "C-c j") 'counsel-git-grep)
     #+END_SRC
-
+*** Autocomplete
+    Autocomplete will help you finish what you started typing. For
+    example, long function names. When you hit TAB autocomplete will
+    fill in the rest. We'll try company-mode.
+    #+BEGIN_SRC emacs-lisp
+      (package-install 'company)
+      (add-hook 'after-init-hook 'global-company-mode)
+    #+END_SRC
 *** Smartparens
     #+BEGIN_SRC emacs-lisp
       (package-install 'smartparens)
