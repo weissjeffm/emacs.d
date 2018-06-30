@@ -45,14 +45,14 @@ A little script to create a fresh .emacs.d, copy this file into it,
 and start a new emacs process.
 
 #+BEGIN_SRC sh
-     INITDIR=~/test/.emacs.d
-     #rm -rf $INITDIR
-     #mkdir -p $INITDIR
-     cp ~/.emacs.d/init-first-time.el $INITDIR/init.el
-     rm $INITDIR/init.elc
-     cp ~/.emacs.d/init.org $INITDIR
-     HOME=~/test/
-     /Applications/Emacs-Plus/Contents/MacOS/Emacs --debug-init &
+  INITDIR=~/test/.emacs.d
+  #rm -rf $INITDIR
+  #mkdir -p $INITDIR
+  cp ~/.emacs.d/init-first-time.el $INITDIR/init.el
+  rm $INITDIR/init.elc
+  cp ~/.emacs.d/init.org $INITDIR
+  HOME=~/test/
+  /Applications/Emacs-Plus/Contents/MacOS/Emacs --debug-init &
 #+END_SRC
 
 #+RESULTS:
@@ -235,6 +235,12 @@ place, it can be a replacement for the builtin ~re-search-forward~.
   (global-set-key (kbd "M-x") 'counsel-M-x)
   (global-set-key (kbd "C-x C-f") 'counsel-find-file)
   (global-set-key (kbd "C-c j") 'counsel-git-grep)
+
+  ;; make ivy's display a bit bigger
+  (setq ivy-height 30
+        ;; use appropriate search backend for OS X
+        counsel-locate-cmd 'counsel-locate-cmd-mdfind)
+
 #+END_SRC
 *** Autocomplete
 Autocomplete will help you finish what you started typing. For
@@ -402,8 +408,9 @@ Add the ability to jump right into magit from find-file, so you can
 go to the repository and straight to magit. ~M-o g~ will jump to
 magit from whatever the current candidate is.
 #+BEGIN_SRC emacs-lisp
-  (ivy-set-actions 'counsel-find-file '(("g" magit-status "magit")))
+  (ivy-add-actions 'counsel-find-file '(("g" magit-status "magit")))
 #+END_SRC
+
 
 ** Programming Languages
 *** Generic Lisp
@@ -488,8 +495,8 @@ behavior in clojure mode:
   mess.
 + Use [[#highlight-symbol][highlight-symbol]] mode, and bind some keys for jumping to
   next/previous occurrence
-+ Use clj-refactor which adds refactor tools like ~require~
-  management, renaming, etc.
++ +Use clj-refactor which adds refactor tools like ~require~
+  management, renaming, etc.+
 
   #+BEGIN_SRC emacs-lisp
     (package-install 'clojure-mode)
@@ -504,7 +511,7 @@ behavior in clojure mode:
                 ;; disable kill-sentence
                 (define-key global-map (kbd "M-k") nil)
                 ;;enable clojure refactor
-                (clj-refactor-mode 1)
+                ;;(clj-refactor-mode 1)
                 ;; highlight symbols
                 (highlight-symbol-mode 1)
                 (define-key clojure-mode-map (kbd "C-M-,") 'highlight-symbol-prev)
@@ -523,6 +530,7 @@ behavior in clojure mode:
                    ("(\\(\\.[^ \n)]*\\|[^ \n)]+\\.\\|new\\)\\([ )\n]\\|$\\)" 1 'clojure-java-call)
                    ("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 'font-lock-warning-face t))))
     (font-lock-add-keywords 'clojure-mode my-clojure-font-lock-keywords)
+    (font-lock-add-keywords 'clojurescript-mode my-clojure-font-lock-keywords)
 
     ;; Define extra clojure faces
     (def-mode-face clojure-braces "#49b2c7" "Clojure braces")
@@ -545,3 +553,15 @@ code blocks in org-mode files.
   (add-hook 'cider-repl-mode-hook #'eldoc-mode)
   (setq org-babel-clojure-backend 'cider)
 #+END_SRC
+** OS Interaction
+*** File Browsing
+We'll use the builtin dired for this, and extend it a bit.
+
+Add dired as an option to find-file, so we can jump right into a
+directory display (~M-o d~). 
+
+#+BEGIN_SRC emacs-lisp
+  (ivy-add-actions 'counsel-find-file '(("d" dired "dired")))
+#+END_SRC
+
+
