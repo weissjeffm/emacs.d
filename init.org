@@ -185,20 +185,39 @@ install any packages that might be missing.
 #+BEGIN_SRC emacs-lisp
   ;; add repositories
   (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
   ;;(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
   (add-to-list 'package-archives '("org". "http://orgmode.org/elpa/"))
-
+  
   ;; initialize packages
   (package-initialize)
   (package-refresh-contents nil)
 #+END_SRC
+
+Normally I want to install packages only from melpa-stable. However
+some packages are only in melpa. Emacs has a "pinning" feature where
+you can specify which repository a package should come from.
+
+#+BEGIN_SRC emacs-lisp
+  (defun package-install-pinned (repository package)
+    "First pins the package to repository, then installs package"
+    (add-to-list 'package-pinned-packages (cons package repository))
+    (package-install package))
+
+  (defun package-install-stable (package)
+    (package-install-pinned "melpa-stable" package))
+#+END_SRC
+
+#+RESULTS:
+: package-install-stable
+
 
 Now we're ready to start loading and configuring individual features.
 ** Visual Style
 *** Mode Line
 We'll use Powerline to set up the mode line. 
 #+BEGIN_SRC emacs-lisp
-  (package-install 'smart-mode-line-powerline-theme)
+  (package-install-stable 'smart-mode-line-powerline-theme)
   (require 'smart-mode-line-powerline-theme)
   (sml/setup)
   (setq powerline-default-separator 'arrow-fade
@@ -228,7 +247,7 @@ place, it can be a replacement for the builtin ~re-search-forward~.
 ~counsel-git-grep~ is a replacement for ~find-grep~.
 
 #+BEGIN_SRC emacs-lisp
-  (package-install 'counsel)
+  (package-install-stable 'counsel)
   (require 'counsel)
   (setq ivy-use-virtual-buffers t) ; for showing recently used first
   (global-set-key (kbd "C-s") 'swiper)
@@ -247,12 +266,12 @@ Autocomplete will help you finish what you started typing. For
 example, long function names. When you hit TAB autocomplete will
 fill in the rest. We'll try company-mode.
 #+BEGIN_SRC emacs-lisp
-      (package-install 'company)
+      (package-install-stable 'company)
       (add-hook 'after-init-hook 'global-company-mode)
 #+END_SRC
 *** Smartparens
 #+BEGIN_SRC emacs-lisp
-  (package-install 'smartparens)
+  (package-install-stable 'smartparens)
   (require 'smartparens)
   (require 'smartparens-config)
 #+END_SRC
@@ -322,7 +341,7 @@ narrow or expand the focus.
 *** Undo Tree
 Allows you to undo and redo without losing any previous states.
 #+BEGIN_SRC emacs-lisp
-  (package-install 'undo-tree)
+  (package-install-stable 'undo-tree)
   (autoload 'global-undo-tree-mode "undo-tree")
   (global-undo-tree-mode)
   (setq undo-tree-auto-save-history t
@@ -335,7 +354,7 @@ repeatedly. Same functionality as keyboard macros, but allows you to
 see the results at each step.
 
 #+BEGIN_SRC emacs-lisp
-  (package-install 'multiple-cursors)
+  (package-install-stable 'multiple-cursors)
   (require 'multiple-cursors)
   (define-prefix-command 'mc-key-map)
   (global-set-key (kbd "C-c m") 'mc-key-map)
@@ -353,7 +372,7 @@ see the results at each step.
 Lets you jump anywhere on screen with a few keypresses.
 
 #+BEGIN_SRC emacs-lisp
-  (package-install 'ace-jump-mode)
+  (package-install-stable 'ace-jump-mode)
 
   (global-set-key (kbd "C-'") 'ace-jump-mode)
   (setq ace-jump-mode-scope 'frame) ;;current frame only
@@ -380,14 +399,14 @@ Install HTMLize so that we can export files like this one to HTML
 and get pretty fonts and colors just like we see in emacs!
 
 #+BEGIN_SRC emacs-lisp
-    (package-install 'htmlize)
+    (package-install-stable 'htmlize)
 #+END_SRC
 
 Next we enable bullets mode which makes pretty bulleted outlines,
 instead of just using the asterisk character.
 
 #+BEGIN_SRC emacs-lisp
-  (package-install 'org-bullets)
+  (package-install-stable 'org-bullets)
   (require 'org-bullets)
   (setq org-bullets-bullet-list '("●" "○" "★"))
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
@@ -396,7 +415,7 @@ instead of just using the asterisk character.
 ** Source Control
 Magit is the best. It's a wrapper for git, and it makes things so much easier.
 #+BEGIN_SRC emacs-lisp
-  (package-install 'magit)
+  (package-install-stable 'magit)
   (require 'magit)
   (global-set-key (kbd "<f2>") 'magit-status)
   (setq magit-diff-refine-hunk 'all
@@ -450,7 +469,7 @@ This is a feature that highlights all the occurrences of the symbol at
 point, so that you can see where else that symbol is used. We'll use
 autoload so that we only load the feature when it's called upon.
 #+BEGIN_SRC emacs-lisp
-  (package-install 'highlight-symbol)
+  (package-install-stable 'highlight-symbol)
   (autoload 'highlight-symbol-mode "highlight-symbol")
 #+END_SRC
 *** Emacs Lisp
@@ -466,7 +485,7 @@ For navigating elisp, jumping into functions and back, we'll use the
 slime nav style, which means using ~M-.~ and ~M-,~. Enable it in
 ~ielm-mode~ too (an elisp REPL).
 #+BEGIN_SRC emacs-lisp
-  (package-install 'elisp-slime-nav)
+  (package-install-stable 'elisp-slime-nav)
   (require 'elisp-slime-nav)
   (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
     (add-hook hook 'elisp-slime-nav-mode))
@@ -499,7 +518,7 @@ behavior in clojure mode:
   management, renaming, etc.+
 
   #+BEGIN_SRC emacs-lisp
-    (package-install 'clojure-mode)
+    (package-install-stable 'clojure-mode)
     (autoload 'clojure-mode "clojure-mode")
     (autoload 'clojure-mode-map "clojure-mode" nil nil 'keymap)
     (autoload 'clj-refactor-mode "clj-refactor")
@@ -547,7 +566,7 @@ the repl to display function signatures. Allow execution of clojure
 code blocks in org-mode files.
 
 #+BEGIN_SRC emacs-lisp
-  (package-install 'cider)
+  (package-install-stable 'cider)
   (autoload 'cider-repl-mode "cider")
   (font-lock-add-keywords 'cider-repl-mode my-clojure-font-lock-keywords)
   (add-hook 'cider-repl-mode-hook #'eldoc-mode)
@@ -564,5 +583,24 @@ directory display (~M-o d~).
 #+BEGIN_SRC emacs-lisp
   (ivy-add-actions 'counsel-find-file '(("d" dired "dired")))
 #+END_SRC
+
+*** Rest Client
+I like to use restclient.el so I can stay in emacs instead of going to
+a graphical client like postman, or something basic like curl.
+
+org-mode supports restclient if you add the babel mode for
+restclient. Doesn't look like there's a package for it, but the code
+is so short i'll just include it all here, and then add the setup at
+the end.
+#+BEGIN_SRC emacs-lisp
+  (package-install 'restclient)
+  (package-install 'ob-restclient)
+  ;; setup
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((restclient . t)))
+#+END_SRC
+
+#+RESULTS:
 
 
