@@ -100,6 +100,10 @@ All the custom colors and fonts that I prefer.
 #+END_SRC
 
 * Global Builtin Settings
+** Don't save customizations to init.el
+#+BEGIN_SRC emacs-lisp
+  (setq custom-file (concat user-emacs-directory "customizations.el"))
+#+END_SRC
 ** Include /usr/local on path
 #+BEGIN_SRC emacs-lisp
   (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
@@ -196,7 +200,7 @@ install any packages that might be missing.
 Now we're ready to start loading and configuring individual features.
 ** Visual Style
 *** Mode Line
-We'll use Powerline to set up the mode line. 
+We'll use Powerline to set up the mode line.
 #+BEGIN_SRC emacs-lisp
   (package-install 'smart-mode-line-powerline-theme)
   (require 'smart-mode-line-powerline-theme)
@@ -274,8 +278,12 @@ Add some keybindings to do paren motion and editing
   (sp-pair "{" "}" :wrap "M-{")
 
   (define-key smartparens-mode-map (kbd "C-M-<backspace>") 'sp-backward-kill-sexp)
-  (define-key smartparens-mode-map (kbd "M-s") 'sp-unwrap-sexp)
+  (define-key smartparens-mode-map (kbd "M-s") 'sp-splice-sexp)
   (define-key smartparens-mode-map (kbd "M-S-<up>") 'sp-raise-sexp)
+  (define-key smartparens-mode-map (kbd "C-<right>") 'sp-forward-slurp-sexp)
+  (define-key smartparens-mode-map (kbd "C-<left>") 'sp-forward-barf-sexp)
+  (define-key smartparens-mode-map (kbd "C-M-<left>") 'sp-backward-slurp-sexp)
+  (define-key smartparens-mode-map (kbd "C-M-<right>") 'sp-backward-barf-sexp)
 #+END_SRC
 
 Some other settings
@@ -347,6 +355,24 @@ see the results at each step.
   (define-key mc-key-map (kbd "s") 'mc/mark-next-symbol-like-this)
   (define-key mc-key-map (kbd "m") 'mc/mark-all-dwim)
   (define-key mc/keymap (kbd "M-n") 'mc/cycle-forward)
+
+  ;; don't exit with the return key
+  (define-key mc/keymap (kbd "<return>") nil)
+#+END_SRC
+
+Remember which commands need to be run once for each cursor (normally
+saved to ~.mc-lists.el~
+#+BEGIN_SRC emacs-lisp
+  (setq mc/cmds-to-run-for-all
+        '(beginning-of-defun
+          down-list
+          forward-sexp
+          sp-backward-delete-char
+          sp-backward-up-sexp
+          sp-forward-slurp-sexp
+          sp-raise-sexp
+          sp-splice-sexp
+          sp-unwrap-sexp))
 #+END_SRC
 
 *** Ace Jump Mode
@@ -558,10 +584,76 @@ code blocks in org-mode files.
 We'll use the builtin dired for this, and extend it a bit.
 
 Add dired as an option to find-file, so we can jump right into a
-directory display (~M-o d~). 
+directory display (~M-o d~).
 
 #+BEGIN_SRC emacs-lisp
   (ivy-add-actions 'counsel-find-file '(("d" dired "dired")))
 #+END_SRC
+** Messaging
+*** Email
+For email client, we'll use notmuch. I've heard mu4e is good too, but
+i've already got some config for notmuch.
+#+BEGIN_SRC emacs-lisp
+  (package-install 'notmuch)
 
+  (setq
+   ;; Show newest mail first
+   notmuch-search-oldest-first nil
+   ;; Use comma for thousands separator instead of odd-looking space
+   notmuch-hello-thousands-separator ","
+   ;; Use internal for finding address book entries
+   notmuch-address-command 'internal
+   ;; not sure what these do but seems important
+   notmuch-crypto-process-mime t
+   notmuch-show-all-multipart/alternative-parts nil
+   notmuch-saved-searches '((:name "Inbox" :query "tag:new")))
+#+END_SRC
 
+Also add a new function to remove the "new" tag for all the messages
+currently displayed. Otherwise the inbox just keeps growing and growing.
+
+#+BEGIN_SRC emacs-lisp
+  (defun notmuch-untag-all-new ()
+    (interactive)
+    (notmuch-search-tag-all '("-new"))
+    (notmuch-bury-or-kill-this-buffer))
+  (define-key notmuch-search-mode-map (kbd "C-c C-k") 'notmuch-untag-all-new)
+#+END_SRC
+
+*** IRC
+For IRC client we'll use good old built-in rcirc.
+#+BEGIN_SRC emacs-lisp
+  (require 'secrets)
+
+  (setq
+   rcirc-buffer-maximum-lines 2000
+   rcirc-default-full-name "Jeff Weiss"
+   rcirc-default-user-name "jweiss"
+   rcirc-fill-column 'frame-width
+   rcirc-fill-flag nil
+   rcirc-log-flag t
+   rcirc-notify-check-frame nil
+   rcirc-notify-message "%s: %s"
+   rcirc-notify-message-private "(priv) %s: %s"
+   rcirc-notify-timeout 30
+   rcirc-time-format "%D %H:%M "
+   rcirc-track-minor-mode t
+
+   ;; Personal settings - sensitive data is stored in OS keychain, which
+   ;; we can access with secrets library
+   rcirc-authinfo `(("irc.freenode.net" nickserv
+                     ,(secrets-get-attribute "Login" "Freenode irc" :user)
+                     ,(secrets-get-secret "Login" "Freenode irc")))
+   rcirc-server-alist      
+   `(("irc.freenode.net" :channels
+      ,(first (read-from-string (secrets-get-attribute  "Login" "Freenode irc" :channels))))))
+
+  (secrets-create-item "Login" "Freenode irc" "f7ERUaXkvR76"
+                       '(:user "jweiss"
+                               :channels "(\"#bitcoin\" \"#emacs\" \"#clojure\")"))
+  (secrets-create-item "Login" "test3" "foobar1" :this "that" )
+  (secrets-
+   "f7ERUaXkvR76")
+
+  (secrets-get-attributes "Login" "test")((:host . "foo.com") (:port . "123") (:login . "jweiss") (:xdg:schema . "org.freedesktop.Secret.Generic"))
+#+END_SRC
