@@ -46,8 +46,8 @@ and start a new emacs process.
 
 #+BEGIN_SRC sh
   INITDIR=~/test/.emacs.d
-  #rm -rf $INITDIR
-  #mkdir -p $INITDIR
+  rm -rf $INITDIR
+  mkdir -p $INITDIR
   cp ~/.emacs.d/init-first-time.el $INITDIR/init.el
   rm $INITDIR/init.elc
   cp ~/.emacs.d/init.org $INITDIR
@@ -179,7 +179,6 @@ handy quite often, so we want to make sure it's loaded, along with
 #+BEGIN_SRC emacs-lisp
   (require 'cl)
   (require 'package)
- 
 #+END_SRC
 
 There are several package repositories, we will specify which ones we
@@ -202,8 +201,14 @@ Once =package= is loaded we can add =use-package= on top, which
 provides a lot of flexibility.
 
 #+BEGIN_SRC emacs-lisp
- (package-install 'use-package)
- (require 'use-package)
+   (package-install 'use-package)
+   ;; This is only needed once, near the top of the file
+  (eval-when-compile
+    ;; Following line is not needed if use-package.el is in ~/.emacs.d
+    (add-to-list 'load-path "<path where use-package is installed>")
+    (require 'use-package))
+
+  (setq use-package-always-ensure t) ;; always install package if not present
 #+END_SRC
 
 
@@ -243,34 +248,65 @@ place, it can be a replacement for the builtin ~re-search-forward~.
 ~counsel-git-grep~ is a replacement for ~find-grep~.
 
 #+BEGIN_SRC emacs-lisp
-  (package-install-stable 'counsel)
-  (require 'counsel)
-  (setq ivy-use-virtual-buffers t) ; for showing recently used first
-  (global-set-key (kbd "C-s") 'swiper)
-  (global-set-key (kbd "M-x") 'counsel-M-x)
-  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-  (global-set-key (kbd "C-c j") 'counsel-git-grep)
-
-  ;; make ivy's display a bit bigger
-  (setq ivy-height 30
-        ;; use appropriate search backend for OS X
-        counsel-locate-cmd 'counsel-locate-cmd-mdfind)
-
+  (use-package counsel
+    :pin melpa-stable
+    :config
+    (setq
+     ;; for showing recently used first
+     ivy-use-virtual-buffers t
+     ;; make ivy's display a bit bigger
+     ivy-height 30)
+    (when (eq system-type 'darwin)
+      ;; use appropriate search backend for OS X
+      (setq counsel-locate-cmd 'counsel-locate-cmd-mdfind))
+    :bind
+    (("C-s" . 'swiper)
+     ("M-x" . 'counsel-M-x)
+     ("C-x C-f" . 'counsel-find-file)
+     ("C-c j" . 'counsel-git-grep)))
 #+END_SRC
+
+#+RESULTS:
+: counsel-git-grep
+
 *** Autocomplete
 Autocomplete will help you finish what you started typing. For
 example, long function names. When you hit TAB autocomplete will
 fill in the rest. We'll try company-mode.
 #+BEGIN_SRC emacs-lisp
-      (package-install-stable 'company)
-      (add-hook 'after-init-hook 'global-company-mode)
+  (use-package company
+    :pin melpa-stable
+    :hook (after-init . global-company-mode))
 #+END_SRC
 *** Smartparens
+Smartparens inserts parens in pairs, keeps them balanced, and provides
+motion and structural editing. It's a must-have for any lisp
+programming.
 #+BEGIN_SRC emacs-lisp
-  (package-install-stable 'smartparens)
-  (require 'smartparens)
-  (require 'smartparens-config)
+  (use-package smartparens
+    :pin melpa-stable
+    :config
+    (setq sp-base-key-bindings 'paredit
+          sp-highlight-pair-overlay nil
+          sp-highlight-wrap-overlay nil
+          sp-highlight-wrap-tag-overlay nil)
+    (sp-pair "(" ")" :wrap "M-(")
+    (sp-pair "[" "]" :wrap "M-[")
+    (sp-pair "{" "}" :wrap "M-{")
+
+    :bind
+    (:map smartparens-mode-map
+          ("C-M-<backspace>" . sp-backward-kill-sexp)
+          ("M-s" . sp-splice-sexp)
+          ("M-S-<up>" . sp-raise-sexp)
+          ("C-<right>" . sp-forward-slurp-sexp)
+          ("C-<left>" . sp-forward-barf-sexp)
+          ("C-M-<left>" . sp-backward-slurp-sexp)
+          ("C-M-<right>" . sp-backward-barf-sexp)))
 #+END_SRC
+
+#+RESULTS:
+: smartparens-config
 
 Set up smartparens to run in strict mode in these major modes (where
 it doesn't allow parens to become unbalanced!)
@@ -278,31 +314,6 @@ it doesn't allow parens to become unbalanced!)
   (dolist (mode '(scheme emacs-lisp lisp clojure clojurescript eshell html cider-repl))
       (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
                 #'smartparens-strict-mode))
-#+END_SRC
-
-
-Add some keybindings to do paren motion and editing
-#+BEGIN_SRC emacs-lisp
-  ;; wrap with parens
-  (sp-pair "(" ")" :wrap "M-(")
-  (sp-pair "[" "]" :wrap "M-[")
-  (sp-pair "{" "}" :wrap "M-{")
-
-  (define-key smartparens-mode-map (kbd "C-M-<backspace>") 'sp-backward-kill-sexp)
-  (define-key smartparens-mode-map (kbd "M-s") 'sp-splice-sexp)
-  (define-key smartparens-mode-map (kbd "M-S-<up>") 'sp-raise-sexp)
-  (define-key smartparens-mode-map (kbd "C-<right>") 'sp-forward-slurp-sexp)
-  (define-key smartparens-mode-map (kbd "C-<left>") 'sp-forward-barf-sexp)
-  (define-key smartparens-mode-map (kbd "C-M-<left>") 'sp-backward-slurp-sexp)
-  (define-key smartparens-mode-map (kbd "C-M-<right>") 'sp-backward-barf-sexp)
-#+END_SRC
-
-Some other settings
-#+BEGIN_SRC emacs-lisp
-  (setq sp-base-key-bindings 'paredit
-        sp-highlight-pair-overlay nil
-        sp-highlight-wrap-overlay nil
-        sp-highlight-wrap-tag-overlay nil)
 #+END_SRC
 
 **** Focus Mode
@@ -341,7 +352,7 @@ narrow or expand the focus.
 *** Undo Tree
 Allows you to undo and redo without losing any previous states.
 #+BEGIN_SRC emacs-lisp
-  (package-install-stable 'undo-tree)
+  (use-package undo-tree) ;; this is in elpa, so no need to pin
   (autoload 'global-undo-tree-mode "undo-tree")
   (global-undo-tree-mode)
   (setq undo-tree-auto-save-history t
@@ -354,7 +365,8 @@ repeatedly. Same functionality as keyboard macros, but allows you to
 see the results at each step.
 
 #+BEGIN_SRC emacs-lisp
-  (package-install-stable 'multiple-cursors)
+  (use-package multiple-cursors
+    :pin melpa-stable)
   (require 'multiple-cursors)
   (define-prefix-command 'mc-key-map)
   (global-set-key (kbd "C-c m") 'mc-key-map)
@@ -390,7 +402,8 @@ saved to ~.mc-lists.el~
 Lets you jump anywhere on screen with a few keypresses.
 
 #+BEGIN_SRC emacs-lisp
-  (package-install-stable 'ace-jump-mode)
+  (use-package ace-jump-mode
+    :pin melpa-stable)
 
   (global-set-key (kbd "C-'") 'ace-jump-mode)
   (setq ace-jump-mode-scope 'frame) ;;current frame only
@@ -417,14 +430,16 @@ Install HTMLize so that we can export files like this one to HTML
 and get pretty fonts and colors just like we see in emacs!
 
 #+BEGIN_SRC emacs-lisp
-    (package-install-stable 'htmlize)
+    (use-package htmlize
+      :pin melpa-stable)
 #+END_SRC
 
 Next we enable bullets mode which makes pretty bulleted outlines,
 instead of just using the asterisk character.
 
 #+BEGIN_SRC emacs-lisp
-  (package-install-stable 'org-bullets)
+  (use-package org-bullets
+    :pin melpa-stable)
   (require 'org-bullets)
   (setq org-bullets-bullet-list '("●" "○" "★"))
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
@@ -433,7 +448,8 @@ instead of just using the asterisk character.
 ** Source Control
 Magit is the best. It's a wrapper for git, and it makes things so much easier.
 #+BEGIN_SRC emacs-lisp
-  (package-install-stable 'magit)
+  (use-package magit
+    :pin melpa-stable)
   (require 'magit)
   (global-set-key (kbd "<f2>") 'magit-status)
   (setq magit-diff-refine-hunk 'all
@@ -487,7 +503,8 @@ This is a feature that highlights all the occurrences of the symbol at
 point, so that you can see where else that symbol is used. We'll use
 autoload so that we only load the feature when it's called upon.
 #+BEGIN_SRC emacs-lisp
-  (package-install-stable 'highlight-symbol)
+  (use-package highlight-symbol
+    :pin melpa-stable)
   (autoload 'highlight-symbol-mode "highlight-symbol")
 #+END_SRC
 *** Emacs Lisp
@@ -503,7 +520,8 @@ For navigating elisp, jumping into functions and back, we'll use the
 slime nav style, which means using ~M-.~ and ~M-,~. Enable it in
 ~ielm-mode~ too (an elisp REPL).
 #+BEGIN_SRC emacs-lisp
-  (package-install-stable 'elisp-slime-nav)
+  (use-package elisp-slime-nav
+    :pin melpa-stable)
   (require 'elisp-slime-nav)
   (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
     (add-hook hook 'elisp-slime-nav-mode))
@@ -536,7 +554,8 @@ behavior in clojure mode:
   management, renaming, etc.+
 
   #+BEGIN_SRC emacs-lisp
-    (package-install-stable 'clojure-mode)
+    (use-package clojure-mode
+      :pin melpa-stable)
     (autoload 'clojure-mode "clojure-mode")
     (autoload 'clojure-mode-map "clojure-mode" nil nil 'keymap)
     (autoload 'clj-refactor-mode "clj-refactor")
@@ -584,7 +603,8 @@ the repl to display function signatures. Allow execution of clojure
 code blocks in org-mode files.
 
 #+BEGIN_SRC emacs-lisp
-  (package-install-stable 'cider)
+  (use-package cider
+    :pin melpa-stable)
   (autoload 'cider-repl-mode "cider")
   (font-lock-add-keywords 'cider-repl-mode my-clojure-font-lock-keywords)
   (add-hook 'cider-repl-mode-hook #'eldoc-mode)
@@ -606,7 +626,8 @@ directory display (~M-o d~).
 For email client, we'll use notmuch. I've heard mu4e is good too, but
 i've already got some config for notmuch.
 #+BEGIN_SRC emacs-lisp
-  (package-install 'notmuch)
+  (use-package notmuch
+    :pin melpa-stable)
 
   (setq
    ;; Show newest mail first
@@ -641,50 +662,40 @@ restclient. Doesn't look like there's a package for it, but the code
 is so short i'll just include it all here, and then add the setup at
 the end.
 #+BEGIN_SRC emacs-lisp
-  (package-install 'restclient)
-  (package-install 'ob-restclient)
+  (use-package restclient)
+  (use-package ob-restclient)
   ;; setup
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((restclient . t)))
 #+END_SRC
-
-
-
 *** IRC
 For IRC client we'll use good old built-in rcirc.
 #+BEGIN_SRC emacs-lisp
-  (require 'secrets)
+  ;; linux only for now due to reliance on secrets.el
+  (when (eq system-type 'gnu/linux)
+    (require 'secrets)
 
-  (setq
-   rcirc-buffer-maximum-lines 2000
-   rcirc-default-full-name "Jeff Weiss"
-   rcirc-default-user-name "jweiss"
-   rcirc-fill-column 'frame-width
-   rcirc-fill-flag nil
-   rcirc-log-flag t
-   rcirc-notify-check-frame nil
-   rcirc-notify-message "%s: %s"
-   rcirc-notify-message-private "(priv) %s: %s"
-   rcirc-notify-timeout 30
-   rcirc-time-format "%D %H:%M "
-   rcirc-track-minor-mode t
+    (setq
+     rcirc-buffer-maximum-lines 2000
+     rcirc-default-full-name "Jeff Weiss"
+     rcirc-default-user-name "jweiss"
+     rcirc-fill-column 'frame-width
+     rcirc-fill-flag nil
+     rcirc-log-flag t
+     rcirc-notify-check-frame nil
+     rcirc-notify-message "%s: %s"
+     rcirc-notify-message-private "(priv) %s: %s"
+     rcirc-notify-timeout 30
+     rcirc-time-format "%D %H:%M "
+     rcirc-track-minor-mode t
 
-   ;; Personal settings - sensitive data is stored in OS keychain, which
-   ;; we can access with secrets library
-   rcirc-authinfo `(("irc.freenode.net" nickserv
-                     ,(secrets-get-attribute "Login" "Freenode irc" :user)
-                     ,(secrets-get-secret "Login" "Freenode irc")))
-   rcirc-server-alist
-   `(("irc.freenode.net" :channels
-      ,(first (read-from-string (secrets-get-attribute  "Login" "Freenode irc" :channels))))))
-
-  (secrets-create-item "Login" "Freenode irc" "f7ERUaXkvR76"
-                       '(:user "jweiss"
-                               :channels "(\"#bitcoin\" \"#emacs\" \"#clojure\")"))
-  (secrets-create-item "Login" "test3" "foobar1" :this "that" )
-  (secrets-
-   "f7ERUaXkvR76")
-
-  (secrets-get-attributes "Login" "test")((:host . "foo.com") (:port . "123") (:login . "jweiss") (:xdg:schema . "org.freedesktop.Secret.Generic"))
+     ;; Personal settings - sensitive data is stored in OS keychain, which
+     ;; we can access with secrets library
+     rcirc-authinfo `(("irc.freenode.net" nickserv
+                       ,(secrets-get-attribute "Login" "Freenode irc" :user)
+                       ,(secrets-get-secret "Login" "Freenode irc")))
+     rcirc-server-alist
+     `(("irc.freenode.net" :channels
+        ,(first (read-from-string (secrets-get-attribute  "Login" "Freenode irc" :channels)))))))
 #+END_SRC
