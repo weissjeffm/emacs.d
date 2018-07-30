@@ -616,11 +616,13 @@ code blocks in org-mode files.
 #+BEGIN_SRC emacs-lisp
   (use-package cider
     :pin melpa-stable)
+ 
   (autoload 'cider-repl-mode "cider")
   (font-lock-add-keywords 'cider-repl-mode my-clojure-font-lock-keywords)
   (add-hook 'cider-repl-mode-hook #'eldoc-mode)
   (setq org-babel-clojure-backend 'cider)
-  (global-set-key (kbd "<f12>") 'cider-jack-in)
+  (global-set-key (kbd "<f12\>") 'cider-jack-in)
+  (setq cider-default-cljs-repl 'figwheel)
 #+END_SRC
 ** OS Interaction
 *** File Browsing
