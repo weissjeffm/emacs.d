@@ -290,6 +290,7 @@ programming.
   (use-package smartparens
     :pin melpa-stable
     :config
+    (require 'smartparens-config)
     (setq sp-base-key-bindings 'paredit
           sp-highlight-pair-overlay nil
           sp-highlight-wrap-overlay nil
@@ -306,7 +307,11 @@ programming.
           ("C-<right>" . sp-forward-slurp-sexp)
           ("C-<left>" . sp-forward-barf-sexp)
           ("C-M-<left>" . sp-backward-slurp-sexp)
-          ("C-M-<right>" . sp-backward-barf-sexp)))
+          ("C-M-<right>" . sp-backward-barf-sexp)
+          ("C-M-n" . sp-up-sexp)
+          ("C-M-p" . sp-backward-down-sexp)
+          ("C-M-d" . sp-down-sexp)
+          ("C-M-u" . sp-backward-up-sexp)))
 #+END_SRC
 
 #+RESULTS:
