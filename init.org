@@ -512,8 +512,11 @@ point, so that you can see where else that symbol is used. We'll use
 autoload so that we only load the feature when it's called upon.
 #+BEGIN_SRC emacs-lisp
   (use-package highlight-symbol
-    :pin melpa-stable)
-  (autoload 'highlight-symbol-mode "highlight-symbol")
+    :pin melpa-stable
+    :config
+    ;; highlight occurrences of the symbol in this color
+    (set-face-attribute 'highlight-symbol-face nil :background "DarkOrange3"))
+
 #+END_SRC
 *** Emacs Lisp
 We'll add features to Emacs Lisp first since that's what we're using
