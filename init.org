@@ -173,6 +173,13 @@ that may be run on vertical and horizontal monitors.
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-x b") 'ibuffer)
 #+END_SRC
+** Save backup and undo files in a specific subdirectory
+Save to hidden dir .~ instead of making files go everywhere.
+#+BEGIN_SRC emacs-lisp
+  (setq backup-directory-alist '(("." . ".~")))
+  (setq undo-tree-history-directory-alist '(("." . ".~")))
+#+END_SRC
+
 * Features and Extensions
 To install new features, we need to load the =package= system. =cl= is
 a library that contains many functions from Common Lisp, and comes in
