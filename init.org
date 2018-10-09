@@ -179,7 +179,16 @@ Save to hidden dir .~ instead of making files go everywhere.
   (setq backup-directory-alist '(("." . ".~")))
   (setq undo-tree-history-directory-alist '(("." . ".~")))
 #+END_SRC
-
+** Forward ssh agent with TRAMP
+#+BEGIN_SRC emacs-lisp
+  (require 'tramp)
+  (defun add-ssh-agent-to-tramp ()
+    (cl-pushnew '("-A")
+                (cadr (assoc 'tramp-login-args
+                             (assoc "ssh" tramp-methods)))
+                :test #'equal))
+  (add-ssh-agent-to-tramp)
+#+END_SRC
 * Features and Extensions
 To install new features, we need to load the =package= system. =cl= is
 a library that contains many functions from Common Lisp, and comes in
