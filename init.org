@@ -700,8 +700,8 @@ the end.
    '((restclient . t)))
 #+END_SRC
 *** IRC
-For IRC client we'll use good old built-in rcirc.
-#+BEGIN_SRC emacs-lisp
+For IRC client we'll use good old built-in rcirc. 
+#+BEGIN_SRC emacs-lisp :tangle no
   ;; linux only for now due to reliance on secrets.el
   (when (eq system-type 'gnu/linux)
     (require 'secrets)
