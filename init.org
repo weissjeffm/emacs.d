@@ -641,6 +641,12 @@ code blocks in org-mode files.
   (global-set-key (kbd "<f12\>") 'cider-jack-in)
   (setq cider-default-cljs-repl 'figwheel)
 #+END_SRC
+
+For some reason remote repls sometimes are unreachable, this will go
+in through ssh if necessary
+#+BEGIN_SRC emacs-lisp
+  (setq nrepl-use-ssh-fallback-for-remote-hosts t)
+#+END_SRC
 ** OS Interaction
 *** File Browsing
 We'll use the builtin dired for this, and extend it a bit.
