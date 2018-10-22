@@ -578,11 +578,13 @@ behavior in clojure mode:
   mess.
 + Use [[#highlight-symbol][highlight-symbol]] mode, and bind some keys for jumping to
   next/previous occurrence
-+ +Use clj-refactor which adds refactor tools like ~require~
-  management, renaming, etc.+
++ Use clj-refactor which adds refactor tools like ~require~
+  management, renaming, etc.
 
   #+BEGIN_SRC emacs-lisp
     (use-package clojure-mode
+      :pin melpa-stable)
+    (use-package clj-refactor
       :pin melpa-stable)
     (autoload 'clojure-mode "clojure-mode")
     (autoload 'clojure-mode-map "clojure-mode" nil nil 'keymap)
@@ -595,7 +597,8 @@ behavior in clojure mode:
                 ;; disable kill-sentence
                 (define-key global-map (kbd "M-k") nil)
                 ;;enable clojure refactor
-                ;;(clj-refactor-mode 1)
+                (clj-refactor-mode 1)
+                (yas-minor-mode 1)
                 ;; highlight symbols
                 (highlight-symbol-mode 1)
                 (define-key clojure-mode-map (kbd "C-M-,") 'highlight-symbol-prev)
@@ -632,8 +635,9 @@ code blocks in org-mode files.
 
 #+BEGIN_SRC emacs-lisp
   (use-package cider
-    :pin melpa-stable)
- 
+    :pin melpa) ;; remote connection bug only in melpa
+  ;; switch back to stable at 0.19
+
   (autoload 'cider-repl-mode "cider")
   (font-lock-add-keywords 'cider-repl-mode my-clojure-font-lock-keywords)
   (add-hook 'cider-repl-mode-hook #'eldoc-mode)
