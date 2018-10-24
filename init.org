@@ -643,7 +643,8 @@ code blocks in org-mode files.
   (add-hook 'cider-repl-mode-hook #'eldoc-mode)
   (setq org-babel-clojure-backend 'cider)
   (global-set-key (kbd "<f12\>") 'cider-jack-in)
-  (setq cider-default-cljs-repl 'figwheel)
+  (setq cider-default-cljs-repl 'figwheel
+        cider-lein-parameters "trampoline with-profile +dev repl :headless")
 #+END_SRC
 
 For some reason remote repls sometimes are unreachable, this will go
