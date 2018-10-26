@@ -411,7 +411,22 @@ Remember which commands need to be run once for each cursor (normally
 saved to ~.mc-lists.el~
 #+BEGIN_SRC emacs-lisp
   (setq mc/cmds-to-run-for-all
-        '(beginning-of-defun
+        '(backward-sexp
+          beginning-of-defun
+          cljr-slash
+          down-list
+          forward-sexp
+          indent-new-comment-line
+          kill-sexp
+          sp-backward-delete-char
+          sp-backward-up-sexp
+          sp-down-sexp
+          sp-forward-slurp-sexp
+          sp-raise-sexp
+          sp-remove-active-pair-overlay
+          sp-splice-sexp
+          sp-unwrap-sexp
+          sp-up-sexp
           down-list
           forward-sexp
           sp-backward-delete-char
@@ -419,7 +434,9 @@ saved to ~.mc-lists.el~
           sp-forward-slurp-sexp
           sp-raise-sexp
           sp-splice-sexp
-          sp-unwrap-sexp))
+          sp-unwrap-sexp)
+        mc/cmds-to-run-once
+        '(cider-load-buffer))
 #+END_SRC
 
 *** Ace Jump Mode
