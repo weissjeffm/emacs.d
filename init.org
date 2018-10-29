@@ -221,11 +221,9 @@ Once =package= is loaded we can add =use-package= on top, which
 provides a lot of flexibility.
 
 #+BEGIN_SRC emacs-lisp
-   (package-install 'use-package)
-   ;; This is only needed once, near the top of the file
-  (eval-when-compile
-    ;; Following line is not needed if use-package.el is in ~/.emacs.d
-    (require 'use-package))
+  (package-install 'use-package)
+  ;; This is only needed once, near the top of the file
+  (require 'use-package)
 
   (setq use-package-always-ensure t) ;; always install package if not present
 #+END_SRC
