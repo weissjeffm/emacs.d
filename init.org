@@ -457,6 +457,9 @@ Lets you jump anywhere on screen with a few keypresses.
   (use-package ace-jump-mode
     :pin melpa-stable)
 
+  ;; org mode move keybinding out of way
+  (define-key org-mode-map (kbd "C-'") nil)
+
   (global-set-key (kbd "C-'") 'ace-jump-mode)
   (setq ace-jump-mode-scope 'frame) ;;current frame only
   (setq ace-jump-mode-move-keys ;;lower case hotkeys only
