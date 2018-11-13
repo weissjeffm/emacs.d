@@ -680,6 +680,19 @@ in through ssh if necessary
 #+BEGIN_SRC emacs-lisp
   (setq nrepl-use-ssh-fallback-for-remote-hosts t)
 #+END_SRC
+*** Rust
+#+BEGIN_SRC emacs-lisp
+  (use-package rust-mode
+    :pin melpa-stable)
+
+  (use-package ob-rust)
+
+  (use-package cargo
+    :pin melpa-stable)
+#+END_SRC
+
+#+RESULTS:
+
 ** OS Interaction
 *** File Browsing
 We'll use the builtin dired for this, and extend it a bit.
