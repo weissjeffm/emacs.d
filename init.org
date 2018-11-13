@@ -695,6 +695,12 @@ Bind keys to inspect results of last evaluation
   (define-key clojure-mode-map (kbd "C-c M-I") 'cider-inspect-last-result)
   (define-key cider-mode-map (kbd "C-c M-I") 'cider-inspect-last-result)
 #+END_SRC
+
+Bind key to manually start completion
+#+BEGIN_SRC emacs-lisp
+  (define-key clojure-mode-map (kbd "<backtab>") 'company-complete)
+  (define-key cider-repl-mode-map (kbd "<backtab>") 'company-complete)
+#+END_SRC
 *** Rust
 #+BEGIN_SRC emacs-lisp
   (use-package rust-mode
