@@ -202,6 +202,12 @@ Save to hidden dir .~ instead of making files go everywhere.
                  (x-select-text filename))
         (error "unable to determine file name of current buffer."))))
 #+END_SRC
+** Don't save buffers before grepping
+This is highly annoying and I don't understand why it's the default.
+
+#+BEGIN_SRC emacs-lisp
+  (setq grep-save-buffers nil)
+#+END_SRC
 * Features and Extensions
 To install new features, we need to load the =package= system. =cl= is
 a library that contains many functions from Common Lisp, and comes in
