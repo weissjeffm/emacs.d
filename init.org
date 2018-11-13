@@ -683,6 +683,12 @@ in through ssh if necessary
 #+BEGIN_SRC emacs-lisp
   (setq nrepl-use-ssh-fallback-for-remote-hosts t)
 #+END_SRC
+
+Bind keys to inspect results of last evaluation
+#+BEGIN_SRC emacs-lisp
+  (define-key clojure-mode-map (kbd "C-c M-I") 'cider-inspect-last-result)
+  (define-key cider-mode-map (kbd "C-c M-I") 'cider-inspect-last-result)
+#+END_SRC
 *** Rust
 #+BEGIN_SRC emacs-lisp
   (use-package rust-mode
