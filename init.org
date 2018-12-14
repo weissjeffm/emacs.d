@@ -629,7 +629,7 @@ behavior in clojure mode:
     (use-package clojure-mode
       :pin melpa-stable)
     (use-package clj-refactor
-      :pin melpa-stable)
+      :pin melpa) ;; TODO go back to stable with cider 0.19 release
     (autoload 'clojure-mode "clojure-mode")
     (autoload 'clojure-mode-map "clojure-mode" nil nil 'keymap)
     (autoload 'clj-refactor-mode "clj-refactor")
