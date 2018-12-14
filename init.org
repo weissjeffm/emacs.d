@@ -275,7 +275,7 @@ This macro will let us easily define new "faces" later.
 #+END_SRC
 
 ** General Editing
-*** Completion
+*** Minibuffer candidate completion
 For automatic completion and narrowing of candidates, we'll use [[https://github.com/abo-abo/swiper][Ivy]]
 (also contains functionality called Swiper and Counsel).
 
