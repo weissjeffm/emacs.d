@@ -533,6 +533,39 @@ magit from whatever the current candidate is.
   (ivy-add-actions 'counsel-find-file '(("g" magit-status "magit")))
 #+END_SRC
 
+** Operate within a project
+We'll use projectile to do things like find files and buffers only
+within a certain project.
+
+Add a function to switch buffers: if no prefix, within the current
+project (if any). With a prefix, any buffer. Bind that function to the
+usual buffer switch key.
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :pin melpa-stable
+    :config
+    (setq projectile-completion-system 'ivy)
+    :bind
+    (:map projectile-mode-map
+          ("C-c p" . 'projectile-command-map)))
+
+  (defun jmw/switch-buffer-fallback (arg)
+    (interactive "P")
+    (if (or arg
+            (not (projectile-project-root)))
+        (ivy-switch-buffer)
+      (projectile-switch-to-buffer)))
+
+  (defun jmw/find-file-fallback (arg)
+    (interactive "P")
+    (if (or arg
+            (not (projectile-project-root)))
+        (counsel-find-file)
+      (projectile-find-file-dwim)))
+
+  (global-set-key (kbd "C-q") 'jmw/switch-buffer-fallback)
+  (global-set-key (kbd "C-x C-f") 'jmw/find-file-fallback)
+#+END_SRC
 
 ** Programming Languages
 *** Generic Lisp
