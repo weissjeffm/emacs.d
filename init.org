@@ -154,6 +154,10 @@ additional highlighting to the expression that point is on.
   (setq show-paren-priority 0
      show-paren-style 'expression)
 #+END_SRC
+** Add column number at left of modeline
+#+BEGIN_SRC emacs-lisp
+  (column-number-mode 1)
+#+END_SRC
 ** Frame Splitting
 Split the current frame either horizontally or vertically, depending
 on whether the frame is wide or tall. Good for emacs installations
