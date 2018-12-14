@@ -468,6 +468,7 @@ Lets you jump anywhere on screen with a few keypresses.
     :pin melpa-stable)
 
   ;; org mode move keybinding out of way
+  (require 'org)
   (define-key org-mode-map (kbd "C-'") nil)
 
   (global-set-key (kbd "C-'") 'ace-jump-mode)
@@ -485,10 +486,12 @@ mode file. There are some add ons for different languages.
 
 #+BEGIN_SRC emacs-lisp
   (require 'ob-clojure)
-  (setq org-babel-load-languages '((emacs-lisp . t) (shell . t))
-        org-confirm-babel-evaluate nil
+  (setq org-confirm-babel-evaluate nil
         org-startup-indented t
         org-startup-with-inline-images t)
+  (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t) (shell . t)))
 #+END_SRC
 
 Install HTMLize so that we can export files like this one to HTML
