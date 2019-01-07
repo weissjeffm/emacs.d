@@ -303,7 +303,8 @@ place, it can be a replacement for the builtin ~re-search-forward~.
     (("C-s" . 'swiper)
      ("M-x" . 'counsel-M-x)
      ("C-x C-f" . 'counsel-find-file)
-     ("C-c j" . 'counsel-git-grep)))
+     ("C-c j" . 'counsel-git-grep)
+     ("C-c i" . 'counsel-imenu)))
 #+END_SRC
 
 #+RESULTS:
@@ -670,7 +671,7 @@ behavior in clojure mode:
               (lambda ()
                 ;;(define-key clojure-mode-map (kbd "<return>") 'sp-forward-sexp)
                 ;; imenu keybind
-                (define-key clojure-mode-map (kbd "C-c i") 'imenu)
+                (define-key clojure-mode-map (kbd "C-c i") 'counsel-imenu)
                 ;; disable kill-sentence
                 (define-key global-map (kbd "M-k") nil)
                 ;;enable clojure refactor
