@@ -212,6 +212,10 @@ This is highly annoying and I don't understand why it's the default.
 #+BEGIN_SRC emacs-lisp
   (setq grep-save-buffers nil)
 #+END_SRC
+** Bind key for joining to previous line
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-r") 'delete-indentation)
+#+END_SRC
 * Features and Extensions
 To install new features, we need to load the =package= system. =cl= is
 a library that contains many functions from Common Lisp, and comes in
@@ -340,11 +344,11 @@ programming.
     (:map smartparens-mode-map
           ("C-M-<backspace>" . sp-backward-kill-sexp)
           ("M-s" . sp-splice-sexp)
-          ("M-S-<up>" . sp-raise-sexp)
-          ("C-<right>" . sp-forward-slurp-sexp)
-          ("C-<left>" . sp-forward-barf-sexp)
-          ("C-M-<left>" . sp-backward-slurp-sexp)
-          ("C-M-<right>" . sp-backward-barf-sexp)
+          ("M-u" . sp-raise-sexp)
+          ("M-p" . sp-forward-slurp-sexp)
+          ("M-o" . sp-forward-barf-sexp)
+          ("M-9" . sp-backward-slurp-sexp)
+          ("M-0" . sp-backward-barf-sexp)
           ("C-M-n" . sp-up-sexp)
           ("C-M-p" . sp-backward-down-sexp)
           ("C-M-d" . sp-down-sexp)
@@ -831,7 +835,7 @@ the end.
    '((restclient . t)))
 #+END_SRC
 *** IRC
-For IRC client we'll use good old built-in rcirc. 
+For IRC client we'll use good old built-in rcirc.
 #+BEGIN_SRC emacs-lisp :tangle no
   ;; linux only for now due to reliance on secrets.el
   (when (eq system-type 'gnu/linux)
