@@ -404,6 +404,23 @@ Allows you to undo and redo without losing any previous states.
   (setq undo-tree-auto-save-history t
         undo-tree-visualizer-timestamps t)
 #+END_SRC
+
+*** Cursor movement undo
+It's very common to move the point accidentally to the wrong place, or
+jump somewhere and then need to jump back. We'll use the package
+`point-stack` for this, which keeps track of previous positions (even
+across buffers but within the same window).
+#+BEGIN_SRC emacs-lisp
+  (use-package point-stack
+    :config (add-hook 'pre-command-hook
+                      (lambda ()
+                        (unless (or (eq this-command 'point-stack-forward-stack-pop)
+                                    (eq this-command 'point-stack-pop))
+                          (point-stack-push))))
+
+    :bind (("C-." . point-stack-forward-stack-pop)
+           ("C-," . point-stack-pop)))
+#+END_SRC
 *** Multiple cursors
 A powerful tool that allows you to perform any edit operation in many
 places simultaneously. It's great for making the same structural edits
