@@ -553,14 +553,14 @@ usual buffer switch key.
   (defun jmw/switch-buffer-fallback (arg)
     (interactive "P")
     (if (or arg
-            (not (projectile-project-root)))
+            (not (projectile-project-p)))
         (ivy-switch-buffer)
       (projectile-switch-to-buffer)))
 
   (defun jmw/find-file-fallback (arg)
     (interactive "P")
     (if (or arg
-            (not (projectile-project-root)))
+            (not (projectile-project-p)))
         (counsel-find-file)
       (projectile-find-file-dwim)))
 
