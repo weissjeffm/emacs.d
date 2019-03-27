@@ -361,7 +361,7 @@ programming.
 Set up smartparens to run in strict mode in these major modes (where
 it doesn't allow parens to become unbalanced!)
 #+BEGIN_SRC emacs-lisp
-  (dolist (mode '(scheme emacs-lisp lisp clojure clojurescript eshell html cider-repl))
+  (dolist (mode '(scheme emacs-lisp lisp clojure clojurescript eshell html cider-repl go))
       (add-hook (intern (concat (symbol-name mode) "-mode-hook"))
                 #'smartparens-strict-mode))
 #+END_SRC
@@ -421,6 +421,7 @@ across buffers but within the same window).
                         (unless (or (eq this-command 'point-stack-forward-stack-pop)
                                     (eq this-command 'point-stack-pop))
                           (point-stack-push))))
+            (define-key org-mode-map (kbd "C-,") nil)
 
     :bind (("C-." . point-stack-forward-stack-pop)
            ("C-," . point-stack-pop)))
@@ -766,15 +767,49 @@ Bind key to manually start completion
 *** Rust
 #+BEGIN_SRC emacs-lisp
   (use-package rust-mode
-    :pin melpa-stable)
+    :pin melpa-stable
+    :config (add-hook 'rust-mode-hook 'smartparens-strict-mode))
 
   (use-package ob-rust)
 
   (use-package cargo
+    :pin melpa-stable
+    :config (add-hook 'rust-mode-hook 'cargo-minor-mode))
+
+  (use-package flycheck-rust
+    :pin melpa
+    :config (add-hook 'rust-mode-hook 'flycheck-rust-load))
+
+  (use-package racer
     :pin melpa-stable)
 #+END_SRC
+*** Go
+#+BEGIN_SRC emacs-lisp
+  (use-package go-mode
+    :config (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode))
+    :bind (:map go-mode-map ("C-c C-c" . go-run-buffer))
+    :init
+    (let ((gobin (concat (getenv "HOME") "/workspace/go/bin")))
+            (add-to-list 'exec-path gobin)
+            (setenv "PATH" (concat (getenv "PATH") ":" gobin)))
+    (add-hook 'go-mode-hook (lambda ()
+                              (flycheck-mode)
+                              (setq tab-width 2)
+                              (if (not (string-match "go" compile-command))
+                                  (set (make-local-variable 'compile-command)
+                                       "go build -v && go test -v && go vet")))))
 
-#+RESULTS:
+  (use-package company-go)
+
+  (use-package go-eldoc
+    :init (add-hook 'go-mode-hook #'go-eldoc-setup))
+
+  (defun go-run-buffer ()
+    (interactive)
+    (when (buffer-modified-p) (save-buffer))
+    (shell-command (format "go run \"%s\"" (buffer-file-name) "*go run output*")))
+
+#+END_SRC
 
 ** OS Interaction
 *** File Browsing
