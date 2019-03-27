@@ -214,7 +214,7 @@ This is highly annoying and I don't understand why it's the default.
 #+END_SRC
 ** Bind key for joining to previous line
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "M-r") 'delete-indentation)
+  (global-set-key (kbd "M-u") 'delete-indentation)
 #+END_SRC
 * Features and Extensions
 To install new features, we need to load the =package= system. =cl= is
@@ -343,12 +343,12 @@ programming.
     :bind
     (:map smartparens-mode-map
           ("C-M-<backspace>" . sp-backward-kill-sexp)
-          ("M-s" . sp-splice-sexp)
-          ("M-u" . sp-raise-sexp)
-          ("M-p" . sp-forward-slurp-sexp)
-          ("M-o" . sp-forward-barf-sexp)
-          ("M-9" . sp-backward-slurp-sexp)
-          ("M-0" . sp-backward-barf-sexp)
+          ("C-M-s" . sp-splice-sexp)
+          ("C-M-r" . sp-raise-sexp)
+          ("C-M-]" . sp-forward-slurp-sexp)
+          ("C-M-[" . sp-forward-barf-sexp)
+          ("C-M-9" . sp-backward-slurp-sexp)
+          ("C-M-0" . sp-backward-barf-sexp)
           ("C-M-n" . sp-up-sexp)
           ("C-M-p" . sp-backward-down-sexp)
           ("C-M-d" . sp-down-sexp)
