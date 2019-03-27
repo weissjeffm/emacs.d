@@ -804,7 +804,11 @@ i've already got some config for notmuch.
    ;; not sure what these do but seems important
    notmuch-crypto-process-mime t
    notmuch-show-all-multipart/alternative-parts nil
-   notmuch-saved-searches '((:name "Inbox" :query "tag:new")))
+   notmuch-saved-searches '((:name "Inbox" :query "tag:new"))
+   smtpmail-smtp-server "smtp.mailgun.org"
+   smtpmail-smtp-service 465
+   smtpmail-stream-type 'ssl
+   smtpmail-smtp-user "postmaster@mailgun.jweiss.com")
 #+END_SRC
 
 Also add a new function to remove the "new" tag for all the messages
