@@ -321,7 +321,13 @@ fill in the rest. We'll try company-mode.
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :pin melpa-stable
+    :bind (:map company-active-map
+                ("M-n" . nil)
+                ("M-p" . nil)
+                ("C-n" . company-select-next)
+                ("C-p" . company-select-previous))
     :hook (after-init . global-company-mode))
+
 #+END_SRC
 *** Smartparens
 Smartparens inserts parens in pairs, keeps them balanced, and provides
