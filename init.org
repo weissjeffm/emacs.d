@@ -568,6 +568,7 @@ usual buffer switch key.
     :pin melpa-stable
     :config
     (setq projectile-completion-system 'ivy)
+    (projectile-mode +1)
     :bind
     (:map projectile-mode-map
           ("C-c p" . 'projectile-command-map)))
