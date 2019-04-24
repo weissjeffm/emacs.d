@@ -527,8 +527,8 @@ Install HTMLize so that we can export files like this one to HTML
 and get pretty fonts and colors just like we see in emacs!
 
 #+BEGIN_SRC emacs-lisp
-    (use-package htmlize
-      :pin melpa-stable)
+  (use-package htmlize
+    :pin melpa-stable)
 #+END_SRC
 
 Next we enable bullets mode which makes pretty bulleted outlines,
@@ -542,6 +542,13 @@ instead of just using the asterisk character.
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 #+END_SRC
 
+Define some keys for motion that match keybinding for smartparens
+motion which we'll add later.
+#+BEGIN_SRC emacs-lisp
+  (define-key org-mode-map (kbd "C-M-u") 'outline-up-heading)
+  (define-key org-mode-map (kbd "C-M-f") 'org-forward-heading-same-level)
+  (define-key org-mode-map (kbd "C-M-b") 'org-backward-heading-same-level)
+#+END_SRC
 ** Source Control
 Magit is the best. It's a wrapper for git, and it makes things so much easier.
 #+BEGIN_SRC emacs-lisp
