@@ -560,7 +560,9 @@ Magit is the best. It's a wrapper for git, and it makes things so much easier.
   (setq magit-diff-refine-hunk 'all
         magit-revert-buffers 'silent
         magit-save-repository-buffers nil
-        magit-completing-read-function 'ivy-completing-read)
+        magit-completing-read-function 'ivy-completing-read
+        ;; without this, magit over TRAMP is super slow
+        auto-revert-buffer-list-filter 'magit-auto-revert-repository-buffers-p)
 #+END_SRC
 
 Add the ability to jump right into magit from find-file, so you can
