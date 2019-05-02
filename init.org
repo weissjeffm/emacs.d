@@ -874,6 +874,22 @@ currently displayed. Otherwise the inbox just keeps growing and growing.
   (define-key notmuch-search-mode-map (kbd "C-c C-k") 'notmuch-untag-all-new)
 #+END_SRC
 
+As an experiment, let's also add mu4e. It needs to be installed from
+the linux tarball, it's not an elpa package. So we just load it from
+it's existing location:
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+  (require 'mu4e)
+  (setq mu4e-maildir "/home/jweiss/Mail")
+  ;; fast index
+  (setq
+    mu4e-index-cleanup nil      ;; don't do a full cleanup check
+    mu4e-index-lazy-check t)    ;; don't consider up-to-date dirs
+  ;; fetching
+  (setq mu4e-get-mail-command "mbsync -a"
+        mu4e-update-interval 120)
+#+END_SRC
 *** Rest Client
 I like to use restclient.el so I can stay in emacs instead of going to
 a graphical client like postman, or something basic like curl.
