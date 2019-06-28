@@ -432,6 +432,16 @@ across buffers but within the same window).
 
     :bind (("C-." . point-stack-forward-stack-pop)
            ("C-," . point-stack-pop)))
+
+  ;; org mode move keybinding out of way
+  (require 'org)
+  (define-key org-mode-map (kbd "C-,") nil)
+  (define-key org-mode-map (kbd "C-.") nil)
+
+  ;; for some reason the feature doesn't work at all until you try to
+  ;; pop
+  (point-stack-push)
+  (point-stack-pop)
 #+END_SRC
 *** Multiple cursors
 A powerful tool that allows you to perform any edit operation in many
