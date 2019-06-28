@@ -891,7 +891,9 @@ it's existing location:
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-  (require 'mu4e)
+  (condition-case nil
+      (require 'mu4e)
+    (error nil))
   (setq mu4e-maildir "/home/jweiss/Mail")
   ;; fast index
   (setq
