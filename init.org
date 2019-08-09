@@ -101,6 +101,7 @@ All the custom colors and fonts that I prefer.
 ** Don't save customizations to init.el
 #+BEGIN_SRC emacs-lisp
   (setq custom-file (concat user-emacs-directory "customizations.el"))
+  (load custom-file)
 #+END_SRC
 ** Include /usr/local on path
 #+BEGIN_SRC emacs-lisp
