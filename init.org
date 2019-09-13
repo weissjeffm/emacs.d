@@ -62,9 +62,6 @@ All the custom colors and fonts that I prefer.
 
   (custom-theme-set-faces
    'jweiss
-   '(notmuch-search-count ((t (:inherit default :foreground "light gray"))))
-   '(notmuch-search-date ((t (:inherit default :foreground "cyan"))))
-   '(notmuch-search-subject ((t (:inherit default :foreground "DarkSeaGreen2"))))
    '(ac-completion-face ((t (:inherit default :foreground "darkgray" :underline t))))
    '(clojure-keyword-face ((t (:inherit lisp-keyword))))
    '(secondary-selection ((t (:background "gray11"))))
@@ -852,54 +849,21 @@ directory display (~M-o d~).
 #+END_SRC
 ** Messaging
 *** Email
-For email client, we'll use notmuch. I've heard mu4e is good too, but
-i've already got some config for notmuch.
-#+BEGIN_SRC emacs-lisp
-  (use-package notmuch
-    :pin melpa-stable)
-
-  (setq
-   ;; Show newest mail first
-   notmuch-search-oldest-first nil
-   ;; Use comma for thousands separator instead of odd-looking space
-   notmuch-hello-thousands-separator ","
-   ;; Use internal for finding address book entries
-   notmuch-address-command 'internal
-   ;; not sure what these do but seems important
-   notmuch-crypto-process-mime t
-   notmuch-show-all-multipart/alternative-parts nil
-   notmuch-saved-searches '((:name "Inbox" :query "tag:new"))
-   smtpmail-smtp-server "smtp.mailgun.org"
-   smtpmail-smtp-service 465
-   smtpmail-stream-type 'ssl
-   smtpmail-smtp-user "postmaster@mailgun.jweiss.com")
-#+END_SRC
-
-Also add a new function to remove the "new" tag for all the messages
-currently displayed. Otherwise the inbox just keeps growing and growing.
-
-#+BEGIN_SRC emacs-lisp
-  (defun notmuch-untag-all-new ()
-    (interactive)
-    (notmuch-search-tag-all '("-new"))
-    (notmuch-bury-or-kill-this-buffer))
-  (define-key notmuch-search-mode-map (kbd "C-c C-k") 'notmuch-untag-all-new)
-#+END_SRC
-
-As an experiment, let's also add mu4e. It needs to be installed from
-the linux tarball, it's not an elpa package. So we just load it from
-it's existing location:
+For email client, we'll use mu4e. It needs to be installed from the
+linux tarball or package, it's not an elpa package. So we just load it
+from it's existing location:
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-  (condition-case nil
+  (condition-case nil 
       (require 'mu4e)
     (error nil))
-  (setq mu4e-maildir "/home/jweiss/Mail")
+  (setq mu4e-maildir (expand-file-name "Mail" "~"))
   ;; fast index
   (setq
-    mu4e-index-cleanup nil      ;; don't do a full cleanup check
-    mu4e-index-lazy-check t)    ;; don't consider up-to-date dirs
+   mu4e-index-cleanup nil      ;; don't do a full cleanup check
+   mu4e-index-lazy-check t     ;; don't consider up-to-date dirs
+   mu4e-headers-skip-duplicates nil)  ;; show emails read on other machines
   ;; fetching
   (setq mu4e-get-mail-command "mbsync -a"
         mu4e-update-interval 120)
