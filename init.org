@@ -903,6 +903,8 @@ it's existing location:
   ;; fetching
   (setq mu4e-get-mail-command "mbsync -a"
         mu4e-update-interval 120)
+  (add-to-list 'mu4e-headers-actions
+               '("View in browser" . mu4e-action-view-in-browser) t)
 #+END_SRC
 *** Rest Client
 I like to use restclient.el so I can stay in emacs instead of going to
