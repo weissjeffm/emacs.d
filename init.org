@@ -764,7 +764,8 @@ code blocks in org-mode files.
 For some reason remote repls sometimes are unreachable, this will go
 in through ssh if necessary
 #+BEGIN_SRC emacs-lisp
-  (setq nrepl-use-ssh-fallback-for-remote-hosts t)
+  (setq nrepl-use-ssh-fallback-for-remote-hosts t
+        nrepl-sync-request-timeout nil)
 #+END_SRC
 
 Bind keys to inspect results of last evaluation
