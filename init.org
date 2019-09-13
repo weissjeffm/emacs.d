@@ -98,6 +98,7 @@ All the custom colors and fonts that I prefer.
 ** Don't save customizations to init.el
 #+BEGIN_SRC emacs-lisp
   (setq custom-file (concat user-emacs-directory "customizations.el"))
+  (load custom-file)
 #+END_SRC
 ** Include /usr/local on path
 #+BEGIN_SRC emacs-lisp
@@ -854,17 +855,19 @@ from it's existing location:
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-  (require 'mu4e)
+  (condition-case nil 
+      (require 'mu4e)
+    (error nil))
   (setq mu4e-maildir (expand-file-name "Mail" "~"))
   ;; fast index
   (setq
-    mu4e-index-cleanup nil      ;; don't do a full cleanup check
-    mu4e-index-lazy-check t     ;; don't consider up-to-date dirs
-    mu4e-headers-skip-duplicates nil)  ;; show emails read on other machines
+   mu4e-index-cleanup nil      ;; don't do a full cleanup check
+   mu4e-index-lazy-check t     ;; don't consider up-to-date dirs
+   mu4e-headers-skip-duplicates nil)  ;; show emails read on other machines
   ;; fetching
   (setq mu4e-get-mail-command "mbsync -a"
         mu4e-update-interval 120)
-  
+
 #+END_SRC
 *** Rest Client
 I like to use restclient.el so I can stay in emacs instead of going to
