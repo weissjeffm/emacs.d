@@ -867,7 +867,7 @@ from it's existing location:
   ;; fetching
   (setq mu4e-get-mail-command "mbsync -a"
         mu4e-update-interval 120)
-  (add-to-list 'mu4e-headers-actions
+  (add-to-list 'mu4e-view-actions
                '("View in browser" . mu4e-action-view-in-browser) t)
 #+END_SRC
 *** Rest Client
