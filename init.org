@@ -183,7 +183,8 @@ Save to hidden dir .~ instead of making files go everywhere.
   (setq backup-directory-alist '(("." . ".~")))
   (setq undo-tree-history-directory-alist '(("." . ".~")))
 #+END_SRC
-** Forward ssh agent with TRAMP
+** TRAMP
+*** Forward ssh agent
 #+BEGIN_SRC emacs-lisp
   (require 'tramp)
   (defun add-ssh-agent-to-tramp ()
@@ -192,6 +193,13 @@ Save to hidden dir .~ instead of making files go everywhere.
                              (assoc "ssh" tramp-methods)))
                 :test #'equal))
   (add-ssh-agent-to-tramp)
+#+END_SRC
+*** Performance
+#+BEGIN_SRC emacs-lisp
+  ;; Don't try to do other version control systems besides git
+  (setq vc-handled-backends '(Git))
+  ;; Reduce logging for perf reasons
+  (setq tramp-verbose 1)
 #+END_SRC
 ** Copy current buffer file name to kill ring
 #+BEGIN_SRC emacs-lisp
