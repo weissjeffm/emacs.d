@@ -269,14 +269,79 @@ Now we're ready to start loading and configuring individual features.
 *** Mode Line
 We'll use Powerline to set up the mode line.
 #+BEGIN_SRC emacs-lisp
-  (use-package smart-mode-line-powerline-theme
-    :pin melpa-stable
+  (use-package powerline
     :config
-    (sml/setup)
-    (setq powerline-default-separator 'arrow-fade
-          sml/theme 'smart-mode-line-powerline))
+    (setq powerline-default-separator 'wave)
+    (setq powerline-display-mule-info nil)
+    (defface cjp-powerline-yellow '((t (:background "#ffcc66" :foreground "#2d2d2d" :inherit mode-line :weight "bold")))
+      "Powerline yellow face.")
+
+    ;; Same as powerline-default-theme, but move some of the items about a bit
+    (setq-default mode-line-format
+                  '("%e"
+                    (:eval
+                     (let* ((active (powerline-selected-window-active))
+                            (mode-line (if active 'mode-line 'mode-line-inactive))
+                            (face1 (if active 'powerline-active1 'powerline-inactive1))
+                            (face2 (if active 'powerline-active2 'powerline-inactive2))
+                            (face-yellow (if active 'cjp-powerline-yellow 'powerline-inactive1))
+                            (separator-left (intern (format "powerline-%s-%s"
+                                                            (powerline-current-separator)
+                                                            (car powerline-default-separator-dir))))
+                            (separator-right (intern (format "powerline-%s-%s"
+                                                             (powerline-current-separator)
+                                                             (cdr powerline-default-separator-dir))))
+                            (height 20)
+                            (lhs (list (powerline-raw "%*" face-yellow 'l)
+                                       (powerline-raw (concat "[" (projectile-project-name) "]") face-yellow 'l)
+                                       (let ((host (file-remote-p default-directory 'host)))
+                                         (when host
+                                           (powerline-raw (concat "(" host ")") face-yellow 'l)))
+                                       (powerline-buffer-id face-yellow 'l)
+                                       (powerline-vc face-yellow 'l)
+                                       (powerline-raw " " face-yellow)
+                                       (funcall separator-left face-yellow face1 height)
+                                       (when (boundp 'erc-modified-channels-object)
+                                         (powerline-raw erc-modified-channels-object face1 'l))
+                                       (powerline-major-mode face1 'l)
+                                       (powerline-process face1)
+                                       (powerline-minor-modes face1 'l)
+                                       (powerline-narrow face1 'l)
+                                       (powerline-raw " " face1)
+                                       (funcall separator-left face1 face2 height)
+                                       (when (and (boundp 'which-function-mode) which-function-mode)
+                                         (powerline-raw which-func-current face2 'l))))
+                            (rhs (list (powerline-raw global-mode-string face2 'r)
+                                       (funcall separator-right face2 face1 height)
+                                       (powerline-raw " " face1)
+                                       (unless window-system
+                                         (powerline-raw (char-to-string #xe0a1) face1 'l))
+                                       (when powerline-display-buffer-size
+                                         (powerline-buffer-size face1 'r))
+                                       (when powerline-display-mule-info
+                                         (powerline-raw mode-line-mule-info face1 'r))
+                                       (powerline-raw "%4l:%2c" face1 'r)
+                                       (funcall separator-right face1 mode-line height)
+                                       (powerline-raw " ")
+                                       (powerline-raw "%6p" nil 'r)
+                                       (when powerline-display-hud
+                                         (powerline-hud face-yellow face1)))))
+                       (concat (powerline-render lhs)
+                               (powerline-fill face2 (powerline-width rhs))
+                               (powerline-render rhs)))))))
 #+END_SRC
 
+We'll also use "diminish" to use symbols for minor modes instead of the full names.
+#+BEGIN_SRC emacs-lisp
+  (use-package diminish
+    :config
+    (eval-after-load "company" '(diminish 'company-mode " Ⓐ"))
+    (eval-after-load "abbrev" '(diminish 'abbrev-mode " Ⓐ"))
+    (eval-after-load "eldoc" '(diminish 'eldoc-mode " Ⓔ"))
+    (eval-after-load "autorevert" '(diminish 'auto-revert-mode " Ⓐ"))
+    ;(eval-after-load "cider" '(diminish (:eval (format " 🍺[%s]" (cider--modeline-info)))))
+    (eval-after-load "undo-tree" '(diminish 'undo-tree-mode " Ⓤ")))
+#+END_SRC
 *** New faces
 This macro will let us easily define new "faces" later.
 
@@ -367,7 +432,8 @@ programming.
           ("C-M-n" . sp-up-sexp)
           ("C-M-p" . sp-backward-down-sexp)
           ("C-M-d" . sp-down-sexp)
-          ("C-M-u" . sp-backward-up-sexp)))
+          ("C-M-u" . sp-backward-up-sexp))
+    :diminish " ⒮")
 #+END_SRC
 
 #+RESULTS:
@@ -386,6 +452,7 @@ My own little experiment using smartparens and emacs' built in
 narrowing to focus on a particular s-expression. It has commands to
 narrow or expand the focus.
 #+BEGIN_SRC emacs-lisp
+
   (defun narrow-to-expression ()
     (interactive)
     (mark-sexp)
@@ -605,7 +672,8 @@ usual buffer switch key.
     (projectile-mode +1)
     :bind
     (:map projectile-mode-map
-          ("C-c p" . 'projectile-command-map)))
+          ("C-c p" . 'projectile-command-map))
+    :diminish " ⓟ")
 
   (defun jmw/switch-buffer-fallback (arg)
     (interactive "P")
