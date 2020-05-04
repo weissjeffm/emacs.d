@@ -273,7 +273,7 @@ We'll use Powerline to set up the mode line.
     :config
     (setq powerline-default-separator 'wave)
     (setq powerline-display-mule-info nil)
-    (defface cjp-powerline-yellow '((t (:background "#ffcc66" :foreground "#2d2d2d" :inherit mode-line :weight "bold")))
+    (defface cjp-powerline-yellow '((t (:background "#ffcc66" :foreground "#2d2d2d" :inherit mode-line :weight bold)))
       "Powerline yellow face.")
 
     ;; Same as powerline-default-theme, but move some of the items about a bit
