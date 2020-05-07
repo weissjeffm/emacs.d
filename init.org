@@ -698,7 +698,20 @@ usual buffer switch key.
 There are some features that apply to all flavors of Lisp, including
 Emacs Lisp, Common Lisp, and Clojure. We'll define them once and apply
 them to the whole lisp family.
+**** Return key ends expression, not line
+When hitting return in lisp code, I don't want to break the line right
+there, usually I want to be done with that s-expression. Due to paren
+matching, the closing paren is already there. So just move out of
+it. If point is already at the end of the line, then move to the next
+line.
 
+#+BEGIN_SRC emacs-lisp
+  (defun jmw/lisp-return ()
+    (interactive)
+    (if (eolp)
+        (newline)
+      (sp-up-sexp)))
+#+END_SRC
 **** Colors for keywords, parens, and quotes
 It's nice to have the quote character be a slightly different color
 than the text it's enclosing.
@@ -805,7 +818,8 @@ behavior in clojure mode:
                 ;; highlight symbols
                 (highlight-symbol-mode 1)
                 (define-key clojure-mode-map (kbd "C-M-,") 'highlight-symbol-prev)
-                (define-key clojure-mode-map (kbd "C-M-.") 'highlight-symbol-next)))
+                (define-key clojure-mode-map (kbd "C-M-.") 'highlight-symbol-next)
+                (define-key clojure-mode-map (kbd "RET") 'jmw/lisp-return)))
   #+END_SRC
 
   Add the same sort of extra highlighting for clojure that we have for
@@ -837,9 +851,17 @@ the repl to display function signatures. Allow execution of clojure
 code blocks in org-mode files.
 
 #+BEGIN_SRC emacs-lisp
+  ;; when hitting enter in the repl, jump to end of next sexp, or if
+  ;; we're at the end of the input, send it
+  (defun jmw/cider-repl-return ()
+    (interactive)
+    (if (eobp)
+        (cider-repl-return)
+      (sp-up-sexp)))
+
   (use-package cider
-    :pin melpa) ;; remote connection bug only in melpa
-  ;; switch back to stable at 0.19
+    :bind (:map cider-repl-mode-map
+                ("<return>" . jmw/cider-repl-return)))
 
   (autoload 'cider-repl-mode "cider")
   (font-lock-add-keywords 'cider-repl-mode my-clojure-font-lock-keywords)
