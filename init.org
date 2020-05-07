@@ -335,12 +335,10 @@ We'll also use "diminish" to use symbols for minor modes instead of the full nam
 #+BEGIN_SRC emacs-lisp
   (use-package diminish
     :config
-    (eval-after-load "company" '(diminish 'company-mode " Ⓐ"))
     (eval-after-load "abbrev" '(diminish 'abbrev-mode " Ⓐ"))
     (eval-after-load "eldoc" '(diminish 'eldoc-mode " Ⓔ"))
     (eval-after-load "autorevert" '(diminish 'auto-revert-mode " Ⓐ"))
-    ;(eval-after-load "cider" '(diminish (:eval (format " 🍺[%s]" (cider--modeline-info)))))
-    (eval-after-load "undo-tree" '(diminish 'undo-tree-mode " Ⓤ")))
+    (eval-after-load "cider" '(diminish 'cider-mode (quote (:eval (format " 🍺[%s]" (cider--modeline-info)))))))
 #+END_SRC
 *** New faces
 This macro will let us easily define new "faces" later.
@@ -400,7 +398,8 @@ fill in the rest. We'll try company-mode.
                 ("M-p" . nil)
                 ("C-n" . company-select-next)
                 ("C-p" . company-select-previous))
-    :hook (after-init . global-company-mode))
+    :hook (after-init . global-company-mode)
+    :diminish " 🧞")
 
 #+END_SRC
 *** Smartparens
@@ -484,7 +483,8 @@ narrow or expand the focus.
 *** Undo Tree
 Allows you to undo and redo without losing any previous states.
 #+BEGIN_SRC emacs-lisp
-  (use-package undo-tree) ;; this is in elpa, so no need to pin
+  (use-package undo-tree
+    :diminish " ⎌🌲") ;; this is in elpa, so no need to pin
   (autoload 'global-undo-tree-mode "undo-tree")
   (global-undo-tree-mode)
   (setq undo-tree-auto-save-history t
@@ -748,7 +748,8 @@ autoload so that we only load the feature when it's called upon.
     :pin melpa-stable
     :config
     ;; highlight occurrences of the symbol in this color
-    (set-face-attribute 'highlight-symbol-face nil :background "DarkOrange3"))
+    (set-face-attribute 'highlight-symbol-face nil :background "DarkOrange3")
+    :diminish " 🆂")
 
 #+END_SRC
 *** Emacs Lisp
