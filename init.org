@@ -635,6 +635,11 @@ motion which we'll add later.
   (define-key org-mode-map (kbd "C-M-f") 'org-forward-heading-same-level)
   (define-key org-mode-map (kbd "C-M-b") 'org-backward-heading-same-level)
 #+END_SRC
+
+Define key for deleting subtree
+#+BEGIN_SRC emacs-lisp
+  (define-key org-mode-map (kbd "C-c C-x C-s") 'org-cut-subtree)
+#+END_SRC
 ** Source Control
 Magit is the best. It's a wrapper for git, and it makes things so much easier.
 #+BEGIN_SRC emacs-lisp
