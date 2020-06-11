@@ -991,6 +991,8 @@ the end.
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((restclient . t)))
+  ;; load the jq stuff when restclient loads
+  (add-hook 'restclient-mode-hook (lambda () (require 'restclient-jq)))
 #+END_SRC
 *** IRC
 For IRC client we'll use good old built-in rcirc.
