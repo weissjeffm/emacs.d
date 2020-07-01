@@ -1025,3 +1025,23 @@ For IRC client we'll use good old built-in rcirc.
      `(("irc.freenode.net" :channels
         ,(first (read-from-string (secrets-get-attribute  "Login" "Freenode irc" :channels)))))))
 #+END_SRC
+** Calendar (outlook)
+To integrate with outlook calendar, use excorporate and some elisp to copy cal entries to the diary
+#+BEGIN_SRC emacs-lisp
+  (use-package excorporate
+    :config (progn (require 'secrets)
+                   (setq-default excorporate-configuration
+                                 `(,(secrets-get-attribute "Default keyring" "okta" :username) .
+                                   "https://outlook.office365.com/EWS/Exchange.asmx"))
+                   (setq org-agenda-include-diary t)
+                   (eval-after-load "org-agenda" '(progn
+                                                    (require 'excorporate)
+                                                    (require 'excorporate-diary)
+                                                    (excorporate)
+                                                    (excorporate-diary-enable)))
+                   (add-hook 'org-agenda-cleanup-fancy-diary-hook
+                             (lambda ()
+                               (exco-diary-diary-advice (calendar-current-date)
+                                                        (calendar-current-date)
+                                                        #'message "diary updated")))))
+#+END_SRC
