@@ -806,6 +806,9 @@ behavior in clojure mode:
   #+BEGIN_SRC emacs-lisp
     (use-package clojure-mode
       :pin melpa-stable)
+    (use-package column-enforce-mode
+      :config (add-hook 'clojure-mode-hook '90-column-rule)
+      :diminish " 🛑")
     (use-package clj-refactor
       :pin melpa
       :diminish " Ⓡ") 
