@@ -371,7 +371,9 @@ place, it can be a replacement for the builtin ~re-search-forward~.
      ;; for showing recently used first
      ivy-use-virtual-buffers t
      ;; make ivy's display a bit bigger
-     ivy-height 30)
+     ivy-height 30
+     ;; ignore backup files
+     counsel-find-file-ignore-regexp "\\(?:\\`\\|[/\\]\\)\\(?:[#.]\\)")
     (when (eq system-type 'darwin)
       ;; use appropriate search backend for OS X
       (setq counsel-locate-cmd 'counsel-locate-cmd-mdfind))
