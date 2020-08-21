@@ -111,6 +111,7 @@ All the custom colors and fonts that I prefer.
 ** Unbind some keys that have unwanted behavior
 #+BEGIN_SRC emacs-lisp
   (global-unset-key (kbd "C-z")) ;; suspend
+  (global-unset-key (kbd "C-x C-z")) ;; suspend frame
   (global-unset-key (kbd "s-p")) ;; print (hangs emacs on macos?)
 #+END_SRC
 
