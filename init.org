@@ -950,6 +950,15 @@ Bind key to manually start completion
 
 #+END_SRC
 
+** File formats
+*** YAML
+#+begin_src emacs-lisp
+  (use-package yaml-mode)
+#+end_src
+*** Markdown
+#+begin_src emacs-lisp
+  (use-package markdown-mode)
+#+end_src
 ** OS Interaction
 *** File Browsing
 We'll use the builtin dired for this, and extend it a bit.
