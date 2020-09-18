@@ -612,6 +612,13 @@ mode file. There are some add ons for different languages.
      '((emacs-lisp . t) (shell . t)))
 #+END_SRC
 
+In order to insert code templates easily using the "<s" shortcut, we
+need to load org-tempo. https://orgmode.org/manual/Structure-Templates.html#Structure-Templates
+
+#+begin_src emacs-lisp
+  (require 'org-tempo)
+#+end_src
+
 Install HTMLize so that we can export files like this one to HTML
 and get pretty fonts and colors just like we see in emacs!
 
