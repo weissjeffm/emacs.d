@@ -1065,6 +1065,7 @@ from it's existing location:
   (setq mu4e-maildir (expand-file-name "Mail" "~"))
   ;; fast index
   (setq
+   mu4e-headers-fields '((:human-date . 12) (:from . 22) (:subject)) ;; columns
    mu4e-index-cleanup nil      ;; don't do a full cleanup check
    mu4e-index-lazy-check t     ;; don't consider up-to-date dirs
    mu4e-headers-skip-duplicates nil)  ;; show emails read on other machines
@@ -1073,15 +1074,18 @@ from it's existing location:
         mu4e-update-interval 120)
   (add-to-list 'mu4e-view-actions
                '("View in browser" . mu4e-action-view-in-browser) t)
+  ;; font colors
+  (custom-set-faces
+   '(mu4e-header-face ((t (:inherit shadow))))
+   '(mu4e-replied-face ((t (:inherit gnus-summary-high-read))))
+   '(mu4e-unread-face ((t (:inherit gnus-summary-high-unread)))))
 #+END_SRC
 *** Rest Client
 I like to use restclient.el so I can stay in emacs instead of going to
 a graphical client like postman, or something basic like curl.
 
 org-mode supports restclient if you add the babel mode for
-restclient. Doesn't look like there's a package for it, but the code
-is so short i'll just include it all here, and then add the setup at
-the end.
+restclient. 
 #+BEGIN_SRC emacs-lisp
   (use-package restclient)
   (use-package ob-restclient)
