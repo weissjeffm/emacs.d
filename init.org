@@ -783,6 +783,18 @@ usual buffer switch key.
   (global-set-key (kbd "C-x C-f") 'jmw/find-file-fallback)
 #+END_SRC
 
+Add the ability to jump right into projectile file finding from
+find-file, so you can go to the repository and then straight to
+narrowing the file list. 
+#+BEGIN_SRC emacs-lisp
+  (ivy-add-actions 'counsel-find-file
+                   '(("f"
+                      (lambda (x)
+                        (let ((default-directory x))
+                          (projectile-find-file-dwim)))
+                      "projectile-find-file")))
+#+END_SRC
+
 ** Programming Languages
 *** Generic Lisp
 There are some features that apply to all flavors of Lisp, including
