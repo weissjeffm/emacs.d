@@ -987,6 +987,13 @@ in through ssh if necessary
         nrepl-sync-request-timeout nil)
 #+END_SRC
 
+Be able to link an org-mode file with clojure code blocks to a running
+repl. We'll set the default for everything to cider since nothing else
+in this config uses sesman.
+#+begin_src emacs-lisp
+  (setq-default sesman-system 'CIDER)
+#+end_src
+
 Bind keys to inspect results of last evaluation
 #+BEGIN_SRC emacs-lisp
   (define-key clojure-mode-map (kbd "C-c M-I") 'cider-inspect-last-result)
