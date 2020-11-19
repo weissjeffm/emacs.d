@@ -140,7 +140,7 @@ Make them more convenient or easier to reach
 ** Allow recursive minibuffers
 #+begin_src emacs-lisp
 (setq enable-recursive-minibuffers t)
-(setq minibuffer-depth-indicate-mode t)
+(setq minibuffer-depth-indicate-mode nil)
 #+end_src
 ** Disable graphical decorations
 By default, emacs has a graphical toolbar, a scrollbar on the
