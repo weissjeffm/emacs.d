@@ -229,6 +229,10 @@ This is highly annoying and I don't understand why it's the default.
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "M-u") 'delete-indentation)
 #+END_SRC
+** Paste where cursor is, not where mouse is pointing
+#+begin_src emacs-lisp
+(setq mouse-yank-at-point t)
+#+end_src
 * Features and Extensions
 To install new features, we need to load the =package= system. =cl= is
 a library that contains many functions from Common Lisp, and comes in
