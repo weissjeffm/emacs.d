@@ -754,16 +754,14 @@ still have the changes applied to your org text.
 ** Source Control
 Magit is the best. It's a wrapper for git, and it makes things so much easier.
 #+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :pin melpa-stable)
-  (require 'magit)
-  (global-set-key (kbd "<f2>") 'magit-status)
-  (setq magit-diff-refine-hunk 'all
-        magit-revert-buffers 'silent
-        magit-save-repository-buffers nil
-        magit-completing-read-function 'ivy-completing-read
-        ;; without this, magit over TRAMP is super slow
-        auto-revert-buffer-list-filter 'magit-auto-revert-repository-buffers-p)
+(use-package magit
+  :pin melpa-stable)
+(require 'magit)
+(global-set-key (kbd "<f2>") 'magit-status)
+(setq magit-diff-refine-hunk 'all
+      magit-revert-buffers 'silent
+      magit-save-repository-buffers nil
+      magit-completing-read-function 'ivy-completing-read)
 #+END_SRC
 
 Add the ability to jump right into magit from find-file, so you can
