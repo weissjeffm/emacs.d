@@ -1040,6 +1040,7 @@ Use rustic lib and lsp server for rust IDE.
   (setq rustic-babel-default-toolchain "+stable")
   (add-hook 'rust-mode-hook 'smartparens-strict-mode)
   (add-hook 'rust-mode-hook 'rustic-doc-mode)
+  (yas-global-mode)
   (add-to-list 'exec-path "/home/jweiss/.cargo/bin"))
 
 (use-package lsp-mode
