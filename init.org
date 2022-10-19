@@ -347,12 +347,12 @@ We'll use Powerline to set up the mode line.
 
 We'll also use "diminish" to use symbols for minor modes instead of the full names.
 #+BEGIN_SRC emacs-lisp
-  (use-package diminish
-    :config
-    (eval-after-load "abbrev" '(diminish 'abbrev-mode " Ⓐ"))
-    (eval-after-load "eldoc" '(diminish 'eldoc-mode " Ⓔ"))
-    (eval-after-load "autorevert" '(diminish 'auto-revert-mode " Ⓐ"))
-    (eval-after-load "cider" '(diminish 'cider-mode (quote (:eval (format " 🍺[%s]" (cider--modeline-info)))))))
+(use-package diminish
+  :config
+  (eval-after-load "abbrev" '(diminish 'abbrev-mode " Ⓐ"))
+  (eval-after-load "eldoc" '(diminish 'eldoc-mode " Ⓔ"))
+  (eval-after-load "autorevert" '(diminish 'auto-revert-mode " Ⓐ"))
+  (eval-after-load "cider" '(diminish 'cider-mode (quote (:eval (format " 🍺[%s]" (cider--modeline-info)))))))
 #+END_SRC
 *** New faces
 This macro will let us easily define new "faces" later.
@@ -747,6 +747,8 @@ still have the changes applied to your org text.
 
 #+begin_src emacs-lisp
 (use-package org-tanglesync
+  :diminish " 🧶"
+  :config (eval-after-load "org-tanglesync" '(diminish 'org-tanglesync-watch-mode " 🧶"))
   :hook ((org-mode . org-tanglesync-mode)
          ;; enable watch-mode globally:
          ((prog-mode text-mode) . org-tanglesync-watch-mode)))
@@ -1034,12 +1036,17 @@ Use rustic lib and lsp server for rust IDE.
 #+BEGIN_SRC emacs-lisp
 (use-package rustic
   :pin melpa-stable
+  :diminish " 🧷"
   :init
   (setq rustic-babel-default-toolchain "+stable")
   (add-hook 'rust-mode-hook 'smartparens-strict-mode)
   (add-hook 'rust-mode-hook 'rustic-doc-mode)
   (yas-global-mode)
-  (add-to-list 'exec-path "/home/jweiss/.cargo/bin"))
+  (add-to-list 'exec-path "/home/jweiss/.cargo/bin")
+  :config (eval-after-load "rustic" '(progn
+				       (add-hook 'rustic-mode (lambda () (setq mode-name "Rust")))
+				       (diminish 'rustic-doc-mode " 📜")
+				       (diminish 'rustic " 🧷"))))
 
 (use-package lsp-mode
   :ensure
@@ -1113,27 +1120,26 @@ linux tarball or package, it's not an elpa package. So we just load it
 from it's existing location:
 
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-  (condition-case nil 
-      (require 'mu4e)
-    (error nil))
-  (setq mu4e-maildir (expand-file-name "Mail" "~"))
-  ;; fast index
-  (setq
-   mu4e-headers-fields '((:human-date . 12) (:from . 22) (:subject)) ;; columns
-   mu4e-index-cleanup nil      ;; don't do a full cleanup check
-   mu4e-index-lazy-check t     ;; don't consider up-to-date dirs
-   mu4e-headers-skip-duplicates nil)  ;; show emails read on other machines
-  ;; fetching
-  (setq mu4e-get-mail-command "mbsync -a"
-        mu4e-update-interval 120)
-  (add-to-list 'mu4e-view-actions
-               '("View in browser" . mu4e-action-view-in-browser) t)
-  ;; font colors
-  (custom-set-faces
-   '(mu4e-header-face ((t (:inherit shadow))))
-   '(mu4e-replied-face ((t (:inherit gnus-summary-high-read))))
-   '(mu4e-unread-face ((t (:inherit gnus-summary-high-unread)))))
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+(condition-case nil 
+    (require 'mu4e)
+  (error nil))
+(setq mu4e-maildir (expand-file-name "Mail" "~"))
+;; fast index
+(setq
+ mu4e-headers-fields '((:human-date . 12) (:from . 22) (:subject)) ;; columns
+ mu4e-index-cleanup nil      ;; don't do a full cleanup check
+ mu4e-index-lazy-check t     ;; don't consider up-to-date dirs
+ mu4e-headers-skip-duplicates nil)  ;; show emails read on other machines
+;; fetching
+(setq mu4e-get-mail-command "mbsync -a"
+      mu4e-update-interval 120)
+
+;; font colors
+(custom-set-faces
+ '(mu4e-header-face ((t (:inherit shadow))))
+ '(mu4e-replied-face ((t (:inherit gnus-summary-high-read))))
+ '(mu4e-unread-face ((t (:inherit gnus-summary-high-unread)))))
 #+END_SRC
 *** Rest Client
 I like to use restclient.el so I can stay in emacs instead of going to
