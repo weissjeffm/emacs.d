@@ -1190,8 +1190,10 @@ For IRC client we'll use good old built-in rcirc.
         ,(first (read-from-string (secrets-get-attribute  "Login" "Freenode irc" :channels)))))))
 #+END_SRC
 ** Calendar (outlook)
-To integrate with outlook calendar, use excorporate and some elisp to copy cal entries to the diary
-#+BEGIN_SRC emacs-lisp
+To integrate with outlook calendar, use excorporate and some elisp to
+copy cal entries to the diary This is disabled for now. To enable
+remove ":tangle no" on the next line.
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package excorporate
     :config (progn (require 'secrets)
                    (setq-default excorporate-configuration
