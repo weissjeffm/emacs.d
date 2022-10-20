@@ -250,15 +250,17 @@ want to use and then initialize the package system so it's ready to
 install any packages that might be missing.
 
 #+BEGIN_SRC emacs-lisp
-  ;; add repositories
-  (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-  ;;(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-  (add-to-list 'package-archives '("org". "http://orgmode.org/elpa/"))
+;; add repositories
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;;(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("org". "http://orgmode.org/elpa/"))
 
-  ;; initialize packages
-  (package-initialize)
-  (package-refresh-contents nil)
+;; initialize packages
+(package-initialize)
+
+(unless package-archive-contents
+  (package-refresh-contents nil))
 #+END_SRC
 
 Once =package= is loaded we can add =use-package= on top, which
