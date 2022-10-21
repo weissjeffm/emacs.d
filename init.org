@@ -930,32 +930,38 @@ behavior in clojure mode:
   management, renaming, etc.
 
   #+BEGIN_SRC emacs-lisp
-    (use-package clojure-mode
-      :pin melpa-stable)
-    (use-package column-enforce-mode
-      :config (add-hook 'clojure-mode-hook '90-column-rule)
-      :diminish " 🛑")
-    (use-package clj-refactor
-      :pin melpa
-      :diminish " Ⓡ") 
-    (autoload 'clojure-mode "clojure-mode")
-    (autoload 'clojure-mode-map "clojure-mode" nil nil 'keymap)
-    (autoload 'clj-refactor-mode "clj-refactor")
+  (use-package clojure-mode
+    :pin melpa-stable)
+  (use-package column-enforce-mode
+    :config (add-hook 'clojure-mode-hook '90-column-rule)
+    :diminish " 🛑")
+  (use-package clj-refactor
+    :pin melpa
+    :diminish " Ⓡ")
+  (with-eval-after-load "clojure-mode"
+    ;;(define-key clojure-mode-map (kbd "<return>") 'sp-forward-sexp)
+    ;; imenu keybind
+    (define-key clojure-mode-map (kbd "C-c i") 'counsel-imenu)
+    ;; disable kill-sentence
+    (define-key global-map (kbd "M-k") nil)
+    (define-key clojure-mode-map (kbd "C-M-,") 'highlight-symbol-prev)
+    (define-key clojure-mode-map (kbd "C-M-.") 'highlight-symbol-next)
+    (define-key clojure-mode-map (kbd "RET") 'jmw/lisp-return)
+    ;; Bind keys to inspect results of last evaluation
+    (define-key clojure-mode-map (kbd "C-c M-I") 'cider-inspect-last-result)
+    ;; Bind key to manually start completion
+    (define-key clojure-mode-map (kbd "<backtab>") 'company-complete)
+    (require 'clj-refactor)
     (add-hook 'clojure-mode-hook
               (lambda ()
-                ;;(define-key clojure-mode-map (kbd "<return>") 'sp-forward-sexp)
-                ;; imenu keybind
-                (define-key clojure-mode-map (kbd "C-c i") 'counsel-imenu)
-                ;; disable kill-sentence
-                (define-key global-map (kbd "M-k") nil)
                 ;;enable clojure refactor
                 (clj-refactor-mode 1)
                 (yas-minor-mode 1)
                 ;; highlight symbols
-                (highlight-symbol-mode 1)
-                (define-key clojure-mode-map (kbd "C-M-,") 'highlight-symbol-prev)
-                (define-key clojure-mode-map (kbd "C-M-.") 'highlight-symbol-next)
-                (define-key clojure-mode-map (kbd "RET") 'jmw/lisp-return)))
+                (highlight-symbol-mode 1))))
+  (with-eval-after-load "cider-repl-mode"
+    (define-key cider-repl-mode-map (kbd "C-c M-I") 'cider-inspect-last-result)
+    (define-key cider-repl-mode-map (kbd "<backtab>") 'company-complete))
   #+END_SRC
 
   Add the same sort of extra highlighting for clojure that we have for
@@ -1022,17 +1028,7 @@ in this config uses sesman.
   (setq-default sesman-system 'CIDER)
 #+end_src
 
-Bind keys to inspect results of last evaluation
-#+BEGIN_SRC emacs-lisp
-  (define-key clojure-mode-map (kbd "C-c M-I") 'cider-inspect-last-result)
-  (define-key cider-repl-mode-map (kbd "C-c M-I") 'cider-inspect-last-result)
-#+END_SRC
 
-Bind key to manually start completion
-#+BEGIN_SRC emacs-lisp
-  (define-key clojure-mode-map (kbd "<backtab>") 'company-complete)
-  (define-key cider-repl-mode-map (kbd "<backtab>") 'company-complete)
-#+END_SRC
 *** Rust
 Use rustic lib and lsp server for rust IDE.
 
