@@ -772,6 +772,7 @@ Add the ability to jump right into magit from find-file, so you can
 go to the repository and straight to magit. ~M-o g~ will jump to
 magit from whatever the current candidate is.
 #+BEGIN_SRC emacs-lisp
+  (require 'ivy)
   (ivy-add-actions 'counsel-find-file '(("g" magit-status "magit")))
 #+END_SRC
 
