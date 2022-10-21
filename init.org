@@ -1064,6 +1064,8 @@ Use rustic lib and lsp server for rust IDE.
   (lsp-rust-analyzer-display-parameter-hints nil)
   (lsp-rust-analyzer-display-reborrow-hints nil)
   (lsp-keymap-prefix "C-z"))
+
+(use-package flycheck :ensure) ;; doesn't get loaded as a direct dep
 #+END_SRC
 *** Go
 #+BEGIN_SRC emacs-lisp
