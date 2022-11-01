@@ -1104,6 +1104,13 @@ Use rustic lib and lsp server for rust IDE.
 #+begin_src emacs-lisp
   (use-package markdown-mode)
 #+end_src
+*** CSS
+Indent CSS 2 spaces instead of a tab
+#+begin_src emacs-lisp
+(add-hook 'scss-mode-hook (lambda ()
+			    (setq indent-tabs-mode nil)
+			    (setq css-indent-offset 2)))
+#+end_src
 ** OS Interaction
 *** File Browsing
 We'll use the builtin dired for this, and extend it a bit.
