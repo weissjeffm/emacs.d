@@ -461,7 +461,8 @@ Set up smartparens to run in strict mode in these major modes (where
 it doesn't allow parens to become unbalanced!)
 #+BEGIN_SRC emacs-lisp
   (dolist (mode '(scheme inferior-scheme emacs-lisp lisp inferior-lisp
-                         clojure clojurescript eshell html cider-repl go))
+                         clojure clojurescript eshell html cider-repl
+                         go js))
     (add-hook
      (intern (concat (symbol-name mode) "-mode-hook"))
      #'smartparens-strict-mode))
@@ -1096,7 +1097,13 @@ Use rustic lib and lsp server for rust IDE.
   (shell-command (format "go run \"%s\"" (buffer-file-name) "*go run output*")))
 
 #+END_SRC
-
+*** Javascript
+#+begin_src emacs-lisp
+  (add-hook 'js-mode-hook (lambda ()
+                            (setq tab-width 2
+                                  indent-tabs-mode nil
+                                  js-indent-level 2)))
+#+end_src
 ** File formats
 *** YAML
 #+begin_src emacs-lisp
@@ -1109,9 +1116,9 @@ Use rustic lib and lsp server for rust IDE.
 *** CSS
 Indent CSS 2 spaces instead of a tab
 #+begin_src emacs-lisp
-(add-hook 'scss-mode-hook (lambda ()
-			    (setq indent-tabs-mode nil)
-			    (setq css-indent-offset 2)))
+  (add-hook 'scss-mode-hook (lambda ()
+                              (setq indent-tabs-mode nil
+                                    css-indent-offset 2)))
 #+end_src
 ** OS Interaction
 *** File Browsing
