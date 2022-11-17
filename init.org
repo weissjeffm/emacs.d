@@ -1195,6 +1195,10 @@ Indent CSS 2 spaces instead of a tab
                               (setq indent-tabs-mode nil
                                     css-indent-offset 2)))
 #+end_src
+*** HTML
+#+begin_src emacs-lisp
+  (setq sgml-basic-offset 2)
+#+end_src
 ** OS Interaction
 *** File Browsing
 We'll use the builtin dired for this, and extend it a bit.
