@@ -191,10 +191,6 @@ Make them more convenient or easier to reach
   (global-set-key (kbd "S-<right>") 'windmove-right)
   (global-set-key (kbd "S-<up>") 'windmove-up)
   (global-set-key (kbd "S-<down>") 'windmove-down)
-
-  ;; Font size
-  (define-key global-map (kbd "C-+") 'text-scale-increase)
-  (define-key global-map (kbd "C--") 'text-scale-decrease)
 #+END_SRC
 
 ** Use y/n instead of yes/no
@@ -420,7 +416,13 @@ This macro will let us easily define new "faces" later.
     `(defface ,name '((((class color)) (:foreground ,color ,@others)))
        ,desc :group 'faces))
 #+END_SRC
+*** Text scale zoom
+#+begin_src emacs-lisp
+  (straight-use-package '(zoom-frm :type git :host github :repo "emacsmirror/zoom-frm"))
 
+  (define-key global-map (kbd "C-+") 'zoom-in)
+  (define-key global-map (kbd "C--") 'zoom-out)
+#+end_src
 ** General Editing
 *** Minibuffer candidate completion
 For automatic completion and narrowing of candidates, we'll use [[https://github.com/abo-abo/swiper][Ivy]]
