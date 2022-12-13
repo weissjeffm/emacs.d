@@ -1166,9 +1166,30 @@ Use rustic lib and lsp server for rust IDE.
 *** Javascript
 #+begin_src emacs-lisp
   (add-hook 'js-mode-hook (lambda ()
+                              (setq tab-width 2
+                                    indent-tabs-mode nil
+                                    js-indent-level 2)))
+#+end_src
+*** Typescript/tsx
+Bootstrap tsx-mode 
+#+begin_src emacs-lisp
+  (straight-use-package '(tsi :type git :host github :repo "orzechowskid/tsi.el"))
+
+  (straight-use-package '(tsx-mode :type git :host github :repo "orzechowskid/tsx-mode.el"))
+  (require 'tsx-mode)
+#+end_src
+
+fix indentation
+#+begin_src emacs-lisp
+  (add-hook 'tsx-mode-hook (lambda ()
                             (setq tab-width 2
                                   indent-tabs-mode nil
                                   js-indent-level 2)))
+
+  (add-hook 'typescript-mode-hook (lambda ()
+                                    (setq tab-width 2
+                                          indent-tabs-mode nil
+                                          typescript-indent-level 2)))
 #+end_src
 ** File formats
 *** YAML
