@@ -724,6 +724,11 @@ and get pretty fonts and colors just like we see in emacs!
     :pin melpa-stable)
 #+END_SRC
 
+Don't include a "validate html" link in the exported HTML. Looks ugly.
+#+begin_src emacs-lisp
+(setq org-html-validation-link nil)
+#+end_src
+
 Next we enable bullets mode which makes pretty bulleted outlines,
 instead of just using the asterisk character.
 
