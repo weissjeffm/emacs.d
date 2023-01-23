@@ -191,10 +191,6 @@ Make them more convenient or easier to reach
   (global-set-key (kbd "S-<right>") 'windmove-right)
   (global-set-key (kbd "S-<up>") 'windmove-up)
   (global-set-key (kbd "S-<down>") 'windmove-down)
-
-  ;; Font size
-  (define-key global-map (kbd "C-+") 'text-scale-increase)
-  (define-key global-map (kbd "C--") 'text-scale-decrease)
 #+END_SRC
 
 ** Use y/n instead of yes/no
@@ -309,34 +305,26 @@ handy quite often, so we want to make sure it's loaded, along with
   (require 'package)
 #+END_SRC
 
-There are several package repositories, we will specify which ones we
-want to use and then initialize the package system so it's ready to
-install any packages that might be missing.
+For package management, we'll use =straight.el=. 
+#+begin_src emacs-lisp
+  (setq package-enable-at-startup nil)
 
-#+BEGIN_SRC emacs-lisp
-;; add repositories
-(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-;;(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(add-to-list 'package-archives '("org". "http://orgmode.org/elpa/"))
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	(bootstrap-version 6))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+	  (url-retrieve-synchronously
+	   "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+	   'silent 'inhibit-cookies)
+	(goto-char (point-max))
+	(eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
 
-;; initialize packages
-(package-initialize)
+  (straight-use-package 'use-package)
+#+end_src
 
-(unless package-archive-contents
-  (package-refresh-contents nil))
-#+END_SRC
-
-Once =package= is loaded we can add =use-package= on top, which
-provides a lot of flexibility.
-
-#+BEGIN_SRC emacs-lisp
-  (package-install 'use-package)
-  ;; This is only needed once, near the top of the file
-  (require 'use-package)
-
-  (setq use-package-always-ensure t) ;; always install package if not present
-#+END_SRC
 
 
 Now we're ready to start loading and configuring individual features.
@@ -428,6 +416,35 @@ This macro will let us easily define new "faces" later.
     `(defface ,name '((((class color)) (:foreground ,color ,@others)))
        ,desc :group 'faces))
 #+END_SRC
+*** Text scale zoom
+#+begin_src emacs-lisp
+  (straight-use-package '(zoom-frm :type git :host github :repo "emacsmirror/zoom-frm"))
+  (require 'zoom-frm)
+  (define-key global-map (kbd "C-+") 'zoom-in)
+  (define-key global-map (kbd "C--") 'zoom-out)
+#+end_src
+
+This works but sometimes the text size gets reset to the default when
+reverting a buffer. This should prevent that from happening:
+#+begin_src emacs-lisp
+  (defun save-text-scale ()
+    "Save text-scale."
+    ;;(message "saving prev text scale %d" text-scale-mode-amount)
+    (setq text-scale-previous (buffer-local-value 'text-scale-mode-amount (current-buffer))))
+
+  (add-hook 'before-revert-hook 'save-text-scale)
+
+  (defun restore-text-scale ()
+    "Restore text-scale."
+    ;;(message "restoring prev text scale %d" text-scale-previous)
+    (text-scale-increase text-scale-previous))
+
+  (add-hook 'after-revert-hook 'restore-text-scale)
+
+#+end_src
+
+#+RESULTS:
+| restore-text-scale | mc/disable-multiple-cursors-mode |
 
 ** General Editing
 *** Minibuffer candidate completion
@@ -444,7 +461,6 @@ place, it can be a replacement for the builtin ~re-search-forward~.
 
 #+BEGIN_SRC emacs-lisp
 (use-package counsel
-  :pin melpa-stable
   :config
   (require 'ivy)
   (setq
@@ -475,7 +491,7 @@ example, long function names. When you hit TAB autocomplete will
 fill in the rest. We'll try company-mode.
 #+BEGIN_SRC emacs-lisp
   (use-package company
-    :pin melpa-stable
+
     :bind (:map company-active-map
                 ("M-n" . nil)
                 ("M-p" . nil)
@@ -491,7 +507,7 @@ motion and structural editing. It's a must-have for any lisp
 programming.
 #+BEGIN_SRC emacs-lisp
   (use-package smartparens
-    :pin melpa-stable
+
     :config
     (require 'smartparens-config)
     (setq sp-base-key-bindings 'paredit
@@ -612,7 +628,7 @@ see the results at each step.
 
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors
-    :pin melpa-stable)
+)
   (require 'multiple-cursors)
   (define-prefix-command 'mc-key-map)
   (global-set-key (kbd "C-c m") 'mc-key-map)
@@ -666,7 +682,7 @@ Lets you jump anywhere on screen with a few keypresses.
 
 #+BEGIN_SRC emacs-lisp
   (use-package ace-jump-mode
-    :pin melpa-stable)
+)
 
   ;; org mode move keybinding out of way
   (require 'org)
@@ -721,7 +737,7 @@ and get pretty fonts and colors just like we see in emacs!
 
 #+BEGIN_SRC emacs-lisp
   (use-package htmlize
-    :pin melpa-stable)
+)
 #+END_SRC
 
 Don't include a "validate html" link in the exported HTML. Looks ugly.
@@ -734,7 +750,7 @@ instead of just using the asterisk character.
 
 #+BEGIN_SRC emacs-lisp
   (use-package org-bullets
-    :pin melpa-stable)
+)
   (require 'org-bullets)
   (setq org-bullets-bullet-list '("●" "○" "★"))
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
@@ -845,7 +861,7 @@ still have the changes applied to your org text.
 Magit is the best. It's a wrapper for git, and it makes things so much easier.
 #+BEGIN_SRC emacs-lisp
 (use-package magit
-  :pin melpa-stable)
+)
 (require 'magit)
 (global-set-key (kbd "<f2>") 'magit-status)
 (setq magit-diff-refine-hunk 'all
@@ -870,7 +886,7 @@ project (if any). With a prefix, any buffer. Bind that function to the
 usual buffer switch key.
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
-    :pin melpa-stable
+
     :config
     (setq projectile-completion-system 'ivy)
     (projectile-mode +1)
@@ -961,7 +977,7 @@ point, so that you can see where else that symbol is used. We'll use
 autoload so that we only load the feature when it's called upon.
 #+BEGIN_SRC emacs-lisp
   (use-package highlight-symbol
-    :pin melpa-stable
+
     :config
     ;; highlight occurrences of the symbol in this color
     (set-face-attribute 'highlight-symbol-face nil :background "DarkOrange3")
@@ -982,7 +998,7 @@ slime nav style, which means using ~M-.~ and ~M-,~. Enable it in
 ~ielm-mode~ too (an elisp REPL).
 #+BEGIN_SRC emacs-lisp
   (use-package elisp-slime-nav
-    :pin melpa-stable)
+)
   (require 'elisp-slime-nav)
   (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
     (add-hook hook 'elisp-slime-nav-mode))
@@ -1016,12 +1032,11 @@ behavior in clojure mode:
 
   #+BEGIN_SRC emacs-lisp
   (use-package clojure-mode
-    :pin melpa-stable)
+)
   (use-package column-enforce-mode
     :config (add-hook 'clojure-mode-hook '90-column-rule)
     :diminish " 🛑")
   (use-package clj-refactor
-    :pin melpa
     :diminish " Ⓡ")
   (with-eval-after-load "clojure-mode"
     ;;(define-key clojure-mode-map (kbd "<return>") 'sp-forward-sexp)
@@ -1113,13 +1128,12 @@ in this config uses sesman.
   (setq-default sesman-system 'CIDER)
 #+end_src
 
-
 *** Rust
 Use rustic lib and lsp server for rust IDE.
 
 #+BEGIN_SRC emacs-lisp
 (use-package rustic
-  :pin melpa-stable
+
   :diminish " 🧷"
   :init
   (setq rustic-babel-default-toolchain "+stable")
@@ -1150,7 +1164,7 @@ Use rustic lib and lsp server for rust IDE.
   (lsp-rust-analyzer-display-reborrow-hints nil)
   (lsp-keymap-prefix "C-z"))
 
-(use-package flycheck :ensure) ;; doesn't get loaded as a direct dep
+(use-package flycheck :diminish " 🪰✓" :ensure) ;; doesn't get loaded as a direct dep
 #+END_SRC
 *** Go
 #+BEGIN_SRC emacs-lisp
@@ -1182,9 +1196,30 @@ Use rustic lib and lsp server for rust IDE.
 *** Javascript
 #+begin_src emacs-lisp
   (add-hook 'js-mode-hook (lambda ()
+                              (setq tab-width 2
+                                    indent-tabs-mode nil
+                                    js-indent-level 2)))
+#+end_src
+*** Typescript/tsx
+Bootstrap tsx-mode 
+#+begin_src emacs-lisp
+  (straight-use-package '(tsi :type git :host github :repo "orzechowskid/tsi.el"))
+
+  (straight-use-package '(tsx-mode :type git :host github :repo "orzechowskid/tsx-mode.el"))
+  (require 'tsx-mode)
+#+end_src
+
+fix indentation
+#+begin_src emacs-lisp
+  (add-hook 'tsx-mode-hook (lambda ()
                             (setq tab-width 2
                                   indent-tabs-mode nil
                                   js-indent-level 2)))
+
+  (add-hook 'typescript-mode-hook (lambda ()
+                                    (setq tab-width 2
+                                          indent-tabs-mode nil
+                                          typescript-indent-level 2)))
 #+end_src
 ** File formats
 *** YAML
