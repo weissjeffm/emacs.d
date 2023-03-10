@@ -627,8 +627,7 @@ repeatedly. Same functionality as keyboard macros, but allows you to
 see the results at each step.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package multiple-cursors
-)
+  (use-package multiple-cursors)
   (require 'multiple-cursors)
   (define-prefix-command 'mc-key-map)
   (global-set-key (kbd "C-c m") 'mc-key-map)
@@ -681,8 +680,7 @@ saved to ~.mc-lists.el~
 Lets you jump anywhere on screen with a few keypresses.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package ace-jump-mode
-)
+  (use-package ace-jump-mode)
 
   ;; org mode move keybinding out of way
   (require 'org)
@@ -736,8 +734,7 @@ Install HTMLize so that we can export files like this one to HTML
 and get pretty fonts and colors just like we see in emacs!
 
 #+BEGIN_SRC emacs-lisp
-  (use-package htmlize
-)
+  (use-package htmlize)
 #+END_SRC
 
 Don't include a "validate html" link in the exported HTML. Looks ugly.
@@ -749,8 +746,7 @@ Next we enable bullets mode which makes pretty bulleted outlines,
 instead of just using the asterisk character.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package org-bullets
-)
+  (use-package org-bullets)
   (require 'org-bullets)
   (setq org-bullets-bullet-list '("●" "○" "★"))
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
@@ -860,8 +856,7 @@ still have the changes applied to your org text.
 ** Source Control
 Magit is the best. It's a wrapper for git, and it makes things so much easier.
 #+BEGIN_SRC emacs-lisp
-(use-package magit
-)
+(use-package magit)
 (require 'magit)
 (global-set-key (kbd "<f2>") 'magit-status)
 (setq magit-diff-refine-hunk 'all
@@ -997,8 +992,7 @@ For navigating elisp, jumping into functions and back, we'll use the
 slime nav style, which means using ~M-.~ and ~M-,~. Enable it in
 ~ielm-mode~ too (an elisp REPL).
 #+BEGIN_SRC emacs-lisp
-  (use-package elisp-slime-nav
-)
+  (use-package elisp-slime-nav)
   (require 'elisp-slime-nav)
   (dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
     (add-hook hook 'elisp-slime-nav-mode))
@@ -1031,8 +1025,7 @@ behavior in clojure mode:
   management, renaming, etc.
 
   #+BEGIN_SRC emacs-lisp
-  (use-package clojure-mode
-)
+  (use-package clojure-mode)
   (use-package column-enforce-mode
     :config (add-hook 'clojure-mode-hook '90-column-rule)
     :diminish " 🛑")
