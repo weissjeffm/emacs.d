@@ -198,12 +198,13 @@ handy quite often, so we want to make sure it's loaded, along with
 
 #+BEGIN_SRC emacs-lisp
   (require 'cl)
-  (require 'package)
+  ;(require 'package)
 #+END_SRC
 
 For package management, we'll use =straight.el=. 
 #+begin_src emacs-lisp
   (setq package-enable-at-startup nil)
+  (setq straight-use-package-by-default t)
 
   (defvar bootstrap-version)
   (let ((bootstrap-file
@@ -219,6 +220,8 @@ For package management, we'll use =straight.el=.
     (load bootstrap-file nil 'nomessage))
 
   (straight-use-package 'use-package)
+
+
 #+end_src
 
 
@@ -618,13 +621,6 @@ mode file. There are some add ons for different languages.
      'org-babel-load-languages
      '((emacs-lisp . t) (shell . t)))
 #+END_SRC
-
-In order to insert code templates easily using the "<s" shortcut, we
-need to load org-tempo. https://orgmode.org/manual/Structure-Templates.html#Structure-Templates
-
-#+begin_src emacs-lisp
-  (require 'org-tempo)
-#+end_src
 
 Install HTMLize so that we can export files like this one to HTML
 and get pretty fonts and colors just like we see in emacs!
@@ -1091,7 +1087,7 @@ Use rustic lib and lsp server for rust IDE.
 #+end_src
 *** Typescript/tsx
 Bootstrap tsx-mode 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (straight-use-package '(tsi :type git :host github :repo "orzechowskid/tsi.el"))
 
   (straight-use-package '(tsx-mode :type git :host github :repo "orzechowskid/tsx-mode.el"))
