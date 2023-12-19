@@ -223,8 +223,6 @@ For package management, we'll use =straight.el=.
     (load bootstrap-file nil 'nomessage))
 
   (straight-use-package 'use-package)
-
-
 #+end_src
 
 
@@ -1245,6 +1243,7 @@ org-mode supports restclient if you add the babel mode for
 restclient. 
 #+BEGIN_SRC emacs-lisp
   (use-package restclient)
+  (use-package restclient-jq)
   (use-package ob-restclient)
   ;; setup
   (org-babel-do-load-languages
