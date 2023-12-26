@@ -1304,6 +1304,15 @@ remove ":tangle no" on the next line.
                                                         (calendar-current-date)
                                                         #'message "diary updated")))))
 #+END_SRC
+** Github Copilot
+#+begin_src emacs-lisp 
+  (use-package copilot
+    :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+    :ensure t)
+  (add-hook 'prog-mode-hook 'copilot-mode)
+  (define-key copilot-completion-map (kbd "C-<RET>") 'copilot-accept-completion)
+  (define-key copilot-completion-map [?\C-\t] 'copilot-complete)
+#+end_src
 * Theme
 All the custom colors and fonts that I prefer.
 #+BEGIN_SRC emacs-lisp
