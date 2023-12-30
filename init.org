@@ -1310,7 +1310,7 @@ remove ":tangle no" on the next line.
     :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
     :ensure t)
   (add-hook 'prog-mode-hook 'copilot-mode)
-  (define-key copilot-completion-map (kbd "C-<RET>") 'copilot-accept-completion)
+  (define-key copilot-completion-map (kbd "C-<return>") 'copilot-accept-completion)
   (define-key copilot-completion-map [?\C-\t] 'copilot-complete)
 #+end_src
 * Theme
