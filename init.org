@@ -324,28 +324,6 @@ This macro will let us easily define new "faces" later.
   (define-key global-map (kbd "C--") 'zoom-out)
 #+end_src
 
-This works but sometimes the text size gets reset to the default when
-reverting a buffer. This should prevent that from happening:
-#+begin_src emacs-lisp
-  (defun save-text-scale ()
-    "Save text-scale."
-    ;;(message "saving prev text scale %d" text-scale-mode-amount)
-    (setq text-scale-previous (buffer-local-value 'text-scale-mode-amount (current-buffer))))
-
-  (add-hook 'before-revert-hook 'save-text-scale)
-
-  (defun restore-text-scale ()
-    "Restore text-scale."
-    ;;(message "restoring prev text scale %d" text-scale-previous)
-    (text-scale-increase text-scale-previous))
-
-  (add-hook 'after-revert-hook 'restore-text-scale)
-
-#+end_src
-
-#+RESULTS:
-| restore-text-scale | mc/disable-multiple-cursors-mode |
-
 ** General Editing
 *** Minibuffer candidate completion
 For automatic completion and narrowing of candidates, we'll use [[https://github.com/abo-abo/swiper][Ivy]]
