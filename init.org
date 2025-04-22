@@ -725,12 +725,13 @@ edit files that are required to be homed outside your org text, and
 still have the changes applied to your org text.
 
 #+begin_src emacs-lisp
-(use-package org-tanglesync
-  :diminish " 🧶"
-  :config (eval-after-load "org-tanglesync" '(diminish 'org-tanglesync-watch-mode " 🧶"))
-  :hook ((org-mode . org-tanglesync-mode)
-         ;; enable watch-mode globally:
-         ((prog-mode text-mode) . org-tanglesync-watch-mode)))
+  (use-package org-tanglesync
+    :diminish " 🧶"
+    :config (eval-after-load "org-tanglesync" '(diminish 'org-tanglesync-watch-mode " 🧶"))
+    :hook ((org-mode . org-tanglesync-mode)
+           ;; enable watch-mode globally:
+           ((prog-mode text-mode) . org-tanglesync-watch-mode))
+    :bind (("C-c M-t" . 'org-tanglesync-process-buffer-automatic)))
 #+end_src
 
 Include a CSS class for org-babel result blocks:
