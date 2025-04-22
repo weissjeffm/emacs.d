@@ -922,12 +922,12 @@ point, so that you can see where else that symbol is used. We'll use
 autoload so that we only load the feature when it's called upon.
 #+BEGIN_SRC emacs-lisp
   (use-package highlight-symbol
-
+    :bind (("M-N" . highlight-symbol-next)
+           ("M-P" . highlight-symbol-prev))
     :config
     ;; highlight occurrences of the symbol in this color
     (set-face-attribute 'highlight-symbol-face nil :background "DarkOrange3")
     :diminish " 🆂")
-
 #+END_SRC
 *** Emacs Lisp
 We'll add features to Emacs Lisp first since that's what we're using
