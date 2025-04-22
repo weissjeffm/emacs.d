@@ -1075,39 +1075,48 @@ in this config uses sesman.
 Use rustic lib and lsp server for rust IDE.
 
 #+BEGIN_SRC emacs-lisp
-(use-package rustic
+  (use-package rustic
 
-  :diminish " 🧷"
-  :init
-  (setq rustic-babel-default-toolchain "+stable")
-  (add-hook 'rust-mode-hook 'smartparens-strict-mode)
-  (add-hook 'rust-mode-hook 'rustic-doc-mode)
-  (yas-global-mode)
-  (add-to-list 'exec-path "/home/jweiss/.cargo/bin")
-  :config (eval-after-load "rustic" '(progn
-				       (add-hook 'rustic-mode (lambda () (setq mode-name "Rust")))
-				       (diminish 'rustic-doc-mode " 📜")
-				       (diminish 'rustic " 🧷"))))
+    :diminish " 🧷"
+    :init
+    (setq rustic-babel-default-toolchain "+stable")
+    (add-hook 'rust-mode-hook 'smartparens-strict-mode)
+    (add-hook 'rust-mode-hook 'rustic-doc-mode)
+    (yas-global-mode)
+    (add-to-list 'exec-path "/home/jweiss/.cargo/bin")
+    :config (eval-after-load "rustic" '(progn
+                                         (add-hook 'rustic-mode (lambda () (setq mode-name "Rust")))
+                                         (diminish 'rustic-doc-mode " 📜")
+                                         (diminish 'rustic " 🧷"))))
 
-(use-package lsp-mode
-  :ensure
-  :commands lsp
-  :custom
-  ;; what to use when checking on-save. "check" is default, I prefer clippy
-  ;;(lsp-rust-analyzer-cargo-watch-command "clippy")
-  (lsp-eldoc-render-all t)
-  (lsp-idle-delay 0.6)
-  ;; enable / disable the hints as you prefer:
-  (lsp-rust-analyzer-server-display-inlay-hints t)
-  (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
-  (lsp-rust-analyzer-display-chaining-hints t)
-  (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
-  (lsp-rust-analyzer-display-closure-return-type-hints t)
-  (lsp-rust-analyzer-display-parameter-hints nil)
-  (lsp-rust-analyzer-display-reborrow-hints nil)
-  (lsp-keymap-prefix "C-z"))
+  (use-package lsp-mode
+    :ensure
+    :commands lsp
+    :custom
+    ;; what to use when checking on-save. "check" is default, I prefer clippy
+    ;;(lsp-rust-analyzer-cargo-watch-command "clippy")
+    (lsp-eldoc-render-all t)
+    (lsp-idle-delay 0.6)
+    ;; enable / disable the hints as you prefer:
+    (lsp-rust-analyzer-server-display-inlay-hints t)
+    (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+    (lsp-rust-analyzer-display-chaining-hints t)
+    (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
+    (lsp-rust-analyzer-display-closure-return-type-hints t)
+    (lsp-rust-analyzer-display-parameter-hints nil)
+    (lsp-rust-analyzer-display-reborrow-hints nil)
+    (lsp-keymap-prefix "C-z"))
 
-(use-package flycheck :diminish " 🪰✓" :ensure) ;; doesn't get loaded as a direct dep
+  (use-package lsp-ui
+    :after lsp-mode
+    :config
+    (setq lsp-ui-sideline-enable t
+          lsp-ui-sideline-show-hover t
+          lsp-ui-sideline-show-code-actions t
+          lsp-ui-sideline-show-symbol t)
+    (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+  (use-package flycheck :diminish " 🪰✓" :ensure) ;; doesn't get loaded as a direct dep
 #+END_SRC
 *** Go
 #+BEGIN_SRC emacs-lisp
