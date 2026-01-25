@@ -1312,13 +1312,46 @@ remove ":tangle no" on the next line.
                                                         #'message "diary updated")))))
 #+END_SRC
 ** Github Copilot
-#+begin_src emacs-lisp 
+#+begin_src emacs-lisp :tangle no 
   (use-package copilot
     :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
     :ensure t)
   (add-hook 'prog-mode-hook 'copilot-mode)
   (define-key copilot-completion-map (kbd "C-<return>") 'copilot-accept-completion)
   (define-key copilot-completion-map [?\C-\t] 'copilot-complete)
+#+end_src
+** AI Coding
+#+begin_src emacs-lisp
+  (use-package gptel
+    :config
+    (setq gptel-model 'qwen3-coder
+          gptel-backend
+          (gptel-make-openai "LocalAI"
+            :host "home.jweiss.com:8080"
+            :endpoint "/v1/chat/completions"
+            :stream t
+            :models '(qwen3-235b-a22b-instruct-2507))))
+#+end_src
+
+#+begin_src emacs-lisp
+  (use-package aidermacs
+    :ensure t
+    :bind (("C-c a" . aidermacs-transient-menu))
+    :config
+    (setq aidermacs-default-model "openai/qwen3-235b-a22b-instruct-2507")
+    ;; Point Aider to your LocalAI endpoint
+    (setenv "OPENAI_API_BASE" "http://home.jweiss.com:8080/v1")
+    (setenv "OPENAI_API_KEY" "ignored") ; LocalAI doesn't need a real key
+    
+    ;; Use 'architect mode' by default for high-level edits
+    (setq aidermacs-args '("--architect" "--no-auto-commits")))
+
+  (add-hook 'aidermacs-mode-hook
+            (lambda ()
+              (setq-local scroll-margin 0
+                          scroll-conservatively 101
+                          comint-scroll-to-bottom-on-output nil
+  			comint-scroll-show-maximum-output nil)))
 #+end_src
 * Theme
 All the custom colors and fonts that I prefer.
