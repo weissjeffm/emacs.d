@@ -163,14 +163,22 @@ Save to hidden dir .~ instead of making files go everywhere.
   (setq tramp-verbose 1)
 
   ;; Only enable TRAMP direct async processes on Emacs 30+
-  (when (>= emacs-major-version 30)
-    (with-eval-after-load 'tramp
-      (connection-local-set-profile-variables
-       'remote-direct-async-process
-       '((tramp-direct-async-process . t)))
-      (connection-local-set-profiles
-       '(:application tramp :protocol "ssh")
-       'remote-direct-async-process)))
+  ;; (when (>= emacs-major-version 30)
+  ;;   (with-eval-after-load 'tramp
+  ;;     (connection-local-set-profile-variables
+  ;;      'remote-direct-async-process
+  ;;      '((tramp-direct-async-process . t)))
+  ;;     (connection-local-set-profiles
+  ;;      '(:application tramp :protocol "ssh")
+  ;;      'remote-direct-async-process)))
+  ;(setq tramp-direct-async-process nil)
+  ;; ;; Tell TRAMP
+  ;;to use your ~/.ssh/config ControlMaster settings
+  ;; instead of overriding them with its own defaults (which usually disable Persist)
+  ;(setq tramp-use-ssh-controlmaster-options nil)
+  ;; 3. PREVENT "Hanging" on password prompts or weird output
+  ;(setq magit-process-connection-type t)
+
 
 #+END_SRC
 ** Copy current buffer file name to kill ring
@@ -817,13 +825,19 @@ Use this at the top of org files:
 ** Source Control
 Magit is the best. It's a wrapper for git, and it makes things so much easier.
 #+BEGIN_SRC emacs-lisp
-(use-package magit)
-(require 'magit)
-(global-set-key (kbd "<f2>") 'magit-status)
-(setq magit-diff-refine-hunk 'all
-      magit-revert-buffers 'silent
-      magit-save-repository-buffers nil
-      magit-completing-read-function 'ivy-completing-read)
+  (use-package magit)
+  (require 'magit)
+  (global-set-key (kbd "<f2>") 'magit-status)
+  (setq magit-diff-refine-hunk 'all
+        magit-revert-buffers 'silent
+        magit-save-repository-buffers nil
+        magit-completing-read-function 'ivy-completing-read
+        ;; don't show the diff by default in the commit buffer. Use `C-c C-d' to display it
+        magit-commit-show-diff nil
+        ;; don't show git variables in magit branch
+        magit-branch-direct-configure nil
+        ;; don't automatically refresh the status buffer after running a git command
+        magit-refresh-status-buffer nil)
 #+END_SRC
 
 Add the ability to jump right into magit from find-file, so you can
