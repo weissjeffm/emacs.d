@@ -64,8 +64,8 @@ and start a new emacs process.
 #+END_SRC
 ** Include /usr/local on path
 #+BEGIN_SRC emacs-lisp
-  (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin"))
-  (setq exec-path (append exec-path '("/usr/local/bin")))
+  (setenv "PATH" (concat (getenv "PATH") ":/usr/local/bin:/home/jweiss/.local/bin"))
+  (setq exec-path (append exec-path '("/home/jweiss/.local/bin")))
 #+END_SRC
 
 ** Unbind some keys that have unwanted behavior
