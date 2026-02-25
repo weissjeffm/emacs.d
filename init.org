@@ -158,7 +158,7 @@ Save to hidden dir .~ instead of making files go everywhere.
 *** Performance
 #+BEGIN_SRC emacs-lisp
   ;; Don't try to do other version control systems besides git
-  (setq vc-handled-backends '(Git))
+  (setq vc-handled-backends nil)
   ;; Reduce logging for perf reasons
   (setq tramp-verbose 1)
 
