@@ -822,6 +822,30 @@ Use this at the top of org files:
 #+HTML_HEAD:   }
 #+HTML_HEAD: </style>
 #+end_src
+
+There's a bug where if you kill the edit buffer that's managed by
+tanglesync, it doesn't know you're not editing it anymore, and won't
+let you sync back to the org file. This should fix it:
+
+#+begin_src emacs-lisp
+  (defun my/org-src-force-cleanup ()
+    "Forcefully clear Org-mode source edit locks and overlays if the buffer is killed."
+    (when (bound-and-true-p org-src--edit-marker)
+      (let ((marker org-src--edit-marker))
+        (with-current-buffer (marker-buffer marker)
+          (save-excursion
+            (goto-char (marker-position marker))
+            ;; Clear the specific overlay that causes the "ghost"
+            (dolist (ov (overlays-at (point)))
+              (when (overlay-get ov 'edit-buffer)
+                (delete-overlay ov)))
+            ;; Reset the internal marker
+            (setq-local org-src--edit-marker nil))))))
+
+  (add-hook 'org-src-mode-hook
+            (lambda ()
+              (add-hook 'kill-buffer-hook #'my/org-src-force-cleanup nil t)))
+#+end_src
 ** Source Control
 Magit is the best. It's a wrapper for git, and it makes things so much easier.
 #+BEGIN_SRC emacs-lisp
