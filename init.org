@@ -55,6 +55,45 @@ and start a new emacs process.
   /Applications/Emacs-Plus/Contents/MacOS/Emacs --debug-init &
 #+END_SRC
 * Global Builtin Settings
+** Package manager
+To install new features, we need to load the =package= system. =cl= is
+a library that contains many functions from Common Lisp, and comes in
+handy quite often, so we want to make sure it's loaded, along with
+=package=, which is obviously needed.
+
+For package management, we'll use =straight.el=. 
+#+begin_src emacs-lisp
+  (setq package-enable-at-startup nil)
+  (setq straight-use-package-by-default t)
+
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+	 (expand-file-name
+	  "straight/repos/straight.el/bootstrap.el"
+	  (or (bound-and-true-p straight-base-dir)
+	      user-emacs-directory)))
+	(bootstrap-version 7))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+	  (url-retrieve-synchronously
+	   "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+	   'silent 'inhibit-cookies)
+	(goto-char (point-max))
+	(eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+
+  (straight-use-package 'use-package)
+#+end_src
+
+
+#+BEGIN_SRC emacs-lisp
+  (require 'cl)
+  ;(require 'package)
+#+END_SRC
+
+
+Now we're ready to start loading and configuring individual features.
+
 ** Don't save customizations to init.el
 #+BEGIN_SRC emacs-lisp
   (setq custom-file (concat user-emacs-directory "customizations.el"))
@@ -209,44 +248,6 @@ This is highly annoying and I don't understand why it's the default.
 (setq mouse-yank-at-point t)
 #+end_src
 * Features and Extensions
-To install new features, we need to load the =package= system. =cl= is
-a library that contains many functions from Common Lisp, and comes in
-handy quite often, so we want to make sure it's loaded, along with
-=package=, which is obviously needed.
-
-
-#+BEGIN_SRC emacs-lisp
-  (require 'cl)
-  ;(require 'package)
-#+END_SRC
-
-For package management, we'll use =straight.el=. 
-#+begin_src emacs-lisp
-  (setq package-enable-at-startup nil)
-  (setq straight-use-package-by-default t)
-
-  (defvar bootstrap-version)
-  (let ((bootstrap-file
-	 (expand-file-name
-	  "straight/repos/straight.el/bootstrap.el"
-	  (or (bound-and-true-p straight-base-dir)
-	      user-emacs-directory)))
-	(bootstrap-version 7))
-    (unless (file-exists-p bootstrap-file)
-      (with-current-buffer
-	  (url-retrieve-synchronously
-	   "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-	   'silent 'inhibit-cookies)
-	(goto-char (point-max))
-	(eval-print-last-sexp)))
-    (load bootstrap-file nil 'nomessage))
-
-  (straight-use-package 'use-package)
-#+end_src
-
-
-
-Now we're ready to start loading and configuring individual features.
 ** Visual Style
 *** Mode Line
 We'll use Powerline to set up the mode line.
