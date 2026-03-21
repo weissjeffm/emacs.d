@@ -247,6 +247,15 @@ This is highly annoying and I don't understand why it's the default.
 #+begin_src emacs-lisp
 (setq mouse-yank-at-point t)
 #+end_src
+**  Ensure Flymake errors appear at the top of the eldoc-box popup.
+#+begin_src emacs-lisp
+  (add-hook 'eglot-managed-mode-hook
+  	  (lambda ()
+  	    (setq-local eldoc-documentation-strategy 'eldoc-documentation-compose)
+  	    (remove-hook 'eldoc-documentation-functions #'flymake-eldoc-function t)
+  	    ;; The -10 weight shoves it to the absolute front of the list
+  	    (add-hook 'eldoc-documentation-functions #'flymake-eldoc-function -10 t))
+#+end_src
 * Features and Extensions
 ** Visual Style
 *** Mode Line
@@ -1125,6 +1134,9 @@ in this config uses sesman.
 Use rustic lib and lsp server for rust IDE.
 
 #+BEGIN_SRC emacs-lisp
+  ;; show eldoc and 'tooltip' (but not mouse based) in a popup
+  (use-package eldoc-box)
+  
   (use-package rustic
 
     :diminish " 🧷"
@@ -1132,12 +1144,16 @@ Use rustic lib and lsp server for rust IDE.
     (setq rustic-babel-default-toolchain "+stable")
     (add-hook 'rust-mode-hook 'smartparens-strict-mode)
     (add-hook 'rust-mode-hook 'rustic-doc-mode)
+
     (yas-global-mode)
     (add-to-list 'exec-path "/home/jweiss/.cargo/bin")
     :config (eval-after-load "rustic" '(progn
-                                         (add-hook 'rustic-mode (lambda () (setq mode-name "Rust")))
+  				       (add-hook 'rustic-mode-hook (lambda () (setq mode-name "Rust")
+  								     (eldoc-box-hover-mode 1)))
                                          (diminish 'rustic-doc-mode " 📜")
-                                         (diminish 'rustic " 🧷"))))
+                                         (diminish 'rustic " 🧷")
+  					 ;; Force Rustic to use Eglot (kills lsp-mode interference)
+  					 (setq rustic-lsp-client 'eglot))))
 
   (use-package lsp-mode
     :ensure
