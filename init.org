@@ -254,7 +254,7 @@ This is highly annoying and I don't understand why it's the default.
   	    (setq-local eldoc-documentation-strategy 'eldoc-documentation-compose)
   	    (remove-hook 'eldoc-documentation-functions #'flymake-eldoc-function t)
   	    ;; The -10 weight shoves it to the absolute front of the list
-  	    (add-hook 'eldoc-documentation-functions #'flymake-eldoc-function -10 t))))
+  	    (add-hook 'eldoc-documentation-functions #'flymake-eldoc-function -10 t)))
 #+end_src
 * Features and Extensions
 ** Visual Style
